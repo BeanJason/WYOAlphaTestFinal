@@ -21,7 +21,7 @@ import { FontAwesome } from "@expo/vector-icons";
 //Provider registration page
 const ProviderRegistration = ({ navigation }) => {
   //Get the variables from the state management to read them
-  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+  const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
   //Set the dispatch to use the functions in the redux reducer file
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ const ProviderRegistration = ({ navigation }) => {
     }
     //Reset the variable states after login or failed attempt
     dispatch(resetState());
-  }, [user, isError, isSuccess, message, dispatch]);
+  }, [isError, isSuccess, message, dispatch]);
 
   //On change for the birth date
   const onChange = (event, selectedDate) => {

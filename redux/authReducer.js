@@ -1,4 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Auth } from "aws-amplify";
+import { DataStore } from "aws-amplify";
+import {User} from "../src/models"
+import authService from "./authService"
 
 //Initial values
 const initialState = {
@@ -14,13 +18,66 @@ const initialState = {
 //ASYNC FUNCTIONS
 //Register
 export const register = createAsyncThunk("auth/register", async (data, thunkAPI) => {
-    //TODO
+    const {email, password} = data
+    let authUser, userInfo
+    let message = ''
+
+    
+    
+    //Try to make a user session
+    try {
+      authUser = await Auth.signUp({username: email, password, attributes:{email, 'custom:type': data.type}});
+    } catch (error) {
+      message = error.message;
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+
+    //Try to store in DB if successful
+    if(message == ''){
+      if(data.type === 'User'){
+        try {
+          userInfo = await DataStore.save(
+              new User({
+              "subID": authUser?.userSub,
+              "firstName": data.firstName,
+              "lastName": data.lastName,
+              "email": email,
+              "phoneNumber": data.phoneNumber,
+              "dateOfBirth": data.dateOfBirth,
+              "address": data.address,
+              "city": data.city,
+              "zipCode": data.zipCode
+            })
+          );
+        } catch (error) {
+          message = error.message;
+          console.log(message);
+          return thunkAPI.rejectWithValue(message);
+        }
+      }
+      else if(data.type === 'Provider'){
+
+      }
+      
+    }
+
+    //if everything succeeds
+    return {authUser, userInfo}
   }
 );
 
 //Login
 export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
-    //TODO
+    const username = data.email
+    const password = data.password
+    try {
+      const authUser = await Auth.signIn(username, password)
+    } catch (error) {
+      const message = error.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+
   }
 );
 
@@ -63,6 +120,7 @@ export const authReducer = createSlice({
       //Successful register
       .addCase(register.fulfilled, (state, action) => {
         console.log("successful register");
+        console.log(action.payload);
         state.isLoading = false;
         state.isSuccess = true;
         state.loggedIn = true;

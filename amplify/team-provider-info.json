@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-whileyoureout-staging-25126-authRole",
+      "UnauthRoleArn": "arn:aws:iam::308200325510:role/amplify-whileyoureout-staging-25126-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::308200325510:role/amplify-whileyoureout-staging-25126-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
+      "UnauthRoleName": "amplify-whileyoureout-staging-25126-unauthRole",
+      "StackName": "amplify-whileyoureout-staging-25126",
+      "StackId": "arn:aws:cloudformation:us-east-2:308200325510:stack/amplify-whileyoureout-staging-25126/b9d3bc20-e60c-11ec-84cd-0acba10fac34",
+      "AmplifyAppId": "d3kxnpkje9ky7r"
+    },
+    "categories": {
+      "auth": {
+        "WhileYoureOut": {}
+      }
+    }
+  }
+}

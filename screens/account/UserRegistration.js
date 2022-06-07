@@ -23,7 +23,7 @@ import { FontAwesome } from "@expo/vector-icons";
 //User registration page
 const UserRegistration = ({ navigation }) => {
   //Get the variables from the state management to read them
-  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth)
+  const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth)
 
   //Set the dispatch to use the functions in the redux reducer file
   const dispatch = useDispatch()
@@ -47,7 +47,7 @@ const UserRegistration = ({ navigation }) => {
   //Anytime an error appears along with a message, display it on the screen
   useEffect(() => {
     if (isError) {
-      if(message === 'Email already in use'){
+      if(message === 'An account with the given email already exists.'){
         setError("email", {
           type: "validate",
           message: "This email is already in use",
@@ -56,7 +56,7 @@ const UserRegistration = ({ navigation }) => {
     }
     //Reset the variable states after login or failed attempt
     dispatch(resetState())
-  }, [user, isError, isSuccess, message, dispatch])
+  }, [isError, isSuccess, message, dispatch])
 
 
   //On change for the birth date
@@ -68,14 +68,29 @@ const UserRegistration = ({ navigation }) => {
     setBirthdayError('')
   };
 
+  // const testSubmit = () => {
+  //   const data = {
+  //     firstName: 'kassim',
+  //     lastName: 'ballout',
+  //     email: 'kassimballout@gmail.com',
+  //     dateOfBirth: date.toISOString().slice(0, 10),
+  //     phoneNumber: '313-414-0326',
+  //     address: '123 Main',
+  //     city: 'Dearborn',
+  //     zipCode: '48126',
+  //     password: 'Testing123',
+  //     type: 'User'
+  //   }
+  //   dispatch(register(data))
+  // }
 
   //Submit the user input
   const submitForm = (data) => {
     //check if birthday is over 18
     if(new Date().getFullYear() - date.getFullYear() >= 18){
       data.type = 'User'
-      data.dateOfBirth = date
-      // dispatch(register(data))
+      data.dateOfBirth = date.toISOString().slice(0, 10)
+      dispatch(register(data))
     }
     else{
       setBirthdayError('You must be 18 or older to use this app')

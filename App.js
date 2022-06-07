@@ -16,6 +16,7 @@ import ConfirmEmail from "./screens/account/ConfirmEmail";
 //OTHER FILES
 import Spinner from "./common/components/Spinner"
 import { Store } from "./redux/store";
+import awsconfig from "./src/aws-exports"
 
 //LIBRARY IMPORTS
 import { useFonts } from "expo-font";
@@ -24,10 +25,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { useSelector, useDispatch } from "react-redux";
+import {Amplify} from "aws-amplify"
 
 
 
-
+Amplify.configure(awsconfig)
 const Stack = createNativeStackNavigator();
 
 export default function App() {

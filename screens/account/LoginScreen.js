@@ -19,7 +19,7 @@ import {
   //Login screen
   const LoginScreen = ({ navigation }) => {
     //Get the variables from the state management to read them
-    const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+    const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
   
     //Set the dispatch to use the functions in the redux reducer file
     const dispatch = useDispatch();
@@ -35,20 +35,18 @@ import {
     //Anytime an error appears along with a message, display it on the screen
     useEffect(() => {
       if (isError) {
-        if (message === "Email or password is incorrect") {
-          setError("email", {
-            type: "mismatch",
-            message: "Incorrect username or password",
-          });
-          setError("password", {
-            type: "mismatch",
-            message: "Incorrect username or password",
-          });
-        }
+        setError("email", {
+          type: "mismatch",
+          message: "Incorrect username or password",
+        });
+        setError("password", {
+          type: "mismatch",
+          message: "Incorrect username or password",
+        });
       }
       //Reset the variable states after login or failed attempt
       dispatch(resetState());
-    }, [user, isError, isSuccess, message, dispatch]);
+    }, [isError, isSuccess, message, dispatch]);
   
     //Submit the user form
     const submitForm = (data) => {

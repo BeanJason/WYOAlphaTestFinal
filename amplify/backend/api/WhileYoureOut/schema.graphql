@@ -1,0 +1,31 @@
+type Provider @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  subID: String!
+  firstName: String!
+  lastName: String!
+  email: AWSEmail!
+  phoneNumber: AWSPhone!
+  dateOfBirth: AWSDate!
+  address: String!
+  city: String!
+  zipCode: String!
+  biography: String!
+  profilePictureURL: AWSURL
+  backgroundCheckStatus: Boolean!
+  employeeID: String!
+  offenses: Int!
+  overallRating: Float!
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  subID: String!
+  firstName: String!
+  lastName: String!
+  email: AWSEmail!
+  phoneNumber: AWSPhone!
+  dateOfBirth: AWSDate
+  address: String!
+  city: String!
+  zipCode: String!
+}
