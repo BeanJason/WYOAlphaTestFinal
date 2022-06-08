@@ -81,7 +81,7 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
               city: userData.city,
               zipCode: userData.zipCode,
             }
-            return {authUser: authUser.user.getUserAttributes , userInfo}
+            return {authUser: authUser.user.getUserAttributes() , userInfo}
           }
           else{
             message = 'Error saving user';
@@ -104,23 +104,28 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
     //try logging in
     try {
       await Auth.signIn({username: data.email, password: data.password})
-      user = await Auth.currentUserInfo();
     } catch (error) {
-      message = error.message;
-      console.log(error);
+      message = error.message
       return thunkAPI.rejectWithValue(message);
     }
+    try {
+      user = await Auth.currentUserInfo();
+    } catch (error) {
+      message = error.message
+      return thunkAPI.rejectWithValue(message);
+    }
+    
 
     //if successful try to get user info from DB
     if(message == ''){
       try {
         //get from User table
         if(user?.attributes['custom:type'] === 'User'){
-          await DataStore.query(User, u => u.subID('eq', authUser?.attributes.sub)).then((foundUser) => userData = foundUser[0])
+          await DataStore.query(User, u => u.subID('eq', user?.attributes.sub)).then((foundUser) => userData = foundUser[0])
         }
         //get from Provider table
         else if(user.attributes['custom:type'] === 'Provider'){
-          await DataStore.query(Provider, u => u.subID('eq', authUser?.attributes.sub)).then((foundUser) => userData = foundUser[0])
+          await DataStore.query(Provider, u => u.subID('eq', user?.attributes.sub)).then((foundUser) => userData = foundUser[0])
         }
         //If success
         if(userData != undefined){
@@ -166,11 +171,6 @@ export const authReducer = createSlice({
       state.authUser = action.payload.authUser;
       state.userInfo = action.payload.userInfo;
       state.loggedIn = true;
-    },
-    //Updates user email verification status to true
-    setUserVerified: (state) => {
-      //change email verification
-      state.authUser['email_verified'] = true;
     },
     //Resets the response states after the server responds
     resetState: (state) => {
@@ -238,5 +238,5 @@ export const authReducer = createSlice({
   },
 });
 
-export const { changeUserStatus, resetState, setUserVerified } = authReducer.actions;
+export const { changeUserStatus, resetState } = authReducer.actions;
 export default authReducer.reducer;

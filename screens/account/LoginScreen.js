@@ -35,6 +35,11 @@ import {
     //Anytime an error appears along with a message, display it on the screen
     useEffect(() => {
       if (isError) {
+        if(message === 'User is not confirmed.'){
+          navigation.navigate("ConfirmEmail", {
+            name: "ConfirmEmail",
+          })
+        }
         setError("email", {
           type: "mismatch",
           message: "Incorrect username or password",

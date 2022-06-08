@@ -32,7 +32,9 @@ const UserHome = ({ navigation }) => {
     >
       <SafeAreaView style={commonStyles.safeContainer}>
         <View style={styles.head}>
-          {/* <Text>Welcome {user.name} Your role is a {user.role}</Text> */}
+          <Text>Welcome {userInfo.name}</Text>
+          <Text>The city you live in is {userInfo.city}</Text>
+          <Text>Your zip code is {userInfo.zipCode}</Text>
           <TouchableOpacity>
             <MaterialCommunityIcons
               name="account-circle"
@@ -46,7 +48,7 @@ const UserHome = ({ navigation }) => {
         </View>
         
         <View>
-          <TouchableOpacity onPress={dispatch(logout())}>
+          <TouchableOpacity onPress={ () => dispatch(logout())}>
             <View style={styles.logoutButton}>
               <Text style={styles.btnText}>Logout</Text>
             </View>

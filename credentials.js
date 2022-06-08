@@ -3,8 +3,13 @@ import {User, Provider} from "./src/models"
 import { Auth } from "aws-amplify"
 
 export async function checkCredentials(){
-    let userData, userInfo
-    const authUser = await Auth.currentAuthenticatedUser({bypassCache: true})
+    let userData, userInfo, authUser
+    try {
+        authUser = await Auth.currentAuthenticatedUser({bypassCache: true})
+    } catch (error) {
+        console.log(error);
+        return {authUser, userInfo}
+    }
     if(authUser == undefined){
         return {authUser, userInfo}
     }

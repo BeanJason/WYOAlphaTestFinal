@@ -68,7 +68,6 @@ const RootNavigation = () => {
   const checkLoggedIn = async () => {
     //TODO CHECK IF LOGGED IN
     const {authUser, userInfo} = await checkCredentials();
-
     if(authUser && userInfo){
       dispatch(changeUserStatus({authUser, userInfo}))
     }
@@ -106,6 +105,7 @@ const GuestNavigation = () => {
       <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
       <Stack.Screen options={{title: 'About Users'}} name="AboutUsers" component={AboutUsers} />
       <Stack.Screen options={{title: 'About Providers'}} name="AboutProviders" component={AboutProviders} />
+      <Stack.Screen options={{ headerShown: false }} name="ConfirmEmail" component={ConfirmEmail}/>
     </Stack.Navigator>
   );
 };
@@ -117,8 +117,8 @@ const AuthNavigation = () => {
   
   return(
   <Stack.Navigator>
-    {authUser['email_verified'] === false ? (
-      <Stack.Screen options={{ headerShown: false }} name="ConfirmEmail" component={ConfirmEmail}/>
+    {authUser['custom:type'] !== 'Provider' ? (
+      <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
     ): <>
       {authUser['custom:type']  === 'User' ? (
         <Stack.Screen options={{headerShown: false}} name="UserNavigation" component={UserNavigation}/>

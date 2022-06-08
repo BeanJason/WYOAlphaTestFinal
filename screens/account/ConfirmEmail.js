@@ -11,15 +11,13 @@ import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useForm } from "react-hook-form";
 import UserInput from "../../common/components/UserInput";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createToast } from "../../common/components/Toast";
-import { logout, resetState, setUserVerified } from "../../redux/authReducer";
 import { Auth } from "aws-amplify";
+import { checkCredentials } from "../../credentials";
 
 //Email verification screen after successful registration or if not verified yet
 const ConfirmEmail = ({ navigation }) => {
-  //get userInfo
-  const { authUser } = useSelector((state) => state.auth);
 
   //Set the dispatch to use functions from the redux reducers file
   const dispatch = useDispatch();
@@ -30,14 +28,19 @@ const ConfirmEmail = ({ navigation }) => {
     handleSubmit,
     formState: { errors },
     setError,
+    watch
   } = useForm();
+
+  const email = watch('email')
 
   //Submit the user input
   const submitForm = async (data) => {
     try {
-      await Auth.confirmSignUp(authUser.email, data.confirmationCode)
-      dispatch(setUserVerified());
+      await Auth.confirmSignUp(data.email, data.confirmationCode)
+      const {authUser, userInfo} = await checkCredentials()
+      dispatch(changeUserStatus({authUser, userInfo}))
     } catch (error) {
+      console.log(error);
       setError("confirmationCode", {
         type: "validate",
         message: "Incorrect confirmation code",
@@ -47,33 +50,52 @@ const ConfirmEmail = ({ navigation }) => {
 
   //Resend the confirmation code
   const resendCode = async () => {
-    try {
-      await Auth.resendSignUp(authUser.email)
-      createToast("A new confirmation code was sent to your email");
-    } catch (error) {
-      createToast("Authentication failure");
+    if(email != '' && email != undefined){
+      try {
+        await Auth.resendSignUp(email)
+        createToast("A new confirmation code was sent to your email");
+      } catch (error) {
+        console.log(error);
+        createToast("Email not found");
+      }
+    }
+    else{
+      setError('email', {
+        type: 'validate',
+        message: 'You must input your email to receive a new confirmation code'
+      })
     }
   };
 
   return (
     <KeyboardAwareScrollView>
       <ImageBackground
-        style={commonStyles.background}
+        style={[commonStyles.background, {height: 1000}]}
         source={require("../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
           <Text style={styles.header1}>Success!</Text>
           <View style={styles.outerContainer}>
             <Text style={styles.header2}>
-              We have sent a verification email to your email address {authUser.email}.
+              We have sent a verification email to your email address.
               Please verify that you've received the confirmation code below.
             </Text>
 
             <UserInput
               style={styles.input}
+              name="email"
+              rules={{
+                required: "email is Required",
+              }}
+              placeholder={"Email"}
+              control={control}
+            />
+
+            <UserInput
+              style={styles.input}
               name="confirmationCode"
               rules={{
-                required: "Confirmation coode is Required",
+                required: "Confirmation code is Required",
               }}
               placeholder={"Confirmation Code"}
               control={control}
@@ -104,12 +126,11 @@ const ConfirmEmail = ({ navigation }) => {
               <View style={[styles.innerContainer, { marginVertical: -10 }]}>
                 <TouchableOpacity
                   onPress={() => {
-                    dispatch(logout());
-                    dispatch(resetState());
+                    navigation.navigate('LoginScreen', {name: 'LoginScreen'})
                   }}
                 >
-                  <View style={[styles.confirmBtn, { width: 200 }]}>
-                    <Text style={styles.btnText}>Log Out</Text>
+                  <View style={[styles.confirmBtn, { width: 250 }]}>
+                    <Text style={styles.btnText}>Back to Sign In</Text>
                   </View>
                 </TouchableOpacity>
               </View>
