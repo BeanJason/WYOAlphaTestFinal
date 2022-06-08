@@ -10,6 +10,7 @@ import {
   import UserInput from "../../../common/components/UserInput";
   import { commonStyles } from "../../../common/styles";
   import { createToast } from "../../../common/components/Toast";
+  import { Auth } from "aws-amplify";
   
   //Forgot password screen part 1. Enter the email to receive a confirmation code to reset your password
   const ForgotPassword1 = ({ navigation }) => {
@@ -17,13 +18,20 @@ import {
     const {
       control,
       handleSubmit,
-      formState: { errors },
-      setError,
     } = useForm();
   
     //Submit the data from the user
     const submitForm = async (data) => {
-        
+      try {
+        await Auth.forgotPassword(data.email)
+        navigation.navigate('ForgotPassword2', {
+          name: 'ForgotPassword2',
+          email: data.email
+        })
+      } catch (error) {
+        console.log(error.message);
+        createToast("The email address you provided was not found");
+      }
     };
   
     return (

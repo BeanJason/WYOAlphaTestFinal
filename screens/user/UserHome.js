@@ -12,7 +12,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { commonStyles } from "../../common/styles";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, resetState } from "../../redux/authReducer";
+import { logout } from "../../redux/authReducer";
 //Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,8 +21,9 @@ import { Entypo } from "@expo/vector-icons";
 const UserHome = ({ navigation }) => {
   // Get the global variables & functions via context
   // const myContext = useContext(AppContext);
-  const { user } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
 
   return (
     <ImageBackground
@@ -41,6 +42,14 @@ const UserHome = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity>
             <Entypo name="menu" size={60} color="black" />
+          </TouchableOpacity>
+        </View>
+        
+        <View>
+          <TouchableOpacity onPress={dispatch(logout())}>
+            <View style={styles.logoutButton}>
+              <Text style={styles.btnText}>Logout</Text>
+            </View>
           </TouchableOpacity>
         </View>
 
@@ -124,6 +133,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
     flexDirection: "row",
+  },
+  logoutButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 150,
+    height: 50,
+    backgroundColor: "black",
+    borderRadius: 10,
+    marginVertical: 10,
   },
 });
 

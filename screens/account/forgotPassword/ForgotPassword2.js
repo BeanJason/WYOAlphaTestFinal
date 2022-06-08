@@ -11,6 +11,7 @@ import {
   import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
   import { commonStyles } from "../../../common/styles";
   import { useState } from "react";
+  import { Auth } from "aws-amplify";
   
   //Forgot password part 2. Enter the confirmation code and your new password twice
   const ForgotPassword2 = ({ route, navigation }) => {
@@ -33,11 +34,16 @@ import {
   
     //Submit the user input
     const submitForm = async (data) => {
-      let info = {
-        email: email,
-        token: data.token,
-        password: data.password,
-      };
+      try {
+        await Auth.forgotPasswordSubmit(data.email, data.token, data.password)
+        setShouldShow(false)
+      } catch (error) {
+        console.log(error.message);
+        setError('token', {
+          type: 'validate',
+          message: 'Incorrect confirmation code'
+        })
+      }
       
     };
   
@@ -54,7 +60,7 @@ import {
             {shouldShow ? (
               <View style={styles.container}>
                 <Text style={styles.header2}>
-                  A confirmation code was sent to your email, please enter your
+                  A confirmation code was sent to your email at {email}, please enter your
                   confirmation code and new password
                 </Text>
                 <UserInput

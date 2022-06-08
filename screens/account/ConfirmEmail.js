@@ -11,12 +11,15 @@ import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useForm } from "react-hook-form";
 import UserInput from "../../common/components/UserInput";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../common/components/Toast";
 import { logout, resetState, setUserVerified } from "../../redux/authReducer";
+import { Auth } from "aws-amplify";
 
 //Email verification screen after successful registration or if not verified yet
 const ConfirmEmail = ({ navigation }) => {
+  //get userInfo
+  const { authUser } = useSelector((state) => state.auth);
 
   //Set the dispatch to use functions from the redux reducers file
   const dispatch = useDispatch();
@@ -31,12 +34,25 @@ const ConfirmEmail = ({ navigation }) => {
 
   //Submit the user input
   const submitForm = async (data) => {
-    
+    try {
+      await Auth.confirmSignUp(authUser.email, data.confirmationCode)
+      dispatch(setUserVerified());
+    } catch (error) {
+      setError("confirmationCode", {
+        type: "validate",
+        message: "Incorrect confirmation code",
+      });
+    }
   };
 
   //Resend the confirmation code
   const resendCode = async () => {
-    
+    try {
+      await Auth.resendSignUp(authUser.email)
+      createToast("A new confirmation code was sent to your email");
+    } catch (error) {
+      createToast("Authentication failure");
+    }
   };
 
   return (
@@ -49,7 +65,7 @@ const ConfirmEmail = ({ navigation }) => {
           <Text style={styles.header1}>Success!</Text>
           <View style={styles.outerContainer}>
             <Text style={styles.header2}>
-              We have sent a verification email to the email address provided.
+              We have sent a verification email to your email address {authUser.email}.
               Please verify that you've received the confirmation code below.
             </Text>
 

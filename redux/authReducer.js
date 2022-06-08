@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Auth } from "aws-amplify";
 import { DataStore } from "aws-amplify";
-import {User} from "../src/models"
+import {User, Provider} from "../src/models"
 
 //Initial values
 const initialState = {
@@ -10,7 +10,7 @@ const initialState = {
   isSuccess: false,
   isLoading: false,
   message: "",
-  authID: null,
+  authUser: null,
   userInfo: null,
   type: null
 };
@@ -19,7 +19,7 @@ const initialState = {
 //Register
 export const register = createAsyncThunk("auth/register", async (data, thunkAPI) => {
     const {email, password} = data
-    let authUser, userData
+    let authUser, userData, userInfo
     let message = ''    
     
     //Try to make a user session
@@ -33,76 +33,127 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
 
     //Try to store in DB if successful
     if(message == ''){
-      if(data.type === 'User'){
         try {
-          userData = await DataStore.save(
-              new User({
-              "subID": authUser?.userSub,
-              "firstName": data.firstName,
-              "lastName": data.lastName,
-              "email": email,
-              "phoneNumber": data.phoneNumber,
-              "dateOfBirth": data.dateOfBirth,
-              "address": data.address,
-              "city": data.city,
-              "zipCode": data.zipCode
-            })
-          );
+          //If User
+          if(data.type === 'User'){
+            userData = await DataStore.save(
+                new User({
+                "subID": authUser?.userSub,
+                "firstName": data.firstName,
+                "lastName": data.lastName,
+                "email": email,
+                "phoneNumber": data.phoneNumber,
+                "dateOfBirth": data.dateOfBirth,
+                "address": data.address,
+                "city": data.city,
+                "zipCode": data.zipCode
+              })
+            );
+          }
+          //If Provider
+          else if(data.type === 'Provider'){
+            userData = DataStore.save(
+              new Provider({
+                  "subID": authUser?.userSub,
+                  "firstName": data.firstName,
+                  "lastName": data.lastName,
+                  "email": email,
+                  "phoneNumber": data.phoneNumber,
+                  "dateOfBirth": data.dateOfBirth,
+                  "address": data.address,
+                  "city": data.city,
+                  "zipCode": data.zipCode,
+                  "biography": data.biography,
+                  "profilePictureURL":  data.profilePictureURL,
+                  "backgroundCheckStatus": false,
+                  "employeeID": '-1',
+                  "offenses": 0,
+                  "overallRating": 0.0
+              })
+            )
+          }
+          //If success
+          if(userData != undefined){
+            userInfo = {
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              address: userData.address,
+              city: userData.city,
+              zipCode: userData.zipCode,
+            }
+            return {authUser: authUser.user.getUserAttributes , userInfo}
+          }
+          else{
+            message = 'Error saving user';
+            return thunkAPI.rejectWithValue(message);
+          }
         } catch (error) {
           message = error.message;
           console.log(message);
           return thunkAPI.rejectWithValue(message);
-        }
-      }
-      else if(data.type === 'Provider'){
-        //TODO
-      }
-      
+        }      
     }
-
-    //if everything succeeds
-    let userInfo = {
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      address: userData.address,
-      city: userData.city,
-      zipCode: userData.zipCode,
-      type: authUser.user.getUserAttributes['custom:type']
-    }
-    return {authUser , userInfo}
-  }
+}
 );
 
 //Login
 export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
+    let user, userData, userInfo
+    let message = ''
 
+    //try logging in
     try {
-      const authUser = await Auth.signIn({username: data.email, password: data.password})
-      const user = await Auth.currentUserInfo();
-      //get user info from db
-      const userData = await DataStore.query(User, u => u.subID('eq', user.attributes.sub))
-      const userInfo = {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        address: userData.address,
-        city: userData.city,
-        zipCode: userData.zipCode,
-        type: user.attributes['custom:type']
-      }
-      return {authUser: user, userInfo}
+      await Auth.signIn({username: data.email, password: data.password})
+      user = await Auth.currentUserInfo();
     } catch (error) {
-      const message = error.message;
+      message = error.message;
       console.log(error);
       return thunkAPI.rejectWithValue(message);
     }
 
-  }
+    //if successful try to get user info from DB
+    if(message == ''){
+      try {
+        //get from User table
+        if(user?.attributes['custom:type'] === 'User'){
+          await DataStore.query(User, u => u.subID('eq', authUser?.attributes.sub)).then((foundUser) => userData = foundUser[0])
+        }
+        //get from Provider table
+        else if(user.attributes['custom:type'] === 'Provider'){
+          await DataStore.query(Provider, u => u.subID('eq', authUser?.attributes.sub)).then((foundUser) => userData = foundUser[0])
+        }
+        //If success
+        if(userData != undefined){
+          userInfo = {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            address: userData.address,
+            city: userData.city,
+            zipCode: userData.zipCode,
+          }
+          return {authUser: user.attributes, userInfo}
+        }
+        else{
+          message = 'User not found';
+          return thunkAPI.rejectWithValue(message);
+        }
+      } catch (error) {
+        message = error.message;
+        console.log(error);
+        return thunkAPI.rejectWithValue(message);
+      }
+    }
+}
 );
 
 //Logout
-export const logout = createAsyncThunk("auth/logout", () => {
-    //TODO
+export const logout = createAsyncThunk("auth/logout", async () => {
+  try {
+      await Auth.signOut();
+  } catch (error) {
+      console.log('error signing out');
   }
+}
 );
 
 //State management for variables associated with auth, login, and user information
@@ -112,15 +163,14 @@ export const authReducer = createSlice({
   reducers: {
     //Updates the user session, user information, and logged in variable
     changeUserStatus: (state, action) => {
-      state.authID = action.payload.authUser.userSub;
+      state.authUser = action.payload.authUser;
       state.userInfo = action.payload.userInfo;
-      state.type = action.payload.authUser
       state.loggedIn = true;
     },
     //Updates user email verification status to true
     setUserVerified: (state) => {
       //change email verification
-      state.user.verified = true;
+      state.authUser['email_verified'] = true;
     },
     //Resets the response states after the server responds
     resetState: (state) => {
@@ -142,9 +192,8 @@ export const authReducer = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.loggedIn = true;
-        state.authID = action.payload.authUser.userSub;
+        state.authUser = action.payload.authUser;
         state.userInfo = action.payload.userInfo;
-        state.type = action.payload.userInfo.type;
       })
       //Failed register
       .addCase(register.rejected, (state, action) => {
@@ -152,7 +201,7 @@ export const authReducer = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-        state.authID = null;
+        state.authUser = null;
         state.userInfo = null;
       })
 
@@ -166,7 +215,7 @@ export const authReducer = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.loggedIn = true;
-        state.authID = action.payload.authUser.sub;
+        state.authUser = action.payload.authUser;
         state.userInfo = action.payload.userInfo;
       })
       //Failed login
@@ -175,14 +224,14 @@ export const authReducer = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-        state.user = null;
-        state.accessToken = null;
+        state.authUser = null;
+        state.userInfo = null;
       })
 
       //Successful logout
       .addCase(logout.fulfilled, (state) => {
         console.log("logout");
-        state.authID = null;
+        state.authUser = null;
         state.userInfo = null;
         state.loggedIn = false;
       });

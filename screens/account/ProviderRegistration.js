@@ -71,6 +71,7 @@ const ProviderRegistration = ({ navigation }) => {
     if (new Date().getFullYear() - date.getFullYear() >= 18) {
       data.type = "Provider";
       data.dateOfBirth = date;
+      data.profilePictureURL = '';
       dispatch(register(data));
     } else {
       setBirthdayError("You must be 18 or older to use this app");

@@ -31,7 +31,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { useSelector, useDispatch } from "react-redux";
-import {Amplify} from "aws-amplify"
+import {Amplify, Auth} from "aws-amplify"
+import { checkCredentials } from "./credentials";
+import { changeUserStatus } from "./redux/authReducer";
 
 
 
@@ -59,11 +61,17 @@ export default function App() {
 //NAVIGATION START
 const RootNavigation = () => {
   const [loading, setLoading] = useState(true);
-  const loggedIn = false
+  const {loggedIn} = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
  
 
   const checkLoggedIn = async () => {
     //TODO CHECK IF LOGGED IN
+    const {authUser, userInfo} = await checkCredentials();
+
+    if(authUser && userInfo){
+      dispatch(changeUserStatus({authUser, userInfo}))
+    }
     setLoading(false)
   }
 
@@ -105,14 +113,14 @@ const GuestNavigation = () => {
 //LOGGED IN USER/PROVIDER
 const AuthNavigation = () => {
   //get user to check if verified
- 
-    
+  const {authUser} = useSelector((state) => state.auth);
+  
   return(
   <Stack.Navigator>
-    {user.verified === false ? (
-      <Stack.Screen options={{ headerShown: false }} name="SuccessRegistration" component={SuccessRegistration}/>
+    {authUser['email_verified'] === false ? (
+      <Stack.Screen options={{ headerShown: false }} name="ConfirmEmail" component={ConfirmEmail}/>
     ): <>
-      {user.role  === 'User' ? (
+      {authUser['custom:type']  === 'User' ? (
         <Stack.Screen options={{headerShown: false}} name="UserNavigation" component={UserNavigation}/>
       ) : (
         <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
