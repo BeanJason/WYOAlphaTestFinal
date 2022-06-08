@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Auth } from "aws-amplify";
 import { DataStore } from "aws-amplify";
 import {User} from "../src/models"
-import authService from "./authService"
 
 //Initial values
 const initialState = {
@@ -11,18 +10,17 @@ const initialState = {
   isSuccess: false,
   isLoading: false,
   message: "",
-  authUser: null,
+  authID: null,
   userInfo: null,
+  type: null
 };
 
 //ASYNC FUNCTIONS
 //Register
 export const register = createAsyncThunk("auth/register", async (data, thunkAPI) => {
     const {email, password} = data
-    let authUser, userInfo
-    let message = ''
-
-    
+    let authUser, userData
+    let message = ''    
     
     //Try to make a user session
     try {
@@ -37,7 +35,7 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
     if(message == ''){
       if(data.type === 'User'){
         try {
-          userInfo = await DataStore.save(
+          userData = await DataStore.save(
               new User({
               "subID": authUser?.userSub,
               "firstName": data.firstName,
@@ -57,24 +55,44 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
         }
       }
       else if(data.type === 'Provider'){
-
+        //TODO
       }
       
     }
 
     //if everything succeeds
-    return {authUser, userInfo}
+    let userInfo = {
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      address: userData.address,
+      city: userData.city,
+      zipCode: userData.zipCode,
+      type: authUser.user.getUserAttributes['custom:type']
+    }
+    return {authUser , userInfo}
   }
 );
 
 //Login
 export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
-    const username = data.email
-    const password = data.password
+
     try {
-      const authUser = await Auth.signIn(username, password)
+      const authUser = await Auth.signIn({username: data.email, password: data.password})
+      const user = await Auth.currentUserInfo();
+      //get user info from db
+      const userData = await DataStore.query(User, u => u.subID('eq', user.attributes.sub))
+      const userInfo = {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        address: userData.address,
+        city: userData.city,
+        zipCode: userData.zipCode,
+        type: user.attributes['custom:type']
+      }
+      return {authUser: user, userInfo}
     } catch (error) {
       const message = error.message;
+      console.log(error);
       return thunkAPI.rejectWithValue(message);
     }
 
@@ -94,8 +112,9 @@ export const authReducer = createSlice({
   reducers: {
     //Updates the user session, user information, and logged in variable
     changeUserStatus: (state, action) => {
-      state.authUser = action.payload.authUser;
+      state.authID = action.payload.authUser.userSub;
       state.userInfo = action.payload.userInfo;
+      state.type = action.payload.authUser
       state.loggedIn = true;
     },
     //Updates user email verification status to true
@@ -120,12 +139,12 @@ export const authReducer = createSlice({
       //Successful register
       .addCase(register.fulfilled, (state, action) => {
         console.log("successful register");
-        console.log(action.payload);
         state.isLoading = false;
         state.isSuccess = true;
         state.loggedIn = true;
-        state.authUser = action.payload.authUser;
+        state.authID = action.payload.authUser.userSub;
         state.userInfo = action.payload.userInfo;
+        state.type = action.payload.userInfo.type;
       })
       //Failed register
       .addCase(register.rejected, (state, action) => {
@@ -133,7 +152,7 @@ export const authReducer = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-        state.authUser = null;
+        state.authID = null;
         state.userInfo = null;
       })
 
@@ -147,7 +166,7 @@ export const authReducer = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.loggedIn = true;
-        state.authUser = action.payload.authUser;
+        state.authID = action.payload.authUser.sub;
         state.userInfo = action.payload.userInfo;
       })
       //Failed login
@@ -163,7 +182,7 @@ export const authReducer = createSlice({
       //Successful logout
       .addCase(logout.fulfilled, (state) => {
         console.log("logout");
-        state.authUser = null;
+        state.authID = null;
         state.userInfo = null;
         state.loggedIn = false;
       });

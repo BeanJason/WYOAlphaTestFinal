@@ -11,6 +11,12 @@ import ForgotPassword2 from "./screens/account/forgotPassword/ForgotPassword2";
 
 //USER SCREENS
 import ConfirmEmail from "./screens/account/ConfirmEmail";
+import UserHome from "./screens/user/UserHome";
+import EditAccountUser2 from "./screens/user/EditAccountUser2"
+import EditAccountUser1 from "./screens/user/EditAccountUser1"
+import JobCreation1 from "./screens/user/JobCreation1"
+import JobCreation2 from "./screens/user/JobCreation2"
+import JobInfoUser from "./screens/user/JobInfoUser"
 
 
 //OTHER FILES
@@ -74,7 +80,7 @@ const RootNavigation = () => {
 
   return (
     <NavigationContainer>
-      {loggedIn === false ? <GuestNavigation /> : <GuestNavigation />}
+      {loggedIn === false ? <GuestNavigation /> : <AuthNavigation />}
     </NavigationContainer>
   );
 };
@@ -95,3 +101,39 @@ const GuestNavigation = () => {
     </Stack.Navigator>
   );
 };
+
+//LOGGED IN USER/PROVIDER
+const AuthNavigation = () => {
+  //get user to check if verified
+ 
+    
+  return(
+  <Stack.Navigator>
+    {user.verified === false ? (
+      <Stack.Screen options={{ headerShown: false }} name="SuccessRegistration" component={SuccessRegistration}/>
+    ): <>
+      {user.role  === 'User' ? (
+        <Stack.Screen options={{headerShown: false}} name="UserNavigation" component={UserNavigation}/>
+      ) : (
+        <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
+      )
+      }
+    </> 
+    }
+  </Stack.Navigator>
+  )
+};
+
+//USER NAVIGATION
+const UserNavigation = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen options={{headerShown: false}} name='userHome' component={UserHome}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser1" component={EditAccountUser1}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser2" component={EditAccountUser2}/>
+      <Stack.Screen options={{ title: 'Create a Job' }} name="JobCreation1" component={JobCreation1}/>
+      <Stack.Screen options={{ title: 'Create a Job' }} name="JobCreation2" component={JobCreation2}/>
+      <Stack.Screen options={{ title: 'Job Information' }} name="JobInfoUser" component={JobInfoUser}/>
+    </Stack.Navigator> 
+  )
+}

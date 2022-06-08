@@ -33,6 +33,7 @@ const UserRegistration = ({ navigation }) => {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
     setError
   } = useForm();
@@ -40,9 +41,11 @@ const UserRegistration = ({ navigation }) => {
   //Set use state variables
   const [birthdaySelected, setBirthdaySelected] = useState(false)
   const pwd = watch("password");
+  const phone = watch("phoneNumber");
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [birthDayError, setBirthdayError] = useState('')
+
 
   //Anytime an error appears along with a message, display it on the screen
   useEffect(() => {
@@ -68,21 +71,6 @@ const UserRegistration = ({ navigation }) => {
     setBirthdayError('')
   };
 
-  // const testSubmit = () => {
-  //   const data = {
-  //     firstName: 'kassim',
-  //     lastName: 'ballout',
-  //     email: 'kassimballout@gmail.com',
-  //     dateOfBirth: date.toISOString().slice(0, 10),
-  //     phoneNumber: '313-414-0326',
-  //     address: '123 Main',
-  //     city: 'Dearborn',
-  //     zipCode: '48126',
-  //     password: 'Testing123',
-  //     type: 'User'
-  //   }
-  //   dispatch(register(data))
-  // }
 
   //Submit the user input
   const submitForm = (data) => {
@@ -90,11 +78,15 @@ const UserRegistration = ({ navigation }) => {
     if(new Date().getFullYear() - date.getFullYear() >= 18){
       data.type = 'User'
       data.dateOfBirth = date.toISOString().slice(0, 10)
+      
+      //Add dashes to phone number
+
       dispatch(register(data))
     }
     else{
       setBirthdayError('You must be 18 or older to use this app')
     }
+    
   };
 
   //If login is loading from server side show the spinner
@@ -143,10 +135,11 @@ const UserRegistration = ({ navigation }) => {
                 icon='email'
                 location='MaterialIcons'
                 name="email"
-                rules={{ required: "Email is Required",
-                pattern: {
-                  value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
-                  message: 'Email must be valid address'
+                rules={{ 
+                  required: "Email is Required",
+                  pattern: {
+                    value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
+                    message: 'Email must be valid address'
                 } }}
                 placeholder={"Email Address"}
                 control={control}
@@ -185,6 +178,7 @@ const UserRegistration = ({ navigation }) => {
                 location='FontAwesome'
                 rules={{
                   required: "Phone Number is Required",
+                  maxLength: 12,
                   pattern: {
                     value:
                       /^\(?([0-9]{3})\)?[-.●. ]?([0-9]{3})[-.●. ]?([0-9]{4})$/,
