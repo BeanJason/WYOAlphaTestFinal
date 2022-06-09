@@ -41,7 +41,6 @@ const UserRegistration = ({ navigation }) => {
   //Set use state variables
   const [birthdaySelected, setBirthdaySelected] = useState(false)
   const pwd = watch("password");
-  const phone = watch("phoneNumber");
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [birthDayError, setBirthdayError] = useState('')
@@ -78,9 +77,6 @@ const UserRegistration = ({ navigation }) => {
     if(new Date().getFullYear() - date.getFullYear() >= 18){
       data.type = 'User'
       data.dateOfBirth = date.toISOString().slice(0, 10)
-      
-      //Add dashes to phone number
-
       dispatch(register(data))
     }
     else{
@@ -176,14 +172,11 @@ const UserRegistration = ({ navigation }) => {
                 name="phoneNumber"
                 icon='phone'
                 location='FontAwesome'
+                onKeyPress
+                maxLength={12}
+                keyboardType="numeric"
                 rules={{
                   required: "Phone Number is Required",
-                  maxLength: 12,
-                  pattern: {
-                    value:
-                      /^\(?([0-9]{3})\)?[-.●. ]?([0-9]{3})[-.●. ]?([0-9]{4})$/,
-                    message: "Must be a valid US number",
-                  },
                 }}
                 placeholder={"Phone Number"}
                 control={control}
@@ -221,13 +214,11 @@ const UserRegistration = ({ navigation }) => {
                 style={{ fontSize: 16 }}
                 name="zipCode"
                 icon='location-arrow'
+                keyboardType="numeric"
                 location='FontAwesome'
+                maxLength={5}
                 rules={{ 
                   required: "Zip Code is Required",
-                  pattern: {
-                      value: /\d{5}/,
-                      message: 'Zip code must be a valid 5 digit code'
-                   },
                  }}
                 placeholder={"Zip Code"}
                 control={control}

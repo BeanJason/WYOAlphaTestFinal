@@ -117,7 +117,7 @@ const AuthNavigation = () => {
   
   return(
   <Stack.Navigator>
-    {authUser['custom:type'] === 'Provider' ? (
+    {authUser['custom:type'] === 'Manager' ? (
       <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
     ): <>
       {authUser['custom:type']  === 'User' ? (

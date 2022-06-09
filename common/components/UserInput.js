@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from "react";
 
 //Creates a text input box with parameters for the name, placeholder, validation, errors, and style
-export default function UserInput({control, name, rules = {}, placeholder, style, secureTextEntry, multiline, icon, location }) {
+export default function UserInput({control, name, rules = {}, placeholder, style, secureTextEntry, multiline, icon, location, onKeyPress, keyboardType = 'default', maxLength}) {
 
   const [isSecureEntry, setIsSecureEntry]= useState(true);
 
@@ -36,6 +36,29 @@ export default function UserInput({control, name, rules = {}, placeholder, style
     )
   }
 
+  //Add dashes to phone number
+  let [phone, setPhone] = useState('')
+  const formatPhoneNumber = (event) => {
+    if(event.nativeEvent.key != ' ' && event.nativeEvent.key != '-'){
+      if(event.nativeEvent.key == 'Backspace'){
+        if(phone.length == 5 || phone.length == 9){
+          setPhone(phone.slice(0, -2))
+        }
+        else{
+          setPhone(phone.slice(0, -1))
+        }
+      }
+      if(phone.length != 12 && event.nativeEvent.key != 'Backspace'){
+        if(phone.length == 3 || phone.length == 7){
+          setPhone(phone+'-'+event.nativeEvent.key)
+        }
+        else{
+          setPhone(phone+event.nativeEvent.key)
+        }
+      }
+    }
+  }
+
 
   return (
     <Controller
@@ -53,12 +76,15 @@ export default function UserInput({control, name, rules = {}, placeholder, style
             {icon ? ( renderIcon()) : ( <></> )}
             <TextInput
               style={[style]}
-              value={value}
+              value={onKeyPress ? (phone): value}
+              keyboardType={keyboardType}
               onChangeText={onChange}
               onBlur={onBlur}
               placeholder={placeholder}
               secureTextEntry = {secureTextEntry ? (isSecureEntry): false}
               multiline={multiline}
+              maxLength={maxLength ? (maxLength): 20}
+              onKeyPress={onKeyPress ? ((event) => formatPhoneNumber(event)): null}
             />
             {secureTextEntry ? (renderShowOrHidePass()): (<></>)}
           </View>

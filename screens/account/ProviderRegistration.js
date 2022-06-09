@@ -170,13 +170,11 @@ const ProviderRegistration = ({ navigation }) => {
                 name="phoneNumber"
                 icon="phone"
                 location="FontAwesome"
+                onKeyPress
+                maxLength={12}
+                keyboardType='numeric'
                 rules={{
                   required: "Phone Number is Required",
-                  pattern: {
-                    value:
-                      /^\(?([0-9]{3})\)?[-.●. ]?([0-9]{3})[-.●. ]?([0-9]{4})$/,
-                    message: "Must be a valid US number",
-                  },
                 }}
                 placeholder={"Phone Number"}
                 control={control}
@@ -215,12 +213,10 @@ const ProviderRegistration = ({ navigation }) => {
                 name="zipCode"
                 icon="location-arrow"
                 location="FontAwesome"
+                keyboardType="numeric"
+                maxLength={5}
                 rules={{
                   required: "Zip Code is Required",
-                  pattern: {
-                    value: /\d{5}/,
-                    message: "Zip code must be a valid 5 digit code",
-                  },
                 }}
                 placeholder={"Zip Code"}
                 control={control}
