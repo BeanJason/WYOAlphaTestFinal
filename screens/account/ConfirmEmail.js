@@ -84,6 +84,8 @@ const ConfirmEmail = ({ navigation }) => {
             <UserInput
               style={styles.input}
               name="email"
+              icon='email'
+              location='MaterialIcons'
               rules={{
                 required: "email is Required",
               }}
@@ -92,7 +94,7 @@ const ConfirmEmail = ({ navigation }) => {
             />
 
             <UserInput
-              style={styles.input}
+              style={[styles.input, {width: 360}]}
               name="confirmationCode"
               rules={{
                 required: "Confirmation code is Required",
@@ -202,7 +204,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   input: {
-    width: 350,
+    width: 320,
     height: 40,
     fontSize: 20,
   },
