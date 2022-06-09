@@ -14,7 +14,7 @@ import {
   import { useForm } from "react-hook-form";
   import { useSelector, useDispatch } from "react-redux";
   import { login, resetState } from "../../redux/authReducer";
-  import { useEffect, useState } from "react";
+  import { useEffect } from "react";
   
   
   //Login screen
@@ -58,8 +58,6 @@ import {
     const submitForm = (data) => {
       dispatch(login(data));
     };
-
-    const [isSecureEntry, setIsSecureEntry]= useState(true);
   
     //If login is loading from server side show the spinner
     if (isLoading) {
@@ -93,35 +91,17 @@ import {
                   placeholder={"Email"}
                   control={control}
                 />
-              <View style={{flexDirection: "row"}}>
                 <UserInput
                 style={styles.input}
                 icon = 'lock'
-              //   rightIcon = {
-              //     <TouchableOpacity
-              //   onPress={() => {
-              //     setIsSecureEntry((prev) => !prev);
-              //   }}>
-              //     <Text> {isSecureEntry ? 'Show' : 'Hide'}</Text>
-              // </TouchableOpacity>
-               // }
                 location = 'MaterialIcons'
                 name="password"
                 rules={{ required: "Password is required" }}
                 placeholder={"Password"}
                 control={control}
-                secureTextEntry={isSecureEntry}
+                secureTextEntry
               />
-              <TouchableOpacity
-                onPress={() => {
-                  setIsSecureEntry((prev) => !prev);
-                }}>
-                  <Text> {isSecureEntry ? 'Show' : 'Hide'}</Text>
-              </TouchableOpacity>
-                </View>
-              
 
-  
               {/* Buttons */}
               {/* Login button */}
               <View>
