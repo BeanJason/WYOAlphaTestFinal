@@ -147,19 +147,9 @@ const ProviderRegistration = ({ navigation }) => {
                       { flexDirection: "row", marginVertical: 5 },
                     ]}
                   >
-                    <FontAwesome
-                      name="calendar"
-                      size={20}
-                      style={commonStyles.icon}
-                    />
-                    <TextInput
-                      style={[styles.input, { color: "black" }]}
-                      editable={false}
-                      value={
-                        birthdaySelected
-                          ? "Date of Birth: " + date.toLocaleDateString()
-                          : "Date of Birth"
-                      }
+                    <FontAwesome name="calendar" size={20} style={commonStyles.icon}/>
+                    <TextInput style={[styles.input, { color: "black" }]} editable={false}
+                    value={ birthdaySelected ? "Date of Birth: " + date.toLocaleDateString() : "Date of Birth" }
                     ></TextInput>
                   </TouchableOpacity>
                 </View>
@@ -172,10 +162,7 @@ const ProviderRegistration = ({ navigation }) => {
                 )}
               </View>
               {birthDayError ? (
-                <Text style={commonStyles.errorMsg}>{birthDayError}</Text>
-              ) : (
-                <></>
-              )}
+                <Text style={commonStyles.errorMsg}>{birthDayError}</Text>) : ( <></> )}
 
               {/* phone number */}
               <UserInput
@@ -218,8 +205,7 @@ const ProviderRegistration = ({ navigation }) => {
                   pattern: {
                     value: /^[a-zA-Z ]+$/,
                     message: "Only letters are allowed in the city name",
-                  },
-                }}
+                  }}}
                 placeholder={"City"}
                 control={control}
               />
@@ -286,7 +272,8 @@ const ProviderRegistration = ({ navigation }) => {
                     maxLength:{
                         value: 250,
                         message: 'Biography must be 250 words or less'
-                    } }}
+                    } 
+                  }}
                 placeholder={"Biography"}
                 control={control}
               />
