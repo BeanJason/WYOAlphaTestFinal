@@ -243,6 +243,10 @@ const UserRegistration = ({ navigation }) => {
                 location='MaterialIcons'
                 rules={{
                   required: "Password is Required",
+                  maxLength: {
+                        value: 15,
+                        message: 'Password cannot be more than 15 characters'
+                  },
                   minLength: {
                     value: 8,
                     message: "Password must be at least 8 characters",
