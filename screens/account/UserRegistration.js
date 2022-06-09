@@ -222,10 +222,11 @@ const UserRegistration = ({ navigation }) => {
                 name="zipCode"
                 icon='location-arrow'
                 location='FontAwesome'
-                rules={{ required: "Zip Code is Required",
-                pattern: {
-                     value: /\d{5}/,
-                     message: 'Zip code must be a valid 5 digit code'
+                rules={{ 
+                  required: "Zip Code is Required",
+                  pattern: {
+                      value: /\d{5}/,
+                      message: 'Zip code must be a valid 5 digit code'
                    },
                  }}
                 placeholder={"Zip Code"}

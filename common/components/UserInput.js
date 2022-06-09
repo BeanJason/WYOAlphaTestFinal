@@ -45,7 +45,6 @@ export default function UserInput({control, name, rules = {}, placeholder, style
               placeholder={placeholder}
               secureTextEntry={secureTextEntry}
               multiline={multiline}
-              maxLength={rules.maxLength}
             />
           </View>
           {error && (

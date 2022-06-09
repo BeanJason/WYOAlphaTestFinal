@@ -74,7 +74,7 @@ const ConfirmEmail = ({ navigation }) => {
         source={require("../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
-          <Text style={styles.header1}>Success!</Text>
+          <Text style={styles.header1}>Email Confirmation</Text>
           <View style={styles.outerContainer}>
             <Text style={styles.header2}>
               We have sent a verification email to your email address.
