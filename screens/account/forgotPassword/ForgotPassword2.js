@@ -35,7 +35,7 @@ import {
     //Submit the user input
     const submitForm = async (data) => {
       try {
-        await Auth.forgotPasswordSubmit(data.email, data.token, data.password)
+        await Auth.forgotPasswordSubmit(email, data.token, data.password)
         setShouldShow(false)
       } catch (error) {
         console.log(error.message);
@@ -60,8 +60,7 @@ import {
             {shouldShow ? (
               <View style={styles.container}>
                 <Text style={styles.header2}>
-                  A confirmation code was sent to your email at {email}, please enter your
-                  confirmation code and new password
+                  A confirmation code was sent to your email at {email}, please enter your confirmation code and new password
                 </Text>
                 <UserInput
                   style={styles.input}
@@ -85,6 +84,10 @@ import {
                         value: 8,
                         message: "Password must be at least 8 characters",
                       },
+                      pattern:{
+                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                        message: 'Password must contain 1 uppercase letter 1 lowercase letter and 1 number'
+                      }
                     }}
                     placeholder={"Password"}
                     control={control}
