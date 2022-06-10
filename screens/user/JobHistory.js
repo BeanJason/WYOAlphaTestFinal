@@ -17,7 +17,7 @@ import {
   import { useEffect } from "react";
   
   //Login screen
-  const EditAccountUser1 = ({ navigation }) => {
+  const JobHistory = ({ navigation }) => {
   
     return (
       <KeyboardAwareScrollView>
@@ -26,8 +26,8 @@ import {
           source={require("../../assets/wyo_background.png")}
         >
           <SafeAreaView style={commonStyles.safeContainer}>
-          <Text>This is the edit account page for the user</Text>
-      
+          <Text>Job History</Text>
+
 
 
           </SafeAreaView>
@@ -40,5 +40,5 @@ import {
     
   });
   
-  export default EditAccountUser1;
+  export default JobHistory;
   

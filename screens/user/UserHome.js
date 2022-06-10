@@ -32,9 +32,6 @@ const UserHome = ({ navigation }) => {
     >
       <SafeAreaView style={commonStyles.safeContainer}>
         <View style={styles.head}>
-          <Text>Welcome {userInfo.name}</Text>
-          <Text>The city you live in is {userInfo.city}</Text>
-          <Text>Your zip code is {userInfo.zipCode}</Text>
           <TouchableOpacity>
             <MaterialCommunityIcons
               name="account-circle"
@@ -46,19 +43,15 @@ const UserHome = ({ navigation }) => {
             <Entypo name="menu" size={60} color="black" />
           </TouchableOpacity>
         </View>
-        
-        <View>
-          <TouchableOpacity onPress={ () => dispatch(logout())}>
-            <View style={styles.logoutButton}>
-              <Text style={styles.btnText}>Logout</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
 
         <View style={styles.body}>
           <KeyboardAwareScrollView extraScrollHeight={20}>
             <View>
-              <Text>Imagine this is a job</Text>
+              <Text>Welcome {userInfo.firstName}</Text>
+              <Text>Your address is {userInfo.address}</Text>
+              <Text>The city you live in is {userInfo.city}</Text>
+              <Text>Your zip code is {userInfo.zipCode}</Text>
+              <Text>This is where your active jobs will be</Text>
             </View>
             <View style={styles.addBtnContainer}>
               <Text style={styles.header2}>Request new job</Text>

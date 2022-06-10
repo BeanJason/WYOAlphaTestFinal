@@ -17,7 +17,7 @@ import {
   import { useEffect } from "react";
   
   //Login screen
-  const JobInfoUser = ({ navigation }) => {
+  const JobInfo = ({ navigation }) => {
   
     return (
       <KeyboardAwareScrollView>
@@ -40,5 +40,5 @@ import {
     
   });
   
-  export default JobInfoUser;
+  export default JobInfo;
   
