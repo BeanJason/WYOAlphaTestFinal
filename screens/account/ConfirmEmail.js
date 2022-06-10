@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { createToast } from "../../common/components/Toast";
 import { Auth } from "aws-amplify";
 import { checkCredentials } from "../../credentials";
+import { changeUserStatus } from "../../redux/authReducer";
 
 //Email verification screen after successful registration or if not verified yet
 const ConfirmEmail = ({ navigation }) => {
@@ -40,7 +41,9 @@ const ConfirmEmail = ({ navigation }) => {
       const {authUser, userInfo} = await checkCredentials()
       dispatch(changeUserStatus({authUser, userInfo}))
     } catch (error) {
-      console.log(error);
+      if(error.message === 'User cannot be confirmed. Current status is CONFIRMED'){
+        navigation.navigate('LoginScreen', {name: 'LoginScreen'})
+      }
       setError("confirmationCode", {
         type: "validate",
         message: "Incorrect confirmation code",

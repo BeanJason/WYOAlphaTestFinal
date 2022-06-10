@@ -27,7 +27,6 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
       authUser = await Auth.signUp({username: email, password, attributes:{email, 'custom:type': data.type}});
     } catch (error) {
       message = error.message;
-      console.log(message);
       return thunkAPI.rejectWithValue(message);
     }
 
@@ -81,7 +80,11 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
               city: userData.city,
               zipCode: userData.zipCode,
             }
-            return {authUser: authUser.user.getUserAttributes() , userInfo}
+            let attr = {
+              sub: authUser.userSub,
+              'custom:type': data.type
+            }
+            return {authUser: attr , userInfo}
           }
           else{
             message = 'Error saving user';
@@ -89,7 +92,6 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
           }
         } catch (error) {
           message = error.message;
-          console.log(message);
           return thunkAPI.rejectWithValue(message);
         }      
     }
@@ -191,7 +193,6 @@ export const authReducer = createSlice({
         console.log("successful register");
         state.isLoading = false;
         state.isSuccess = true;
-        state.loggedIn = true;
         state.authUser = action.payload.authUser;
         state.userInfo = action.payload.userInfo;
       })

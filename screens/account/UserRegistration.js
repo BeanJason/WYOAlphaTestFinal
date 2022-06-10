@@ -77,7 +77,10 @@ const UserRegistration = ({ navigation }) => {
     if(new Date().getFullYear() - date.getFullYear() >= 18){
       data.type = 'User'
       data.dateOfBirth = date.toISOString().slice(0, 10)
+      data.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1)
+      data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1)
       dispatch(register(data))
+      navigation.navigate('ConfirmEmail',{name: 'ConfirmEmail'})
     }
     else{
       setBirthdayError('You must be 18 or older to use this app')
@@ -219,7 +222,11 @@ const UserRegistration = ({ navigation }) => {
                 maxLength={5}
                 rules={{ 
                   required: "Zip Code is Required",
-                 }}
+                  pattern: {
+                    value: /\d{5}/,
+                    message: 'Zip code must be a valid 5 digit code'
+                  }
+                }}
                 placeholder={"Zip Code"}
                 control={control}
               />
@@ -242,6 +249,10 @@ const UserRegistration = ({ navigation }) => {
                     value: 8,
                     message: "Password must be at least 8 characters",
                   },
+                  pattern:{
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                    message: 'Password must contain 1 uppercase letter 1 lowercase letter and 1 number'
+                  }
                 }}
                 placeholder={"Password"}
                 control={control}
