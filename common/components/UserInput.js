@@ -39,7 +39,7 @@ export default function UserInput({control, name, rules = {}, placeholder, style
   //Add dashes to phone number
   let [phone, setPhone] = useState('')
   const formatPhoneNumber = (event) => {
-    if(event.nativeEvent.key != ' ' && event.nativeEvent.key != '-'){
+    if(event.nativeEvent.key != ' ' && event.nativeEvent.key != '-' && event.nativeEvent.key != ','&& event.nativeEvent.key != '.'){
       if(event.nativeEvent.key == 'Backspace'){
         if(phone.length == 5 || phone.length == 9){
           setPhone(phone.slice(0, -2))
@@ -83,7 +83,7 @@ export default function UserInput({control, name, rules = {}, placeholder, style
               placeholder={placeholder}
               secureTextEntry = {secureTextEntry ? (isSecureEntry): false}
               multiline={multiline}
-              maxLength={maxLength ? (maxLength): 20}
+              maxLength={maxLength ? (maxLength): 100}
               onKeyPress={onKeyPress ? ((event) => formatPhoneNumber(event)): null}
             />
             {secureTextEntry ? (renderShowOrHidePass()): (<></>)}
