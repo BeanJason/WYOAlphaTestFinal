@@ -113,11 +113,11 @@ import {
               </View>
   
               {/* Sign up link */}
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row", marginTop: 20}}>
                 <Text style={styles.regularText}>Dont have an account? </Text>
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("Registration", {
+                    navigation.navigate("RegistrationScreen", {
                       name: "Registration",
                     })
                   }
