@@ -13,11 +13,14 @@ import { commonStyles } from "../../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { login, resetState } from "../../../redux/authReducer";
+import { logout } from "../../../redux/authReducer";
 import { useEffect } from "react";
 
 //Login screen
 const UserAccountTab = ({ navigation }) => {
+    //Set the dispatch to use functions from the redux reducers file
+    const dispatch = useDispatch();
+
   return (
     <KeyboardAwareScrollView>
       <ImageBackground

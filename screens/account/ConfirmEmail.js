@@ -11,7 +11,6 @@ import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useForm } from "react-hook-form";
 import UserInput from "../../common/components/UserInput";
-import { useDispatch } from "react-redux";
 import { createToast } from "../../common/components/Toast";
 import { Auth } from "aws-amplify";
 import { checkCredentials } from "../../credentials";
@@ -19,9 +18,6 @@ import { changeUserStatus } from "../../redux/authReducer";
 
 //Email verification screen after successful registration or if not verified yet
 const ConfirmEmail = ({ navigation }) => {
-
-  //Set the dispatch to use functions from the redux reducers file
-  const dispatch = useDispatch();
 
   //Set the user input variables
   const {
@@ -39,8 +35,6 @@ const ConfirmEmail = ({ navigation }) => {
     try {
       await Auth.confirmSignUp(data.email, data.confirmationCode)
       navigation.navigate('LoginScreen', {name: 'LoginScreen'})
-      // const {authUser, userInfo} = await checkCredentials()
-      // dispatch(changeUserStatus({authUser, userInfo}))
     } catch (error) {
       if(error.message === 'User cannot be confirmed. Current status is CONFIRMED'){
         navigation.navigate('LoginScreen', {name: 'LoginScreen'})
