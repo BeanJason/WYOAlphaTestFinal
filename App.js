@@ -4,6 +4,7 @@ import { Store } from "./redux/store";
 import awsconfig from "./src/aws-exports"
 
 //LIBRARY IMPORTS
+import * as Font from "expo-font";
 import { useFonts } from "expo-font";
 import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
@@ -47,39 +48,45 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
-  let [loaded, setLoaded] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
-  // Load all custom fonts
-  let [loadFonts] = useFonts({
+  //Load custom fonts
+  const [fontsLoaded] = useFonts({
     "Montserrat-Bold": require("./assets/fonts/Montserrat-Bold.ttf"),
     "Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf"),
     "Montserrat-Italic": require("./assets/fonts/Montserrat-Italic.ttf"),
-  });
-  if (!loadFonts) {
-    return null;
+  })
+
+  //Load all assets
+  const loadAssetsAsync = async () => {
+    const imageAssets = await cacheImages([
+      require('./assets/wyo_background.png'),
+      require('./assets/Logo.png'),
+    ]);
+
+    return [imageAssets]
   }
 
   //Load all images
-  let cacheResources = async () => {
-    const images = [require('./assets/wyo_background'), require('./assets/Logo')];
+  let cacheImages = async (images) => {
     const cacheImages = images.map(image => {
       return Asset.fromModule(image).downloadAsync();
     })
+    return cacheImages
+  }
 
-    return Promise.all(cacheImages)
+
+  let loadAllResources = async () => {
+    await loadAssetsAsync()
+    setImagesLoaded(true)
   }
 
   useEffect(() => {
-    const loadResources = async () => {
-      await cacheResources();
-      setLoaded(true);
-    }
+    loadAllResources();
+  }, [])
 
-    loadResources();
-  },[])
-
-  if(!loaded){
-    <AppLoading/>
+  if(!imagesLoaded || !fontsLoaded){
+    return null;
   }
 
   return (
@@ -145,7 +152,6 @@ const GuestNavigation = () => {
 const AuthNavigation = () => {
   //get user to check if verified
   const {authUser} = useSelector((state) => state.auth);
-  console.log(authUser);
   return(
   <Stack.Navigator screenOptions={{transitionSpec:{open: config, close: config}}}>
     {authUser['custom:type'] === 'Manager' ? (
