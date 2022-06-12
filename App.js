@@ -15,6 +15,8 @@ import { checkCredentials } from "./credentials";
 import { changeUserStatus } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
+import { Asset } from "expo-asset"
+import AppLoading from "expo-app-loading"
 
 //SCREENS
 import RegistrationScreen from "./screens/account/RegistrationScreen";
@@ -45,14 +47,39 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  let [loaded, setLoaded] = useState(false);
+
   // Load all custom fonts
-  let [loaded] = useFonts({
+  let [loadFonts] = useFonts({
     "Montserrat-Bold": require("./assets/fonts/Montserrat-Bold.ttf"),
     "Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf"),
     "Montserrat-Italic": require("./assets/fonts/Montserrat-Italic.ttf"),
   });
-  if (!loaded) {
+  if (!loadFonts) {
     return null;
+  }
+
+  //Load all images
+  let cacheResources = async () => {
+    const images = [require('./assets/wyo_background'), require('./assets/Logo')];
+    const cacheImages = images.map(image => {
+      return Asset.fromModule(image).downloadAsync();
+    })
+
+    return Promise.all(cacheImages)
+  }
+
+  useEffect(() => {
+    const loadResources = async () => {
+      await cacheResources();
+      setLoaded(true);
+    }
+
+    loadResources();
+  },[])
+
+  if(!loaded){
+    <AppLoading/>
   }
 
   return (
