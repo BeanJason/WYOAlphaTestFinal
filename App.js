@@ -118,7 +118,7 @@ const GuestNavigation = () => {
 const AuthNavigation = () => {
   //get user to check if verified
   const {authUser} = useSelector((state) => state.auth);
-  
+  console.log(authUser);
   return(
   <Stack.Navigator screenOptions={{transitionSpec:{open: config, close: config}}}>
     {authUser['custom:type'] === 'Manager' ? (

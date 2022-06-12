@@ -23,6 +23,7 @@ export async function checkCredentials(){
         //If success
         if(userData != undefined){
             userInfo = {
+              userID: userData.id,
               firstName: userData.firstName,
               lastName: userData.lastName,
               address: userData.address,

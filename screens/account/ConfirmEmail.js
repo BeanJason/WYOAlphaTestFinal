@@ -38,8 +38,9 @@ const ConfirmEmail = ({ navigation }) => {
   const submitForm = async (data) => {
     try {
       await Auth.confirmSignUp(data.email, data.confirmationCode)
-      const {authUser, userInfo} = await checkCredentials()
-      dispatch(changeUserStatus({authUser, userInfo}))
+      navigation.navigate('LoginScreen', {name: 'LoginScreen'})
+      // const {authUser, userInfo} = await checkCredentials()
+      // dispatch(changeUserStatus({authUser, userInfo}))
     } catch (error) {
       if(error.message === 'User cannot be confirmed. Current status is CONFIRMED'){
         navigation.navigate('LoginScreen', {name: 'LoginScreen'})

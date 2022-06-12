@@ -74,6 +74,7 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
           //If success
           if(userData != undefined){
             userInfo = {
+              userID: userData.id,
               firstName: userData.firstName,
               lastName: userData.lastName,
               address: userData.address,
@@ -132,6 +133,7 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
         //If success
         if(userData != undefined){
           userInfo = {
+            userID: userData.id,
             firstName: userData.firstName,
             lastName: userData.lastName,
             address: userData.address,
