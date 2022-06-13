@@ -23,7 +23,7 @@ import {
     //Submit the data from the user
     const submitForm = async (data) => {
       try {
-        await Auth.forgotPassword(data.email)
+        await Auth.forgotPassword(data.email.trim())
         navigation.navigate('ForgotPassword2', {
           name: 'ForgotPassword2',
           email: data.email

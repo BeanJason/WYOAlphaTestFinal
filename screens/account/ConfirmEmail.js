@@ -33,7 +33,7 @@ const ConfirmEmail = ({ navigation }) => {
   //Submit the user input
   const submitForm = async (data) => {
     try {
-      await Auth.confirmSignUp(data.email, data.confirmationCode)
+      await Auth.confirmSignUp(data.email.trim(), data.confirmationCode)
       navigation.navigate('LoginScreen', {name: 'LoginScreen'})
     } catch (error) {
       if(error.message === 'User cannot be confirmed. Current status is CONFIRMED'){

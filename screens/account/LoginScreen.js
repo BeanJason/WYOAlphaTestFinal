@@ -56,6 +56,7 @@ import {
   
     //Submit the user form
     const submitForm = (data) => {
+      data.email = data.email.trim();
       dispatch(login(data));
     };
   

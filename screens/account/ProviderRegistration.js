@@ -70,10 +70,15 @@ const ProviderRegistration = ({ navigation }) => {
     //check if birthday is over 18
     if (new Date().getFullYear() - date.getFullYear() >= 18) {
       data.type = "Provider";
-      data.dateOfBirth = date;
       data.profilePictureURL = '';
+      data.email = data.email.trim()
+      data.dateOfBirth = date.toISOString().slice(0, 10)
       data.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1)
       data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1)
+      data.firstName = data.firstName.trim()
+      data.lastName = data.lastName.trim()
+      data.address = data.address.trim()
+      data.city = data.city.trim()
       dispatch(register(data))
       navigation.navigate('ConfirmEmail',{name: 'ConfirmEmail'})
     } else {
