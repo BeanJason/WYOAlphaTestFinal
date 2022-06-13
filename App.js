@@ -17,7 +17,6 @@ import { changeUserStatus } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from "expo-asset"
-import AppLoading from "expo-app-loading"
 
 //SCREENS
 import RegistrationScreen from "./screens/account/RegistrationScreen";
