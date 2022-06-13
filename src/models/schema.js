@@ -1,5 +1,169 @@
 export const schema = {
     "models": {
+        "Job": {
+            "name": "Job",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "jobTitle": {
+                    "name": "jobTitle",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "jobDescription": {
+                    "name": "jobDescription",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "address": {
+                    "name": "address",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "city": {
+                    "name": "city",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "zipCode": {
+                    "name": "zipCode",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "duration": {
+                    "name": "duration",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "requestDateTime": {
+                    "name": "requestDateTime",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "backupProviders": {
+                    "name": "backupProviders",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "checkInTime": {
+                    "name": "checkInTime",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "checkOutTime": {
+                    "name": "checkOutTime",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "currentStatus": {
+                    "name": "currentStatus",
+                    "isArray": false,
+                    "type": {
+                        "enum": "Jobstatus"
+                    },
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "mainProvider": {
+                    "name": "mainProvider",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "requestOwner": {
+                    "name": "requestOwner",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Jobs",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byProvider",
+                        "fields": [
+                            "mainProvider"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byUser",
+                        "fields": [
+                            "requestOwner"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "Provider": {
             "name": "Provider",
             "fields": {
@@ -114,6 +278,20 @@ export const schema = {
                     "type": "Float",
                     "isRequired": true,
                     "attributes": []
+                },
+                "jobs": {
+                    "name": "jobs",
+                    "isArray": true,
+                    "type": {
+                        "model": "Job"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": "mainProvider"
+                    }
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -230,6 +408,20 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "jobs": {
+                    "name": "jobs",
+                    "isArray": true,
+                    "type": {
+                        "model": "Job"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": "requestOwner"
+                    }
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -273,7 +465,17 @@ export const schema = {
             ]
         }
     },
-    "enums": {},
+    "enums": {
+        "Jobstatus": {
+            "name": "Jobstatus",
+            "values": [
+                "REQUESTED",
+                "ACCEPTED",
+                "IN_SERVICE",
+                "COMPLETED"
+            ]
+        }
+    },
     "nonModels": {},
-    "version": "f480e8806727814c617bc4f4c701a1c7"
+    "version": "d3ad4f277553493432f2c14de262473f"
 };
