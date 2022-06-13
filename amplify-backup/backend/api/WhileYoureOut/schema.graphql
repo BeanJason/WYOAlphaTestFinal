@@ -1,27 +1,3 @@
-enum JOBSTATUS {
-  REQUESTED
-  ACCEPTED
-  IN_SERVICE
-  COMPLETED
-}
-
-type Job @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  jobTitle: String!
-  jobDescription: String
-  address: String!
-  city: String!
-  zipCode: String!
-  duration: Int!
-  requestDateTime: AWSDateTime!
-  backupProviders: [String!]
-  checkInTime: String
-  checkOutTime: String
-  currentStatus: JOBSTATUS!
-  mainProvider: ID @index(name: "byProvider")
-  requestOwner: ID! @index(name: "byUser")
-}
-
 type Provider @model @auth(rules: [{allow: public}]) {
   id: ID!
   subID: String!
@@ -39,7 +15,6 @@ type Provider @model @auth(rules: [{allow: public}]) {
   employeeID: String!
   offenses: Int!
   overallRating: Float!
-  jobs: [Job] @hasMany(indexName: "byProvider", fields: ["id"])
 }
 
 type User @model @auth(rules: [{allow: public}]) {
@@ -53,6 +28,4 @@ type User @model @auth(rules: [{allow: public}]) {
   address: String!
   city: String!
   zipCode: String!
-  jobs: [Job] @hasMany(indexName: "byUser", fields: ["id"])
 }
- 

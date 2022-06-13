@@ -1,5 +1,6 @@
 import {
     StyleSheet,
+    TextInput,
     Text,
     Image,
     View,
@@ -14,10 +15,16 @@ import {
   import { useForm } from "react-hook-form";
   import { useSelector, useDispatch } from "react-redux";
   import { login, resetState } from "../../redux/authReducer";
-  import { useEffect } from "react";
+  import { useState} from "react";
+  import { DataStore } from "aws-amplify";
+  import { FontAwesome } from "@expo/vector-icons";
+  import DateTimePicker from "@react-native-community/datetimepicker";
+  import {Job} from "../../src/models"
+  
   
   //Login screen
   const JobCreation1 = ({ navigation }) => {
+    const { userInfo } = useSelector((state) => state.auth);
   
 
     //Set variables for user input
@@ -29,20 +36,46 @@ import {
     setError,
   } = useForm();
 
+  const [dateSelected, setDateSelected] = useState(false)
+  const [date, setDate] = useState(new Date());
+  const [show, setShow] = useState(false);
+  const [dateError, setDateError] = useState('')
+
+   //On change for the birth date
+   const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setShow(false);
+    setDate(currentDate);
+    setDateSelected(true)
+    setDateError('')
+  };
+
+
    //Submit the user input
-  const submitForm = (data) => {
-    //check if birthday is over 18
-    if (new Date().getFullYear() - date.getFullYear() >= 18) {
-      data.type = "Provider";
-      data.dateOfBirth = date;
-      data.profilePictureURL = '';
-      data.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1)
-      data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1)
-      dispatch(register(data))
-      navigation.navigate('ConfirmEmail',{name: 'ConfirmEmail'})
-    } else {
-      setBirthdayError("You must be 18 or older to use this app");
-    }
+  const submitForm = async (data) => {
+     data.currentStatus = 'REQUESTED'
+     data.requestDateTime = date.toISOString()
+     data.duration = 4
+      let response;
+     //Check for date error before submit
+     try {
+       response = await DataStore.save(
+                  new Job({
+                  "jobTitle": data.jobTitle,
+                  "jobDescription": data.jobDescription,
+                  "currentStatus": data.currentStatus,
+                  "address": data.address,
+                  "city": data.city,
+                  "zipCode": data.zipCode,
+                  "duration": data.duration,
+                  "requestDateTime": data.requestDateTime,
+                  "requestOwner": userInfo.userID, //sub id of user
+          }))
+       
+     } catch (error) {
+       console.log(error);
+     }
+        navigation.navigate("UserHome", { name: "UserHome" })
   };
 
     return (
@@ -63,7 +96,7 @@ import {
                 style={styles.input}
                 icon="user-circle"
                 location="FontAwesome"
-                name="Job title"
+                name="jobTitle"
                 rules={{ required: "Job title is Required" }}
                 placeholder={"Job title"}
                 control={control}
@@ -114,14 +147,62 @@ import {
                 placeholder={"Zip Code"}
                 control={control}
               />
+
+              {/* duration */}
+              <UserInput
+                style={{ fontSize: 16 }}
+                name="duration"
+                icon="clockcircle"
+                location="AntDesign"
+                keyboardType="numeric"
+                maxLength={1}
+                rules={{
+                  required: "Duration is Required",
+                }}
+                placeholder={"Duration"}
+                control={control}
+              />
+
+               {/* date of job */}
+              <View style={styles.field}>
+              <View>
+                <View>
+                  <TouchableOpacity
+                    onPress={() => setShow(true)}
+                    style={[
+                      commonStyles.inputBorder,
+                      { flexDirection: "row", marginVertical: 5 },
+                    ]}
+                  >
+                    <FontAwesome name="calendar" size={20} style={commonStyles.icon}/>
+                    <TextInput style={[styles.input, { color: "black" }]} editable={false}
+                    value={ dateSelected ? "Date of Request: " + date.toLocaleDateString() : "Date of Request" }
+                    ></TextInput>
+                  </TouchableOpacity>
+                </View>
+                {show && (
+                  <DateTimePicker
+                    value={date}
+                    onChange={onChange}
+                    mode="date"
+                  />
+                )}
+              </View>
+              {dateError ? (
+                <Text style={commonStyles.errorMsg}>{dateError}</Text>) : ( <></> )}
+
+
             </View>
+            </View>
+
+            
 
             <View style={[styles.field, {flexGrow: 1}]}>
             <Text style={{fontFamily: "Montserrat-Bold"}}>Please provide a description of job request (maximum 350 words)</Text>
               {/* Description */}
               <UserInput
                 style={[styles.input, {height: 100, textAlignVertical: 'top'}]}
-                name="description"
+                name="jobDescription"
                 multiline
                 rules={{ 
                     required: "Description is required",
@@ -134,18 +215,12 @@ import {
                 control={control}
               />
             </View>
+
+
             </View>
 
             <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("Registration", { name: "Registration" })
-              }
-              style={[styles.button, styles.buttonOutline]}
-            >
-              <Text style={styles.btnText}>Cancel</Text>
-            </TouchableOpacity>
-
+            
             <TouchableOpacity
               onPress={handleSubmit(submitForm)}
               style={styles.button}
@@ -191,6 +266,8 @@ import {
     buttonContainer: {
     flex: 1,
     flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "center",
   },
    button: {
     justifyContent: "center",

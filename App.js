@@ -205,7 +205,7 @@ const UserNavigation = () => {
 const UserHomeTab = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen options={{headerShown: false}} name='userHome' component={UserHome}/>
+      <Stack.Screen options={{headerShown: false}} name='UserHome' component={UserHome}/>
       <Stack.Screen options={{ title: 'Job Information' }} name="JobInfo" component={JobInfo}/>
     </Stack.Navigator>
   )
@@ -216,6 +216,7 @@ const UserJobCreationTab = () => {
   <Stack.Navigator>
     <Stack.Screen options={{headerShown: false }} name="JobCreation1" component={JobCreation1}/>
     <Stack.Screen options={{ title: 'Create a Job' }} name="JobCreation2" component={JobCreation2}/>
+    <Stack.Screen options={{ title: 'User home' }} name="UserHome" component={UserHome}/>
   </Stack.Navigator>
   )
 }

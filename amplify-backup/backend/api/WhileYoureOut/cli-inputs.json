@@ -3,7 +3,7 @@
   "serviceConfiguration": {
     "apiName": "WhileYoureOut",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/tmp/amplify-cffc29f1-5566-4440-a756-19059b952dfa/amplify/backend/api/WhileYoureOut/schema.graphql",
+    "gqlSchemaPath": "/tmp/amplify-152b9de6-7852-41e9-af9a-26df898dae77/amplify/backend/api/WhileYoureOut/schema.graphql",
     "defaultAuthType": {
       "mode": "API_KEY",
       "keyDescription": "api key description",

@@ -1,8 +1,17 @@
 import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplify/datastore";
 
+export enum Jobstatus {
+  REQUESTED = "REQUESTED",
+  ACCEPTED = "ACCEPTED",
+  IN_SERVICE = "IN_SERVICE",
+  COMPLETED = "COMPLETED"
+}
 
 
 
+type JobMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
 
 type ProviderMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
@@ -10,6 +19,27 @@ type ProviderMetaData = {
 
 type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
+export declare class Job {
+  readonly id: string;
+  readonly jobTitle: string;
+  readonly jobDescription?: string | null;
+  readonly address: string;
+  readonly city: string;
+  readonly zipCode: string;
+  readonly duration: number;
+  readonly requestDateTime: string;
+  readonly backupProviders?: string[] | null;
+  readonly checkInTime?: string | null;
+  readonly checkOutTime?: string | null;
+  readonly currentStatus: Jobstatus | keyof typeof Jobstatus;
+  readonly mainProvider?: string | null;
+  readonly requestOwner: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  constructor(init: ModelInit<Job, JobMetaData>);
+  static copyOf(source: Job, mutator: (draft: MutableModel<Job, JobMetaData>) => MutableModel<Job, JobMetaData> | void): Job;
 }
 
 export declare class Provider {
@@ -29,6 +59,7 @@ export declare class Provider {
   readonly employeeID: string;
   readonly offenses: number;
   readonly overallRating: number;
+  readonly jobs?: (Job | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Provider, ProviderMetaData>);
@@ -46,6 +77,7 @@ export declare class User {
   readonly address: string;
   readonly city: string;
   readonly zipCode: string;
+  readonly jobs?: (Job | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);

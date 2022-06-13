@@ -15,6 +15,7 @@ import {
   import { useSelector, useDispatch } from "react-redux";
   import { login, resetState } from "../../redux/authReducer";
   import { useEffect } from "react";
+
   
   //Login screen
   const JobHistory = ({ navigation }) => {

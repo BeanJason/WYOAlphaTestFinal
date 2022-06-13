@@ -5,6 +5,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from "react";
+import { AntDesign } from '@expo/vector-icons';
 
 //Creates a text input box with parameters for the name, placeholder, validation, errors, and style
 export default function UserInput({control, name, rules = {}, placeholder, style, secureTextEntry, multiline, icon, location, onKeyPress, keyboardType = 'default', maxLength}) {
@@ -19,6 +20,9 @@ export default function UserInput({control, name, rules = {}, placeholder, style
     }
     else if(location == 'MaterialIcons'){
         return <MaterialIcons name={icon} size={24} style={commonStyles.icon} />
+    }
+    else if(location == 'AntDesign'){
+      return <AntDesign name={icon} size={24} style={commonStyles.icon} />
     }
   }
 
