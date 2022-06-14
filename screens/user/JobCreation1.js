@@ -1,33 +1,32 @@
 import {
-    StyleSheet,
-    TextInput,
-    Text,
-    Image,
-    View,
-    ImageBackground,
-    SafeAreaView,
-  } from "react-native";
-  import { TouchableOpacity } from "react-native";
-  import UserInput from "../../common/components/UserInput";
-  import Spinner from "../../common/components/Spinner";
-  import { commonStyles } from "../../common/styles";
-  import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-  import { useForm } from "react-hook-form";
-  import { useSelector, useDispatch } from "react-redux";
-  import { login, resetState } from "../../redux/authReducer";
-  import { useState} from "react";
-  import { DataStore } from "aws-amplify";
-  import { FontAwesome } from "@expo/vector-icons";
-  import DateTimePicker from "@react-native-community/datetimepicker";
-  import {Job} from "../../src/models"
-  
-  
-  //Login screen
-  const JobCreation1 = ({ navigation }) => {
-    const { userInfo } = useSelector((state) => state.auth);
-  
+  StyleSheet,
+  TextInput,
+  Text,
+  Image,
+  View,
+  ImageBackground,
+  SafeAreaView,
+} from "react-native";
+import { TouchableOpacity } from "react-native";
+import UserInput from "../../common/components/UserInput";
+import Spinner from "../../common/components/Spinner";
+import { commonStyles } from "../../common/styles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useForm } from "react-hook-form";
+import { useSelector, useDispatch } from "react-redux";
+import { login, resetState } from "../../redux/authReducer";
+import { useEffect, useState } from "react";
+import { DataStore } from "aws-amplify";
+import { FontAwesome } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Job } from "../../src/models";
+import DropDownPicker from "react-native-dropdown-picker";
 
-    //Set variables for user input
+//Login screen
+const JobCreation1 = ({ navigation }) => {
+  const { userInfo } = useSelector((state) => state.auth);
+
+  //Set variables for user input
   const {
     control,
     handleSubmit,
@@ -36,63 +35,87 @@ import {
     setError,
   } = useForm();
 
-  const [dateSelected, setDateSelected] = useState(false)
+  //address vars
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [addressError, setAddressError] = useState("");
+  const [addressList, setAddressList] = useState([]);
+
+  //date vars
+  const [dateSelected, setDateSelected] = useState(false);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
-  const [dateError, setDateError] = useState('')
+  const [dateError, setDateError] = useState("");
 
-   //On change for the birth date
-   const onChange = (event, selectedDate) => {
+  useEffect(() => {
+    let arr = JSON.parse(userInfo.address)
+    let items = []
+    for(let next of arr){
+      items.push({
+        label: `${next.street} ${next.city} ${next.zipCode}`,
+        value: next.count
+      })
+    }
+    setAddressList(items)
+  }, []);
+
+  //On change for the birth date
+  const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     setShow(false);
     setDate(currentDate);
-    setDateSelected(true)
-    setDateError('')
+    setDateSelected(true);
+    setDateError("");
   };
 
-
-   //Submit the user input
+  //Submit the user input
   const submitForm = async (data) => {
-     data.currentStatus = 'REQUESTED'
-     data.requestDateTime = date.toISOString()
-     data.duration = 4
-      let response;
-     //Check for date error before submit
-     try {
-       response = await DataStore.save(
-                  new Job({
-                  "jobTitle": data.jobTitle,
-                  "jobDescription": data.jobDescription,
-                  "currentStatus": data.currentStatus,
-                  "address": data.address,
-                  "city": data.city,
-                  "zipCode": data.zipCode,
-                  "duration": data.duration,
-                  "requestDateTime": data.requestDateTime,
-                  "requestOwner": userInfo.userID, //sub id of user
-          }))
-       
-     } catch (error) {
-       console.log(error);
-     }
-        navigation.navigate("JobCreation2", { name: "JobCreation2" })
+    if(value != null){
+
+    }
+    else{
+      setAddressError('Address is required')
+    }
+    // data.currentStatus = "REQUESTED";
+    // data.requestDateTime = date.toISOString();
+    // data.duration = 4;
+    // let response;
+    // //Check for date error before submit
+    // try {
+    //   response = await DataStore.save(
+    //     new Job({
+    //       jobTitle: data.jobTitle,
+    //       jobDescription: data.jobDescription,
+    //       currentStatus: data.currentStatus,
+    //       address: data.address,
+    //       city: data.city,
+    //       zipCode: data.zipCode,
+    //       duration: data.duration,
+    //       requestDateTime: data.requestDateTime,
+    //       requestOwner: userInfo.userID, //sub id of user
+    //     })
+    //   );
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    // navigation.navigate("JobCreation2", { name: "JobCreation2" });
   };
 
-    return (
-      <KeyboardAwareScrollView>
-        <ImageBackground
-          style={commonStyles.background}
-          source={require("../../assets/wyo_background.png")}
-        >
-          <SafeAreaView style={commonStyles.safeContainer}>
-             <Text style={styles.header2}>
-               Please provide information for your job request
-            </Text>
+  return (
+    <KeyboardAwareScrollView>
+      <ImageBackground
+        style={commonStyles.background}
+        source={require("../../assets/wyo_background.png")}
+      >
+        <SafeAreaView style={commonStyles.safeContainer}>
+          <Text style={styles.header2}>
+            Please provide information for your job request
+          </Text>
 
-            <View style={styles.inputContainer}>
-              {/* job title */}
-              <View style={styles.field}>
-                 <UserInput
+          <View style={styles.inputContainer}>
+            {/* job title */}
+            <View style={styles.field}>
+              <UserInput
                 style={styles.input}
                 icon="user-circle"
                 location="FontAwesome"
@@ -101,52 +124,27 @@ import {
                 placeholder={"Job title"}
                 control={control}
               />
-              </View>
+            </View>
 
-              {/* address */}
+            {/* address */}
             <View style={styles.field}>
-              <UserInput
-                style={styles.input}
-                icon="address-card-o"
-                location="FontAwesome"
-                name="address"
-                rules={{ required: "Address is Required" }}
-                placeholder={"Address"}
-                control={control}
+              <DropDownPicker
+                placeholder="Address"
+                listMode="SCROLLVIEW"
+                open={open}
+                value={value}
+                items={addressList}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setAddressList}
+                onOpen={() => setAddressError('')}
               />
-              {/* city */}
-              <UserInput
-                style={styles.input}
-                icon="location-city"
-                location="MaterialIcons"
-                name="city"
-                rules={{
-                  required: "City is Required",
-                  pattern: {
-                    value: /^[a-zA-Z ]+$/,
-                    message: "Only letters are allowed in the city name",
-                  }}}
-                placeholder={"City"}
-                control={control}
-              />
-              {/* zip code */}
-              <UserInput
-                style={{ fontSize: 16 }}
-                name="zipCode"
-                icon="location-arrow"
-                location="FontAwesome"
-                keyboardType="numeric"
-                maxLength={5}
-                rules={{
-                  required: "Zip Code is Required",
-                  pattern: {
-                    value: /\d{5}/,
-                    message: 'Zip code must be a valid 5 digit code'
-                  }
-                }}
-                placeholder={"Zip Code"}
-                control={control}
-              />
+              {addressError ? (
+                  <Text style={commonStyles.errorMsg}>{addressError}</Text>
+                ) : (
+                  <></>
+                )}
+
 
               {/* duration */}
               <UserInput
@@ -163,81 +161,79 @@ import {
                 control={control}
               />
 
-               {/* date of job */}
+              {/* date of job */}
               <View style={styles.field}>
-              <View>
                 <View>
-                  <TouchableOpacity
-                    onPress={() => setShow(true)}
-                    style={[
-                      commonStyles.inputBorder,
-                      { flexDirection: "row", marginVertical: 5 },
-                    ]}
-                  >
-                    <FontAwesome name="calendar" size={20} style={commonStyles.icon}/>
-                    <TextInput style={[styles.input, { color: "black" }]} editable={false}
-                    value={ dateSelected ? "Date of Request: " + date.toLocaleDateString() : "Date of Request" }
-                    ></TextInput>
-                  </TouchableOpacity>
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => setShow(true)}
+                      style={[
+                        commonStyles.inputBorder,
+                        { flexDirection: "row", marginVertical: 5 },
+                      ]}
+                    >
+                      <FontAwesome name="calendar" size={20} style={commonStyles.icon}/>
+                      <TextInput style={[styles.input, { color: "black" }]} editable={false} value={
+                          dateSelected ? "Date of Request: " + date.toLocaleDateString() : "Date of Request"}
+                      ></TextInput>
+                    </TouchableOpacity>
+                  </View>
+                  {show && (
+                    <DateTimePicker
+                      value={date}
+                      onChange={onChange}
+                      mode="date"
+                    />
+                  )}
                 </View>
-                {show && (
-                  <DateTimePicker
-                    value={date}
-                    onChange={onChange}
-                    mode="date"
-                  />
+                {dateError ? (
+                  <Text style={commonStyles.errorMsg}>{dateError}</Text>
+                ) : (
+                  <></>
                 )}
               </View>
-              {dateError ? (
-                <Text style={commonStyles.errorMsg}>{dateError}</Text>) : ( <></> )}
-
-
-            </View>
             </View>
 
-            
-
-            <View style={[styles.field, {flexGrow: 1}]}>
-            <Text style={{fontFamily: "Montserrat-Bold"}}>Please provide a description of job request (maximum 350 words)</Text>
+            <View style={[styles.field, { flexGrow: 1 }]}>
+              <Text style={{ fontFamily: "Montserrat-Bold" }}>
+                (Optional) Please provide a description of job request (maximum 350 words)
+              </Text>
               {/* Description */}
               <UserInput
-                style={[styles.input, {height: 100, textAlignVertical: 'top'}]}
+                style={[
+                  styles.input,
+                  { height: 100, textAlignVertical: "top" },
+                ]}
                 name="jobDescription"
                 multiline
-                rules={{ 
-                    required: "Description is required",
-                    maxLength:{
-                        value: 350,
-                        message: 'Description must be 350 words or less'
-                    } 
-                  }}
+                rules={{
+                  maxLength: {
+                    value: 350,
+                    message: "Description must be 350 words or less",
+                  },
+                }}
                 placeholder={"Description"}
                 control={control}
               />
             </View>
+          </View>
 
-
-            </View>
-
-            <View style={styles.buttonContainer}>
-            
+          <View style={styles.buttonContainer}>
             <TouchableOpacity
-              // onPress={handleSubmit(submitForm)}
-              onPress={() => {navigation.navigate('Home')}}
+              onPress={handleSubmit(submitForm)}
               style={styles.button}
             >
               <Text style={styles.btnText}>Submit</Text>
             </TouchableOpacity>
           </View>
+        </SafeAreaView>
+      </ImageBackground>
+    </KeyboardAwareScrollView>
+  );
+};
 
-          </SafeAreaView>
-        </ImageBackground>
-      </KeyboardAwareScrollView>
-    );
-  };
-  
-  const styles = StyleSheet.create({
-    header2: {
+const styles = StyleSheet.create({
+  header2: {
     fontFamily: "Montserrat-Regular",
     fontSize: 22,
     fontWeight: "bold",
@@ -264,13 +260,13 @@ import {
     paddingBottom: 5,
     justifyContent: "space-evenly",
   },
-    buttonContainer: {
+  buttonContainer: {
     flex: 1,
     flexDirection: "row",
     alignContent: "center",
     justifyContent: "center",
   },
-   button: {
+  button: {
     justifyContent: "center",
     alignItems: "center",
     width: 150,
@@ -286,7 +282,6 @@ import {
     fontFamily: "Montserrat-Bold",
     fontSize: 25,
   },
-  });
-  
-  export default JobCreation1;
-  
+});
+
+export default JobCreation1;
