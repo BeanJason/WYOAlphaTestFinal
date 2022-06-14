@@ -17,7 +17,8 @@ import {
   import { useEffect } from "react";
   
   //Login screen
-  const JobInfo = ({ navigation }) => {
+  const JobInfo = ({ route, navigation }) => {
+    const {jobInfo} = route.params
   
     return (
       <KeyboardAwareScrollView>
@@ -26,7 +27,7 @@ import {
           source={require("../../assets/wyo_background.png")}
         >
           <SafeAreaView style={commonStyles.safeContainer}>
-          <Text>This is the job information page for the user</Text>
+          <Text>This is the job information page for the job {jobInfo.jobTitle}</Text>
 
 
 

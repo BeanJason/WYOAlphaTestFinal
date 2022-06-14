@@ -136,8 +136,8 @@ const GuestNavigation = () => {
       <Stack.Screen options={{ headerShown: false }} name="LoginScreen" component={LoginScreen}/>
       <Stack.Screen options={{ headerShown: false }} name="ForgotPassword1" component={ForgotPassword1}/>
       <Stack.Screen options={{ headerShown: false }} name="ForgotPassword2" component={ForgotPassword2}/>
-      <Stack.Screen options={{title: 'User Registration'}} name="UserRegistration" component={UserRegistration} />
-      <Stack.Screen options={{title: 'Provider Registration'}} name="ProviderRegistration" component={ProviderRegistration} />
+      <Stack.Screen options={{ headerShown: false }} name="UserRegistration" component={UserRegistration} />
+      <Stack.Screen options={{ headerShown: false }} name="ProviderRegistration" component={ProviderRegistration} />
       <Stack.Screen options={{title: 'Registration'}} name="RegistrationScreen" component={RegistrationScreen} />
       <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
       <Stack.Screen options={{title: 'About Users'}} name="AboutUsers" component={AboutUsers} />
@@ -216,7 +216,6 @@ const UserJobCreationTab = () => {
   <Stack.Navigator>
     <Stack.Screen options={{headerShown: false }} name="JobCreation1" component={JobCreation1}/>
     <Stack.Screen options={{ title: 'Create a Job' }} name="JobCreation2" component={JobCreation2}/>
-    <Stack.Screen options={{ title: 'User home' }} name="UserHome" component={UserHome}/>
   </Stack.Navigator>
   )
 }

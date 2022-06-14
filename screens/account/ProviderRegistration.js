@@ -298,7 +298,7 @@ const ProviderRegistration = ({ navigation }) => {
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("RegistrationScreen", { name: "Registration" })
+                navigation.navigate("RegistrationScreen", { name: "RegistrationScreen" })
               }
               style={[styles.button, styles.buttonOutline]}
             >

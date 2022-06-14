@@ -75,7 +75,7 @@ import {
      } catch (error) {
        console.log(error);
      }
-        navigation.navigate("UserHome", { name: "UserHome" })
+        navigation.navigate("JobCreation2", { name: "JobCreation2" })
   };
 
     return (
@@ -222,7 +222,8 @@ import {
             <View style={styles.buttonContainer}>
             
             <TouchableOpacity
-              onPress={handleSubmit(submitForm)}
+              // onPress={handleSubmit(submitForm)}
+              onPress={() => {navigation.navigate('Home')}}
               style={styles.button}
             >
               <Text style={styles.btnText}>Submit</Text>
