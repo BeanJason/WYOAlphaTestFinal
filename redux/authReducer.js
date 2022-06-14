@@ -44,8 +44,6 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                 "phoneNumber": data.phoneNumber,
                 "dateOfBirth": data.dateOfBirth,
                 "address": data.address,
-                "city": data.city,
-                "zipCode": data.zipCode
               })
             );
           }
@@ -73,13 +71,12 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
           }
           //If success
           if(userData != undefined){
+            console.log(userData);
             userInfo = {
               userID: userData.id,
               firstName: userData.firstName,
               lastName: userData.lastName,
               address: userData.address,
-              city: userData.city,
-              zipCode: userData.zipCode,
             }
             let attr = {
               sub: authUser.userSub,
@@ -137,8 +134,6 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
             firstName: userData.firstName,
             lastName: userData.lastName,
             address: userData.address,
-            city: userData.city,
-            zipCode: userData.zipCode,
           }
           return {authUser: user.attributes, userInfo}
         }

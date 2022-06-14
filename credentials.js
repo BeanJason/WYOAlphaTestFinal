@@ -27,8 +27,6 @@ export async function checkCredentials(){
               firstName: userData.firstName,
               lastName: userData.lastName,
               address: userData.address,
-              city: userData.city,
-              zipCode: userData.zipCode,
             }
             return {authUser: authUser.attributes, userInfo}
           }

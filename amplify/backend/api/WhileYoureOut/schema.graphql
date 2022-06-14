@@ -13,7 +13,7 @@ type Job @model @auth(rules: [{allow: public}]) {
   city: String!
   zipCode: String!
   duration: Int!
-  requestDateTime: AWSDateTime!
+  requestDateTime: String!
   backupProviders: [String!]
   checkInTime: String
   checkOutTime: String
@@ -50,9 +50,7 @@ type User @model @auth(rules: [{allow: public}]) {
   email: AWSEmail!
   phoneNumber: AWSPhone!
   dateOfBirth: AWSDate
-  address: String!
-  city: String!
-  zipCode: String!
+  address: [AWSJSON!]
   jobs: [Job] @hasMany(indexName: "byUser", fields: ["id"])
 }
  

@@ -74,9 +74,7 @@ export declare class User {
   readonly email: string;
   readonly phoneNumber: string;
   readonly dateOfBirth?: string | null;
-  readonly address: string;
-  readonly city: string;
-  readonly zipCode: string;
+  readonly address?: string[] | null;
   readonly jobs?: (Job | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;

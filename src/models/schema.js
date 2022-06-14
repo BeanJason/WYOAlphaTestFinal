@@ -55,7 +55,7 @@ export const schema = {
                 "requestDateTime": {
                     "name": "requestDateTime",
                     "isArray": false,
-                    "type": "AWSDateTime",
+                    "type": "String",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -389,24 +389,11 @@ export const schema = {
                 },
                 "address": {
                     "name": "address",
-                    "isArray": false,
-                    "type": "String",
+                    "isArray": true,
+                    "type": "AWSJSON",
                     "isRequired": true,
-                    "attributes": []
-                },
-                "city": {
-                    "name": "city",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "zipCode": {
-                    "name": "zipCode",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
+                    "attributes": [],
+                    "isArrayNullable": true
                 },
                 "jobs": {
                     "name": "jobs",
@@ -477,5 +464,5 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "version": "d3ad4f277553493432f2c14de262473f"
+    "version": "4c1ed7bb247a440fec1a146a68f9daf3"
 };
