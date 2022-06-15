@@ -36,7 +36,7 @@ import UserAccount from "./screens/user/userAccount/UserAccount"
 import EditAccountUser2 from "./screens/user/userAccount/EditAccountUser2"
 import EditAccountUser1 from "./screens/user/userAccount/EditAccountUser1"
 import JobCreation1 from "./screens/user/JobCreation1"
-import JobCreation2 from "./screens/user/JobCreation2"
+import JobCreationPayment from "./screens/user/JobCreationPayment"
 import JobInfo from "./screens/user/JobInfo"
 import JobHistory from "./screens/user/JobHistory"
 import { config } from "./common/styles";
@@ -174,6 +174,7 @@ const UserNavigation = () => {
     <Tab.Navigator 
       initialRouteName="userHome"
       screenOptions={(route) => ({
+        unmountOnBlur: true,
         tabBarActiveTintColor: 'blue',
         tabBarInactiveTintColor: 'grey',  
         tabBarLabelStyle: {paddingBottom: 10, fontSize: 15, fontFamily: 'Montserrat-Bold'},
@@ -215,7 +216,7 @@ const UserJobCreationTab = () => {
   return(
   <Stack.Navigator>
     <Stack.Screen options={{headerShown: false }} name="JobCreation1" component={JobCreation1}/>
-    <Stack.Screen options={{ title: 'Create a Job' }} name="JobCreation2" component={JobCreation2}/>
+    <Stack.Screen options={{ title: 'Create a Job' }} name="JobCreationPayment" component={JobCreationPayment}/>
   </Stack.Navigator>
   )
 }

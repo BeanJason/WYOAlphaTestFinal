@@ -17,37 +17,46 @@ import { useSelector, useDispatch } from "react-redux";
 import { login, resetState } from "../../redux/authReducer";
 import { useEffect, useState } from "react";
 import { DataStore } from "aws-amplify";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Job } from "../../src/models";
 import DropDownPicker from "react-native-dropdown-picker";
+import NumericInput from 'react-native-numeric-input';
 
 //Login screen
 const JobCreation1 = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
-
+  
   //Set variables for user input
   const {
     control,
     handleSubmit,
-    watch,
     formState: { errors },
     setError,
   } = useForm();
-
+  
   //address vars
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [address, setAddress] = useState(null);
   const [addressError, setAddressError] = useState("");
   const [addressList, setAddressList] = useState([]);
-
+  
   //date vars
   const [dateSelected, setDateSelected] = useState(false);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [dateError, setDateError] = useState("");
+  const [mode, setMode] = useState('date');
+  const [dateOfToday, setDateOfToday] = useState(new Date())
+
+  //duration value
+  const [duration, setDuration] = useState(4)
 
   useEffect(() => {
+    let nextDay = new Date()
+    nextDay.setDate(nextDay.getDate() + 1)
+    setDateOfToday(nextDay)
+
     let arr = JSON.parse(userInfo.address)
     let items = []
     for(let next of arr){
@@ -59,8 +68,11 @@ const JobCreation1 = ({ navigation }) => {
     setAddressList(items)
   }, []);
 
-  //On change for the birth date
+  //On change for the date
   const onChange = (event, selectedDate) => {
+    if(mode == 'date' && event.type == 'dismissed'){
+      selectedDate = dateOfToday
+    }
     const currentDate = selectedDate;
     setShow(false);
     setDate(currentDate);
@@ -68,37 +80,54 @@ const JobCreation1 = ({ navigation }) => {
     setDateError("");
   };
 
+  //cancel date 
+  const canceDate = () => {
+    console.log('cancel');
+  }
+
+  //set mode for date/time
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
+
   //Submit the user input
   const submitForm = async (data) => {
-    if(value != null){
-
+    if(dateSelected == false){
+      setDateError('A requested date and time must be chosen')
     }
-    else{
+    if(address == null){
       setAddressError('Address is required')
     }
-    // data.currentStatus = "REQUESTED";
-    // data.requestDateTime = date.toISOString();
-    // data.duration = 4;
-    // let response;
-    // //Check for date error before submit
-    // try {
-    //   response = await DataStore.save(
-    //     new Job({
-    //       jobTitle: data.jobTitle,
-    //       jobDescription: data.jobDescription,
-    //       currentStatus: data.currentStatus,
-    //       address: data.address,
-    //       city: data.city,
-    //       zipCode: data.zipCode,
-    //       duration: data.duration,
-    //       requestDateTime: data.requestDateTime,
-    //       requestOwner: userInfo.userID, //sub id of user
-    //     })
-    //   );
-    // } catch (error) {
-    //   console.log(error);
-    // }
-    // navigation.navigate("JobCreation2", { name: "JobCreation2" });
+    if(addressError == '' && dateError == ''){
+      data.currentStatus = "REQUESTED";
+      data.requestDateTime = date.toString()
+      data.duration = duration;
+      if(data.jobDescription == null){
+        data.jobDescription = ''
+      }
+
+      let arr = JSON.parse(userInfo.address)
+      for(let next of arr){
+        if(next.count == address){
+          data.address = next.street
+          data.city = next.city
+          data.zipCode = next.zipCode
+        }
+      }
+      
+      //Send info to payment screen
+      navigation.navigate("JobCreationPayment", { name: "JobCreationPayment" , data: data, userInfo: userInfo});
+  }
+    
   };
 
   return (
@@ -132,49 +161,43 @@ const JobCreation1 = ({ navigation }) => {
                 placeholder="Address"
                 listMode="SCROLLVIEW"
                 open={open}
-                value={value}
+                value={address}
                 items={addressList}
                 setOpen={setOpen}
-                setValue={setValue}
+                setValue={setAddress}
                 setItems={setAddressList}
                 onOpen={() => setAddressError('')}
               />
-              {addressError ? (
-                  <Text style={commonStyles.errorMsg}>{addressError}</Text>
-                ) : (
-                  <></>
-                )}
-
+              {addressError ? ( <Text style={commonStyles.errorMsg}>{addressError}</Text> ) : ( <></> )}
 
               {/* duration */}
-              <UserInput
-                style={{ fontSize: 16 }}
-                name="duration"
-                icon="clockcircle"
-                location="AntDesign"
-                keyboardType="numeric"
-                maxLength={1}
-                rules={{
-                  required: "Duration is Required",
-                }}
-                placeholder={"Duration"}
-                control={control}
-              />
+              <View style = {styles.durationStyle}>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 17}}>Duration in hours</Text>
+                <NumericInput inputStyle={{backgroundColor: 'white', borderRadius: 5}} rounded value={duration} minValue={4} maxValue={8} type='up-down' onChange={value => setDuration(value)} />
+              </View>
 
               {/* date of job */}
               <View style={styles.field}>
                 <View>
                   <View>
+                    {/* Date */}
                     <TouchableOpacity
-                      onPress={() => setShow(true)}
-                      style={[
-                        commonStyles.inputBorder,
-                        { flexDirection: "row", marginVertical: 5 },
-                      ]}
+                      onPress={showDatepicker}
+                      style={[ commonStyles.inputBorder, { flexDirection: "row", marginVertical: 5 },]}
                     >
                       <FontAwesome name="calendar" size={20} style={commonStyles.icon}/>
                       <TextInput style={[styles.input, { color: "black" }]} editable={false} value={
                           dateSelected ? "Date of Request: " + date.toLocaleDateString() : "Date of Request"}
+                      ></TextInput>
+                    </TouchableOpacity>
+                    {/* Time */}
+                    <TouchableOpacity
+                      onPress={showTimepicker}
+                      style={[ commonStyles.inputBorder, { flexDirection: "row", marginVertical: 5 },]}
+                    >
+                      <Ionicons name='time' size={20} style={commonStyles.icon}/>
+                      <TextInput style={[styles.input, { color: "black" }]} editable={false} value={
+                          dateSelected ? "Time of Request: " + date.getHours() + ':' + date.getMinutes() : "Time of Request"}
                       ></TextInput>
                     </TouchableOpacity>
                   </View>
@@ -182,15 +205,16 @@ const JobCreation1 = ({ navigation }) => {
                     <DateTimePicker
                       value={date}
                       onChange={onChange}
-                      mode="date"
+                      mode={mode}
+                      is24Hour={false}
+                      minimumDate={dateOfToday}
+                      onTouchEnd={canceDate}
+                      // onTouchCancel={canceDate}
                     />
                   )}
                 </View>
                 {dateError ? (
-                  <Text style={commonStyles.errorMsg}>{dateError}</Text>
-                ) : (
-                  <></>
-                )}
+                  <Text style={commonStyles.errorMsg}>{dateError}</Text>) : ( <></> )}
               </View>
             </View>
 
@@ -282,6 +306,14 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Bold",
     fontSize: 25,
   },
+  durationStyle: {
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "Black",
+    paddingBottom: 5,
+    justifyContent: "space-evenly",
+
+  }
 });
 
 export default JobCreation1;

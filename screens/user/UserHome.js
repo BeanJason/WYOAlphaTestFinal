@@ -32,6 +32,8 @@ const UserHome = ({ navigation }) => {
 
   //Get all current jobs
   useEffect(() => {
+    //TODO: Write a graphql function that will filter out jobs that were requested by the user and passed the request date
+    //Get user's current jobs
     fetchJobs();
   }, []);
 
