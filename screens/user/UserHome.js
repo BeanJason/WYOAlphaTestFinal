@@ -6,21 +6,19 @@ import {
   Text,
   SafeAreaView,
   FlatList,
-  Pressable,
 } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { commonStyles } from "../../common/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { DataStore } from "aws-amplify";
 import { Job } from "../../src/models";
 import JobCard from "../../common/components/JobCard";
-import { TouchableOpacity } from "react-native-web";
+import Spinner from "../../common/components/Spinner";
 
 const UserHome = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
   const [jobList, setJobList] = useState([]);
-
+  const [loading, setLoading] = useState(true)
+  
   const fetchJobs = async () => {
     await DataStore.query(Job, (job) => {
       job.requestOwner("eq", userInfo.userID) &&
@@ -32,10 +30,14 @@ const UserHome = ({ navigation }) => {
 
   //Get all current jobs
   useEffect(() => {
-    //TODO: Write a graphql function that will filter out jobs that were requested by the user and passed the request date
     //Get user's current jobs
     fetchJobs();
+    setLoading(false)
   }, []);
+
+  if(loading){
+    return <Spinner color={'blue'}/>
+  }
 
   return (
     <ImageBackground
@@ -44,19 +46,24 @@ const UserHome = ({ navigation }) => {
     >
       <SafeAreaView style={commonStyles.safeContainer}>
         <View style={styles.head}>
-          <Text style={styles.headerText}>Welcome {userInfo.firstName}</Text>
+          <Text style={styles.name}>Welcome {userInfo.firstName}</Text>
         </View>
         <View>
-          <Text style={[styles.headerText, {textAlign: 'center'}]}>Current Jobs</Text>
+          <Text style={[styles.headerText, {textAlign: 'center'}]}>Active Jobs</Text>
         </View>
+        {loading ? <Spinner color={'blue'}/> : (
         <View style={styles.body}>
+        {jobList.length == 0 ? <Text style={{fontFamily: 'Montserrat-Italic', margin: 20}}>You have no current jobs</Text> : (
           <View>
+            <Text style={styles.helpText}>Click on any of the following jobs for more details</Text>
             <FlatList
               data={jobList}
               renderItem={({ item }) => <JobCard jobInfo={item} />}
             />
           </View>
+        )}
         </View>
+        )}
       </SafeAreaView>
     </ImageBackground>
   );
@@ -64,22 +71,35 @@ const UserHome = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   head: {
-    flex: 1,
     backgroundColor: "rgba(113, 124, 206, 0.95)",
     alignContent: "flex-start",
-    justifyContent: "center",
+    justifyContent: 'center',
+    height: '6%'
   },
   body: {
-    flex: 15,
     alignItems: "center",
     justifyContent: "flex-end",
     flexDirection: "column",
   },
-  headerText: {
+  name: {
     fontFamily: "Montserrat-Bold",
     fontSize: 25,
     padding: 5,
   },
+  headerText: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 30,
+    padding: 5,
+    marginBottom: 10,
+    borderBottomWidth: 2,
+    alignSelf: 'center'
+  },
+  helpText: {
+    fontFamily: 'Montserrat-Italic',
+    fontSize: 15,
+    textAlign: 'center',
+    marginBottom: 15,
+  }
 });
 
 export default UserHome;

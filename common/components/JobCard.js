@@ -1,7 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Dimensions, Pressable } from "react-native";
-import { TouchableOpacity } from "react-native-web";
 
 
 const JobCard = ({ jobInfo }) => {
@@ -37,13 +36,13 @@ const JobCard = ({ jobInfo }) => {
   return (
       <Pressable onPress={onPress}>
       <View style={styles.jobContainer}>
-        <Text style={[styles.generalText, { textAlign: "center", fontSize: 25 }]}>
+        <Text style={[styles.generalText, styles.title]}>
           {jobInfo.jobTitle}
         </Text>
         <Text style={[styles.generalText]}>Duration: {jobInfo.duration} Hrs</Text>
         <Text style={[styles.generalText]}>{`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}</Text>
 
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
           <Text style={[styles.generalText]}>Date: {date}</Text>
           <Text style={[styles.generalText]}>Num {numOfProvider}</Text>
         </View>
@@ -61,10 +60,20 @@ const styles = StyleSheet.create({
     padding: 10,
     width: Dimensions.get("window").width,
     marginVertical: 10,
+    elevation: 10,
+    height: '100%'
+  },
+  title:{
+    borderBottomColor:'black',
+    borderBottomWidth: 2,
+    borderLeftWidth: 0,
+    fontSize: 23,
+    marginBottom: 20,
+    alignSelf: 'flex-start'
   },
   generalText: {
     fontFamily: "Montserrat-Bold",
-    fontSize: 20,
+    fontSize: 18,
   },
 });
 

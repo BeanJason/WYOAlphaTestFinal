@@ -35,6 +35,8 @@ const JobCreation1 = ({ navigation }) => {
     setError,
   } = useForm();
   
+  const [duration, setDuration] = useState(4)
+
   //address vars
   const [open, setOpen] = useState(false);
   const [address, setAddress] = useState(null);
@@ -49,8 +51,6 @@ const JobCreation1 = ({ navigation }) => {
   const [mode, setMode] = useState('date');
   const [dateOfToday, setDateOfToday] = useState(new Date())
 
-  //duration value
-  const [duration, setDuration] = useState(4)
 
   useEffect(() => {
     let nextDay = new Date()
@@ -98,6 +98,16 @@ const JobCreation1 = ({ navigation }) => {
   const showTimepicker = () => {
     showMode('time');
   };
+
+  const get12HourTime = () => {
+    let hours = date.getHours() % 12 || 12;
+    let min = (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
+    let amOrPm = "AM";
+    if (date.getHours() >= 12) {
+      amOrPm = "PM";
+    }
+    return hours + ':' + min + amOrPm
+  }
 
   //Submit the user input
   const submitForm = async (data) => {
@@ -197,7 +207,7 @@ const JobCreation1 = ({ navigation }) => {
                     >
                       <Ionicons name='time' size={20} style={commonStyles.icon}/>
                       <TextInput style={[styles.input, { color: "black" }]} editable={false} value={
-                          dateSelected ? "Time of Request: " + date.getHours() + ':' + date.getMinutes() : "Time of Request"}
+                          dateSelected ? "Time of Request: " + get12HourTime() : "Time of Request"}
                       ></TextInput>
                     </TouchableOpacity>
                   </View>

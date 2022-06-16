@@ -205,7 +205,7 @@ const UserNavigation = () => {
 
 const UserHomeTab = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
       <Stack.Screen options={{headerShown: false}} name='UserHome' component={UserHome}/>
       <Stack.Screen options={{ title: 'Job Information' }} name="JobInfo" component={JobInfo}/>
     </Stack.Navigator>
