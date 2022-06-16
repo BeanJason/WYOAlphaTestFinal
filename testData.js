@@ -68,6 +68,8 @@ export const getManyJobs = () => {
     date.setHours(10)
     date.setMinutes(0)
     let a = date.toString()
+    date.setDate(date.getDate() - 3)
+    let c = date.toString()
 
     let jobs = [{
         jobTitle: 'Cable',
@@ -98,7 +100,7 @@ export const getManyJobs = () => {
         city: 'Dearborn',
         zipCode: '48126',
         duration: 5,
-        requestDateTime: a,
+        requestDateTime: c,
         backupProviders: null,
         currentStatus: 'REQUESTED'
     }
@@ -129,7 +131,8 @@ export const getJobHistory = () => {
         duration: 5,
         requestDateTime: a,
         backupProviders: null,
-        currentStatus: 'COMPLETED'
+        currentStatus: 'COMPLETED',
+        mainProvider: 'Jack'
     },
     {
         jobTitle: 'Plumbing',
@@ -140,7 +143,8 @@ export const getJobHistory = () => {
         duration: 8,
         requestDateTime: b,
         backupProviders: null,
-        currentStatus: 'COMPLETED'
+        currentStatus: 'COMPLETED',
+        mainProvider: 'Jack'
     },
     {
         jobTitle: 'Roofing',
@@ -151,7 +155,8 @@ export const getJobHistory = () => {
         duration: 5,
         requestDateTime: c,
         backupProviders: null,
-        currentStatus: 'COMPLETED'
+        currentStatus: 'COMPLETED',
+        mainProvider: 'Jason'
     },
     {
         jobTitle: 'Roofing',
@@ -162,7 +167,8 @@ export const getJobHistory = () => {
         duration: 5,
         requestDateTime: c,
         backupProviders: null,
-        currentStatus: 'COMPLETED'
+        currentStatus: 'COMPLETED',
+        mainProvider: 'Kassim'
     }
 
 ]

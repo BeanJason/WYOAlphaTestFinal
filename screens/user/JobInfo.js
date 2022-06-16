@@ -88,7 +88,7 @@ const JobInfo = ({ route, navigation }) => {
     // getProviders()
     let date = new Date(jobInfo.requestDateTime)
     let today = new Date()
-    if(date.toDateString() <= today.toDateString()){
+    if(date.getDate() > today.getDate()){
       setShowCancel(true)
     }
     setLoading(false)

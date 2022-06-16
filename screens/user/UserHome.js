@@ -40,13 +40,9 @@ const UserHome = ({ navigation }) => {
     setLoading(false)
   }, []);
 
-  if(loading){
-    return <Spinner color={'blue'}/>
-  }
-
   return (
     <ImageBackground
-      style={[commonStyles.background, { height: 1100 }]}
+      style={[commonStyles.background, {flex: 1}]}
       source={require("../../assets/wyo_background.png")}
     >
       <SafeAreaView style={commonStyles.safeContainer}>
@@ -58,8 +54,8 @@ const UserHome = ({ navigation }) => {
         </View>
         {loading ? <Spinner color={'blue'}/> : (
         <View style={styles.body}>
-        {jobList.length == 0 ? <Text style={{fontFamily: 'Montserrat-Italic', margin: 20}}>You have no current jobs</Text> : (
-          <View>
+        {jobList.length == 0 ? <Text style={{fontFamily: 'Montserrat-Italic', flex: 1, margin: 20}}>You have no current jobs</Text> : (
+          <View style={{flex: 1}}>
             <Text style={styles.helpText}>Click on any of the following jobs for more details</Text>
             <FlatList
               data={jobList}
@@ -79,9 +75,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(113, 124, 206, 0.95)",
     alignContent: "flex-start",
     justifyContent: 'center',
-    height: '6%'
+    height: '10%'
   },
   body: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "flex-end",
     flexDirection: "column",

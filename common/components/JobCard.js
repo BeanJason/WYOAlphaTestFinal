@@ -31,7 +31,7 @@ const JobCard = ({ jobInfo }) => {
       count += jobInfo.backupProviders.length;
     }
     setNumOfProviders(count);
-  }, []);
+  }, [jobInfo]);
 
   return (
       <Pressable onPress={onPress}>
