@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { login, resetState } from "../../redux/authReducer";
 import { useEffect, useState } from "react";
-import { DataStore } from "aws-amplify";
+import { DataStore, nav } from "aws-amplify";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Job } from "../../src/models";
@@ -65,6 +65,10 @@ const JobCreation1 = ({ navigation }) => {
         value: next.count
       })
     }
+    items.push({
+      label: 'Add new address',
+      value: -1
+    })
     setAddressList(items)
   }, []);
 
@@ -117,9 +121,11 @@ const JobCreation1 = ({ navigation }) => {
     if(address == null){
       setAddressError('Address is required')
     }
+    //Success
     if(addressError == '' && dateError == ''){
       data.currentStatus = "REQUESTED";
-      data.requestDateTime = date.toString()
+      let finalDate = date.toString()
+      data.requestDateTime = finalDate
       data.duration = duration;
       if(data.jobDescription == null){
         data.jobDescription = ''
@@ -177,6 +183,7 @@ const JobCreation1 = ({ navigation }) => {
                 setValue={setAddress}
                 setItems={setAddressList}
                 onOpen={() => setAddressError('')}
+                onChangeValue={(value) => value == -1 ? navigation.navigate('Account', {name: 'Account'}): null}
               />
               {addressError ? ( <Text style={commonStyles.errorMsg}>{addressError}</Text> ) : ( <></> )}
 

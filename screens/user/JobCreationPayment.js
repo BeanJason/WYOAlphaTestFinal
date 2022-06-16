@@ -24,18 +24,18 @@ import {
 
     const submitForm = async () => {
         try {
-          await DataStore.save(
-            new Job({
-              jobTitle: data.jobTitle,
-              jobDescription: data.jobDescription,
-              currentStatus: data.currentStatus,
-              address: data.address,
-              city: data.city,
-              zipCode: data.zipCode,
-              duration: data.duration,
-              requestDateTime: data.requestDateTime,
-              requestOwner: userInfo.userID, //sub id of user
-            }));
+          // await DataStore.save(
+          //   new Job({
+          //     jobTitle: data.jobTitle,
+          //     jobDescription: data.jobDescription,
+          //     currentStatus: data.currentStatus,
+          //     address: data.address,
+          //     city: data.city,
+          //     zipCode: data.zipCode,
+          //     duration: data.duration,
+          //     requestDateTime: data.requestDateTime,
+          //     requestOwner: userInfo.userID, //sub id of user
+          //   }));
             navigation.navigate('Home', {name: 'Home'})
       } catch (error) {
         console.log(error);

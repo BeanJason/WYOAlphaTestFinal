@@ -70,22 +70,22 @@ const JobInfo = ({ route, navigation }) => {
 
   const cancelJob = async () => {
     setStartCancel(true)
-    await DataStore.delete(Job, job => job.id('eq', jobInfo.id)).then(
-      () => {
-        createToast('Your job request has been cancelled')
-        setTimeout(() => {
-          setStartCancel(false)
-          navigation.reset({ routes: [{name: 'UserHome'}]})
-          navigation.navigate('UserHome', {name: 'UserHome'})
-        }, 5000)
-      }
-    ).catch((error) => {
-      console.log(error);
-    })
+    // await DataStore.delete(Job, job => job.id('eq', jobInfo.id)).then(
+    //   () => {
+    //     createToast('Your job request has been cancelled')
+    //     setTimeout(() => {
+    //       setStartCancel(false)
+    //       navigation.reset({ routes: [{name: 'UserHome'}]})
+    //       navigation.navigate('UserHome', {name: 'UserHome'})
+    //     }, 5000)
+    //   }
+    // ).catch((error) => {
+    //   console.log(error);
+    // })
   }
   
   useEffect(() => {
-    getProviders()
+    // getProviders()
     let date = new Date(jobInfo.requestDateTime)
     let today = new Date()
     if(date.toDateString() <= today.toDateString()){
@@ -157,7 +157,7 @@ const JobInfo = ({ route, navigation }) => {
             <Text style={styles.generalText}>{jobInfo.address}</Text>
             <Text style={styles.generalText}>{jobInfo.city} {jobInfo.zipCode}</Text>
             <Text style={[styles.generalText, {marginBottom: 40}]}>Scheduled for {getDateFormat()}</Text>
-            {jobInfo.jobDescription ? <Text style={[styles.generalText, {marginBottom: 30}]}>Job Description ${jobInfo.jobDescription}</Text> : <></>}
+            {jobInfo.jobDescription ? <Text style={[styles.generalText, {marginBottom: 30}]}>Job Description: {jobInfo.jobDescription}</Text> : <></>}
             <Text style={[styles.generalText, {marginBottom: 10}]}>Main Provider: {mainProvider ? mainProvider : 'None'}</Text>
             {backupProviders.length == 0 ? <></> : (
               <View>

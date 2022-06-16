@@ -13,6 +13,7 @@ import { DataStore } from "aws-amplify";
 import { Job } from "../../src/models";
 import JobCard from "../../common/components/JobCard";
 import Spinner from "../../common/components/Spinner";
+import { get1Job, getManyJobs } from "../../testData";
 
 const UserHome = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -31,7 +32,11 @@ const UserHome = ({ navigation }) => {
   //Get all current jobs
   useEffect(() => {
     //Get user's current jobs
-    fetchJobs();
+    // fetchJobs();
+
+    //TESTING
+    setJobList(getManyJobs())
+
     setLoading(false)
   }, []);
 

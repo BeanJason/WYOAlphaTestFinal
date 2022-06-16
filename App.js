@@ -40,6 +40,7 @@ import JobCreationPayment from "./screens/user/JobCreationPayment"
 import JobInfo from "./screens/user/JobInfo"
 import JobHistory from "./screens/user/JobHistory"
 import { config } from "./common/styles";
+import { getUser } from "./testData";
 
 //CONFIGURE AMPLIFY
 Amplify.configure(awsconfig);
@@ -103,8 +104,11 @@ const RootNavigation = () => {
  
 
   const checkLoggedIn = async () => {
-    //TODO CHECK IF LOGGED IN
-    const {authUser, userInfo} = await checkCredentials();
+    // const {authUser, userInfo} = await checkCredentials();
+    
+    //TESTING
+    const{authUser, userInfo} = getUser()
+    
     if(authUser && userInfo){
       dispatch(changeUserStatus({authUser, userInfo}))
     }

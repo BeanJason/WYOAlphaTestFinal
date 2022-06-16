@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     marginVertical: 10,
     elevation: 10,
-    height: '100%'
+    // height: '50%'
   },
   title:{
     borderBottomColor:'black',
