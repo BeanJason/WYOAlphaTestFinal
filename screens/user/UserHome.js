@@ -58,6 +58,7 @@ const UserHome = ({ navigation }) => {
           <View style={{flex: 1}}>
             <Text style={styles.helpText}>Click on any of the following jobs for more details</Text>
             <FlatList
+              keyExtractor={(item) => item.id}
               data={jobList}
               renderItem={({ item }) => <JobCard jobInfo={item} />}
             />

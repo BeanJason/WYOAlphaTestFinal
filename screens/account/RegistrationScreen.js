@@ -10,87 +10,92 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { commonStyles } from "../../common/styles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 //Main registration screen to choose to sign up as a provider or user
 const RegistrationScreen = ({ navigation }) => {
   return (
-    <ImageBackground
-      style={commonStyles.background}
-      source={require("../../assets/wyo_background.png")}
-    >
-      <SafeAreaView style={commonStyles.safeContainer}>
-        {/* LOGO */}
-          <Text style={styles.header1}>Sign Up</Text>
-          <Text style={styles.header2}>
-            Choose to sign up as either a user or provider
-          </Text>
-          <View style={styles.logoContainer}>
-            <Image
-              style={commonStyles.logo}
-              source={require("../../assets/Logo.png")}
-            />
-          </View>
-
-          <View style={styles.outerContainer}>
-            {/* User Button */}
-            <View style={styles.innerContainer}>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("UserRegistration", {
-                    name: "UserRegistration",
-                  })
-                }
-              >
-                <View style={styles.buttons}>
-                  <Text style={styles.btnText}>User</Text>
+    <KeyboardAwareScrollView>
+      <ImageBackground
+        style={[commonStyles.background, {height: 700}]}
+        source={require("../../assets/wyo_background.png")}
+      >
+        <SafeAreaView style={commonStyles.safeContainer}>
+          {/* LOGO */}
+            <Text style={styles.header1}>Sign Up</Text>
+            <Text style={styles.header2}>
+              Choose to sign up as either a user or provider
+            </Text>
+            <View>
+              <View style={styles.logoContainer}>
+                <Image
+                  style={commonStyles.logo}
+                  source={require("../../assets/Logo.png")}
+                />
                 </View>
-              </TouchableOpacity>
+            </View>
 
-              {/* Info btn */}
-              <View style={styles.infoBtn}>
+            <View style={styles.outerContainer}>
+              {/* User Button */}
+              <View style={styles.innerContainer}>
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("AboutUsers", {
-                      name: "AboutUsers",
+                    navigation.navigate("UserRegistration", {
+                      name: "UserRegistration",
                     })
                   }
                 >
-                  <FontAwesome name="info-circle" size={30} />
+                  <View style={styles.buttons}>
+                    <Text style={styles.btnText}>User</Text>
+                  </View>
                 </TouchableOpacity>
-              </View>
-            </View>
 
-            {/* Provider Button */}
-            <View style={styles.innerContainer}>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("ProviderRegistration", {
-                    name: "ProviderRegistration",
-                  })
-                }
-              >
-                <View style={styles.buttons}>
-                  <Text style={styles.btnText}>Provider</Text>
+                {/* Info btn */}
+                <View style={styles.infoBtn}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("AboutUsers", {
+                        name: "AboutUsers",
+                      })
+                    }
+                  >
+                    <FontAwesome name="info-circle" size={30} />
+                  </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
+              </View>
 
-              {/* Info btn */}
-              <View style={styles.infoBtn}>
+              {/* Provider Button */}
+              <View style={styles.innerContainer}>
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("AboutProviders", {
-                      name: "AboutProviders",
+                    navigation.navigate("ProviderRegistration", {
+                      name: "ProviderRegistration",
                     })
                   }
                 >
-                  <FontAwesome name="info-circle" size={30} />
+                  <View style={styles.buttons}>
+                    <Text style={styles.btnText}>Provider</Text>
+                  </View>
                 </TouchableOpacity>
+
+                {/* Info btn */}
+                <View style={styles.infoBtn}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("AboutProviders", {
+                        name: "AboutProviders",
+                      })
+                    }
+                  >
+                    <FontAwesome name="info-circle" size={30} />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        
-      </SafeAreaView>
-    </ImageBackground>
+          
+        </SafeAreaView>
+      </ImageBackground>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -108,7 +113,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: -15,
   },
   logoContainer: {
     alignItems: "center",
@@ -131,7 +135,7 @@ const styles = StyleSheet.create({
     right: 50,
   },
   outerContainer: {
-    marginVertical: -200,
+    marginTop: 10
   },
   innerContainer: {
     justifyContent: "center",

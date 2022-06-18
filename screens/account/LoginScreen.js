@@ -68,17 +68,19 @@ import {
     return (
       <KeyboardAwareScrollView>
         <ImageBackground
-          style={commonStyles.background}
+          style={[commonStyles.background, {height: 1000}]}
           source={require("../../assets/wyo_background.png")}
         >
           <SafeAreaView style={commonStyles.safeContainer}>
             {/* LOGO */}
             <Text style={styles.header1}>Welcome!</Text>
-            <View style={styles.logoContainer}>
-              <Image
-                style={commonStyles.logo}
-                source={require("../../assets/Logo.png")}
-              />
+            <View >
+              <View style={styles.logoContainer}>
+                <Image
+                  style={commonStyles.logo}
+                  source={require("../../assets/Logo.png")}
+                />
+                </View>
             </View>
   
             {/* Input text boxes */}
@@ -193,13 +195,12 @@ import {
   const styles = StyleSheet.create({
     loginContainer: {
       alignItems: "center",
-      marginVertical: -200,
       borderColor: "rgba(0,221,255,0.7)",
       borderWidth: 1,
       backgroundColor: "rgba(0,221,255,0.7)",
       borderRadius: 10,
       padding: 30,
-      flex: 2,
+      marginTop: 15
     },
     header1: {
       fontFamily: "Montserrat-Bold",
@@ -214,7 +215,6 @@ import {
     },
     logoContainer: {
       alignItems: "center",
-      marginVertical: -50,
     },
     loginButton: {
       justifyContent: "center",

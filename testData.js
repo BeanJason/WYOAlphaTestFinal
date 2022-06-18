@@ -48,6 +48,7 @@ export const get1Job = () => {
     let d = date.toString()
 
     let job = [{
+        id: '1',
         jobTitle: 'Cable',
         jobDescription: 'I need someone to watch TV with the cable guy while he fixes the cable',
         address: '123 Main',
@@ -72,6 +73,7 @@ export const getManyJobs = () => {
     let c = date.toString()
 
     let jobs = [{
+        id: '1',
         jobTitle: 'Cable',
         jobDescription: 'I need someone to watch TV with the cable guy while he fixes the cable',
         address: '123 Main',
@@ -83,6 +85,7 @@ export const getManyJobs = () => {
         currentStatus: 'REQUESTED'
     },
     {
+        id: '2',
         jobTitle: 'Plumbing',
         jobDescription: '',
         address: '123 Main',
@@ -94,6 +97,7 @@ export const getManyJobs = () => {
         currentStatus: 'REQUESTED'
     },
     {
+        id: '3',
         jobTitle: 'Roofing',
         jobDescription: 'It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
         address: '123 Main',
@@ -123,6 +127,7 @@ export const getJobHistory = () => {
     let d = date.toString()
 
     let jobs = [{
+        id: '1',
         jobTitle: 'Cable',
         jobDescription: 'I need someone to watch TV with the cable guy while he fixes the cable',
         address: '123 Main',
@@ -135,6 +140,7 @@ export const getJobHistory = () => {
         mainProvider: 'Jack'
     },
     {
+        id: '2',
         jobTitle: 'Plumbing',
         jobDescription: '',
         address: '123 Main',
@@ -147,6 +153,7 @@ export const getJobHistory = () => {
         mainProvider: 'Jack'
     },
     {
+        id: '3',
         jobTitle: 'Roofing',
         jobDescription: 'It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
         address: '123 Main',
@@ -159,6 +166,7 @@ export const getJobHistory = () => {
         mainProvider: 'Jason'
     },
     {
+        id: '4',
         jobTitle: 'Roofing',
         jobDescription: 'It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
         address: '123 Main',

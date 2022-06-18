@@ -107,7 +107,7 @@ const RootNavigation = () => {
     // const {authUser, userInfo} = await checkCredentials();
     
     //TESTING
-    const{authUser, userInfo} = getUser()
+    const authUser=null, userInfo = null
     
     if(authUser && userInfo){
       dispatch(changeUserStatus({authUser, userInfo}))

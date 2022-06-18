@@ -77,6 +77,7 @@ export default function UserInput({control, name, rules = {}, placeholder, style
             {icon ? ( renderIcon()) : ( <></> )}
             <TextInput
               style={[style]}
+              autoCorrect={false}
               value={onKeyPress ? (phone): value}
               keyboardType={keyboardType}
               onChangeText={onChange}

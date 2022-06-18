@@ -112,7 +112,7 @@ import {
               </View>
               <FlatList
                 data={filteredJobList}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => <JobCard jobInfo={item} />}
               />
             </View>

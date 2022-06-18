@@ -22,9 +22,8 @@ export const commonStyles = StyleSheet.create({
     
   },
   logo: {
-    width: "65%",
-    resizeMode: "center",
-    height: "65%",
+    width: 350,
+    height: 350
   },
   errorMsg: {
     color: 'red',
