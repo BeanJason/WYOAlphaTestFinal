@@ -106,10 +106,10 @@ const RootNavigation = () => {
  
 
   const checkLoggedIn = async () => {
-    const {authUser, userInfo} = await checkCredentials();
+    // const {authUser, userInfo} = await checkCredentials();
     
     //TESTING
-    // const {authUser, userInfo} = getUser() 
+    const {authUser, userInfo} = getUser() 
     
     if(authUser && userInfo){
       dispatch(changeUserStatus({authUser, userInfo}))
