@@ -7,16 +7,16 @@ export const getUser = () => {
         sub: '1A',
         'custom:type': 'User'
     }
+    let address = {
+        street: '123 Main',
+        city: 'Dearborn',
+        zipCode: '48126'
+    }
     let userInfo = {
         userID: '1',
         firstName: 'John',
         lastName: 'Doe',
-        address: JSON.stringify([{
-            count: 1,
-            street: '123 Main',
-            city: 'Dearborn',
-            zipCode: '48126'
-        }])
+        address: [JSON.stringify(address)]
       }
       return {authUser, userInfo}
 }

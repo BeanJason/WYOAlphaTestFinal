@@ -53,7 +53,7 @@ import { checkCredentials } from "../../../credentials";
           source={require("../../../assets/wyo_background.png")}
         >
           <SafeAreaView style={commonStyles.safeContainer}>
-          <Text>Enter your password to verify yourself</Text>
+          <Text style={styles.header2}>Verify your password before editing your account</Text>
           <View style={styles.inputContainer}>
               {/* password */}
               <View style={styles.field}>
@@ -71,8 +71,8 @@ import { checkCredentials } from "../../../credentials";
                 />
               </View>
           </View>
-          <View style={styles.buttonContainer}>
 
+          <View style={{alignItems: 'center'}}>
             <TouchableOpacity
               onPress={handleSubmit(submitForm)}
               style={styles.button}
@@ -80,6 +80,7 @@ import { checkCredentials } from "../../../credentials";
               <Text style={styles.btnText}>Submit</Text>
             </TouchableOpacity>
           </View>
+
         </SafeAreaView>
       </ImageBackground>
     </KeyboardAwareScrollView>
@@ -97,10 +98,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 15,
     textAlign: 'center'
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: "row",
   },
   input: {
     width: 300,

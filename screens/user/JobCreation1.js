@@ -24,7 +24,6 @@ import DropDownPicker from "react-native-dropdown-picker";
 import NumericInput from 'react-native-numeric-input';
 import { checkCredentials } from "../../credentials";
 
-//Login screen
 const JobCreation1 = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
   
@@ -58,10 +57,9 @@ const JobCreation1 = ({ navigation }) => {
     nextDay.setDate(nextDay.getDate() + 1)
     setDateOfToday(nextDay)
 
-    let arr = userInfo.address
     let items = []
     let addr
-    for(let next of arr){
+    for(let next of userInfo.address){
       addr = JSON.parse(next)
       items.push({
         label: `${addr.street} ${addr.city} ${addr.zipCode}`,
@@ -134,12 +132,14 @@ const JobCreation1 = ({ navigation }) => {
         data.jobDescription = ''
       }
 
-      let arr = JSON.parse(userInfo.address)
-      for(let next of arr){
-        if(next.count == address){
+      let addr
+      for(let next of userInfo.address){
+        addr = JSON.parse(next)
+        if(addr.street == address){
           data.address = next.street
           data.city = next.city
           data.zipCode = next.zipCode
+          break;
         }
       }
       

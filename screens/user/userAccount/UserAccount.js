@@ -15,6 +15,8 @@ import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../redux/authReducer";
 import { useEffect } from "react";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+
 
 //Login screen
 const UserAccountTab = ({ navigation }) => {
@@ -30,12 +32,19 @@ const UserAccountTab = ({ navigation }) => {
         <SafeAreaView style={commonStyles.safeContainer}>
           <Text style={styles.header1}>User Account</Text>
 
-          <Text onPress={() => {navigation.navigate('EditAccountUser2')}}>Edit Account 1</Text>
+          <View style={{alignItems: 'center', marginTop: 20}}>
+            <TouchableOpacity onPress={() => {navigation.navigate('EditAccountUser1')}}>
+              <View style={styles.button}>
+                <Text style={styles.btnText}>Edit Account</Text>
+                <FontAwesome name="cog" size={25} style={{color: 'white', marginLeft: 5}} />
+              </View>
+            </TouchableOpacity>
 
-          <View>
+          
             <TouchableOpacity onPress={() => dispatch(logout())}>
-              <View style={styles.logoutButton}>
+              <View style={styles.button}>
                 <Text style={styles.btnText}>Logout</Text>
+                <MaterialIcons name="logout" size={25} style={{color: 'white', marginLeft: 10}} />
               </View>
             </TouchableOpacity>
           </View>
@@ -56,18 +65,19 @@ const styles = StyleSheet.create({
   btnText: {
     color: "white",
     fontFamily: "Montserrat-Bold",
-    fontSize: 30,
+    fontSize: 23,
     justifyContent: "center",
     alignItems: "center",
   },
-  logoutButton: {
+  button: {
     justifyContent: "center",
     alignItems: "center",
-    width: 150,
+    width: 200,
     height: 50,
     backgroundColor: "black",
     borderRadius: 10,
-    marginVertical: 10,
+    marginVertical: 20,
+    flexDirection: 'row'
   },
 });
 

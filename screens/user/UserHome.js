@@ -35,7 +35,7 @@ const UserHome = ({ navigation }) => {
     // fetchJobs();
 
     //TESTING
-    setJobList(getManyJobs())
+    setJobList(get1Job())
 
     setLoading(false)
   }, []);
