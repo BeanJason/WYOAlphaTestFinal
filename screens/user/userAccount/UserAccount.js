@@ -30,7 +30,7 @@ const UserAccountTab = ({ navigation }) => {
         <SafeAreaView style={commonStyles.safeContainer}>
           <Text style={styles.header1}>User Account</Text>
 
-          <Text onPress={() => {navigation.navigate('EditAccountUser1')}}>Edit Account 1</Text>
+          <Text onPress={() => {navigation.navigate('EditAccountUser2')}}>Edit Account 1</Text>
 
           <View>
             <TouchableOpacity onPress={() => dispatch(logout())}>

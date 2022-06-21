@@ -32,10 +32,10 @@ const UserHome = ({ navigation }) => {
   //Get all current jobs
   useEffect(() => {
     //Get user's current jobs
-    // fetchJobs();
+    fetchJobs();
 
     //TESTING
-    setJobList(getManyJobs())
+    // setJobList(getManyJobs())
 
     setLoading(false)
   }, []);

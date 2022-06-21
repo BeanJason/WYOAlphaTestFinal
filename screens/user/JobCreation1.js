@@ -22,6 +22,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Job } from "../../src/models";
 import DropDownPicker from "react-native-dropdown-picker";
 import NumericInput from 'react-native-numeric-input';
+import { checkCredentials } from "../../credentials";
 
 //Login screen
 const JobCreation1 = ({ navigation }) => {
@@ -57,12 +58,14 @@ const JobCreation1 = ({ navigation }) => {
     nextDay.setDate(nextDay.getDate() + 1)
     setDateOfToday(nextDay)
 
-    let arr = JSON.parse(userInfo.address)
+    let arr = userInfo.address
     let items = []
+    let addr
     for(let next of arr){
+      addr = JSON.parse(next)
       items.push({
-        label: `${next.street} ${next.city} ${next.zipCode}`,
-        value: next.count
+        label: `${addr.street} ${addr.city} ${addr.zipCode}`,
+        value: addr.street
       })
     }
     items.push({

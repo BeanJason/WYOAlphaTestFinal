@@ -15,6 +15,8 @@ import {
   import { useSelector, useDispatch } from "react-redux";
   import { login, resetState } from "../../../redux/authReducer";
   import { useEffect } from "react";
+import { Auth } from "aws-amplify";
+import { checkCredentials } from "../../../credentials";
   
   //Login screen
   const EditAccountUser1 = ({ navigation }) => {
@@ -22,38 +24,25 @@ import {
     const {
       control,
       handleSubmit,
-      watch,
-      setValue,
       formState: { errors },
       setError
     } = useForm();
+
+    const { authUser } = useSelector((state) => state.auth);
     
     //Submit the user input
-    const submitForm = (data) => {
-      //check if birthday is over 18
-      if(new Date().getFullYear() - date.getFullYear() >= 18){
-        data.type = 'User'
-        data.email = data.email.trim()
-        data.dateOfBirth = date.toISOString().slice(0, 10)
-        data.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1)
-        data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1)
-        data.firstName = data.firstName.trim()
-        data.lastName = data.lastName.trim()
-        data.address = data.address.trim()
-        data.city = data.city.trim()
-        let addressArray = [{
-          count: 1,
-          street: data.address,
-          city: data.city,
-          zipCode: data.zipCode
-        }]
-        data.address = addressArray
-        dispatch(register(data))
-        navigation.navigate('ConfirmEmail',{name: 'ConfirmEmail'})
-      }
-      else{
-        setBirthdayError('You must be 18 or older to use this app')
-      }
+    const submitForm = async (data) => {
+     try {
+       await Auth.signIn({username: authUser.email, password: data.password})
+       checkCredentials();
+        navigation.navigate('EditAccountUser2',{name: 'EditAccountUser2'})
+     } catch (error) {
+      setError("password", {
+        type: "mismatch",
+        message: "Incorrect username or password",
+      });
+     }
+     
     
     };
 
@@ -64,83 +53,25 @@ import {
           source={require("../../../assets/wyo_background.png")}
         >
           <SafeAreaView style={commonStyles.safeContainer}>
-          <Text>This is the edit account page for the user</Text>
+          <Text>Enter your password to verify yourself</Text>
           <View style={styles.inputContainer}>
-              {/* phone number */}
+              {/* password */}
               <View style={styles.field}>
                 <UserInput
                   style={styles.input}
-                  name="phoneNumber"
-                  icon='phone'
-                  location='FontAwesome'
-                  onKeyPress
-                  maxLength={12}
-                  keyboardType="numeric"
+                  name="password"
+                  icon='lock'
+                  location='MaterialIcons'
                   rules={{
-                    required: "Phone Number is Required",
+                    required: "Password is Required",
                   }}
-                  placeholder={"Phone Number"}
+                  placeholder={"Password"}
                   control={control}
+                  secureTextEntry
                 />
               </View>
-
-            {/* address */}
-            <View style={styles.field}>
-              <UserInput
-                style={styles.input}
-                icon='address-card-o'
-                location='FontAwesome'
-                name="address"
-                rules={{ required: "Address is Required" }}
-                placeholder={"Address"}
-                control={control}
-              />
-              {/* city */}
-              <UserInput
-                style={styles.input}
-                icon='location-city'
-                location='MaterialIcons'
-                name="city"
-                rules={{
-                   required: "City is Required",
-                   pattern: {
-                     value: /^[a-zA-Z ]+$/,
-                     message: 'Only letters are allowed in the city name'
-                   }}}
-                placeholder={"City"}
-                control={control}
-              />
-              {/* zip code */}
-              <UserInput
-                style={{ fontSize: 16 }}
-                name="zipCode"
-                icon='location-arrow'
-                keyboardType="numeric"
-                location='FontAwesome'
-                maxLength={5}
-                rules={{ 
-                  required: "Zip Code is Required",
-                  pattern: {
-                    value: /\d{5}/,
-                    message: 'Zip code must be a valid 5 digit code'
-                  }
-                }}
-                placeholder={"Zip Code"}
-                control={control}
-              />
-            </View>
-
-            
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("UserHome", { name: "UserHome" })
-              }
-              style={[styles.button, styles.buttonOutline]}
-            >
-              <Text style={styles.btnText}>Cancel</Text>
-            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={handleSubmit(submitForm)}

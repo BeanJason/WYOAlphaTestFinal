@@ -21,7 +21,6 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
     const {email, password} = data
     let authUser, userData, userInfo
     let message = ''    
-    
     //Try to make a user session
     try {
       authUser = await Auth.signUp({username: email, password, attributes:{email, 'custom:type': data.type}});
@@ -77,6 +76,7 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
               firstName: userData.firstName,
               lastName: userData.lastName,
               address: userData.address,
+              phoneNumber: userData.phoneNumber
             }
             let attr = {
               sub: authUser.userSub,
@@ -134,6 +134,7 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
             firstName: userData.firstName,
             lastName: userData.lastName,
             address: userData.address,
+            phoneNumber: userData.phoneNumber
           }
           return {authUser: user.attributes, userInfo}
         }
@@ -178,6 +179,9 @@ export const authReducer = createSlice({
       state.isLoading = false;
       state.message = "";
     },
+    changeUserInfo: (state, action) => {
+      state.userInfo = action.payload.userInfo
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -236,5 +240,5 @@ export const authReducer = createSlice({
   },
 });
 
-export const { changeUserStatus, resetState } = authReducer.actions;
+export const { changeUserStatus, resetState, changeUserInfo } = authReducer.actions;
 export default authReducer.reducer;

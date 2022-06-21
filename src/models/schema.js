@@ -104,6 +104,20 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "orderID": {
+                    "name": "orderID",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "price": {
+                    "name": "price",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -390,7 +404,7 @@ export const schema = {
                 "address": {
                     "name": "address",
                     "isArray": true,
-                    "type": "AWSJSON",
+                    "type": "String",
                     "isRequired": true,
                     "attributes": [],
                     "isArrayNullable": true
@@ -464,5 +478,5 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "version": "4c1ed7bb247a440fec1a146a68f9daf3"
+    "version": "4b73baf79238cf9ccb67d7565c5a4307"
 };

@@ -34,11 +34,13 @@ import ConfirmEmail from "./screens/account/ConfirmEmail";
 import UserHome from "./screens/user/UserHome";
 import UserAccount from "./screens/user/userAccount/UserAccount"
 import EditAccountUser2 from "./screens/user/userAccount/EditAccountUser2"
+import AddAddress from "./screens/user/userAccount/AddAddress"
 import EditAccountUser1 from "./screens/user/userAccount/EditAccountUser1"
 import JobCreation1 from "./screens/user/JobCreation1"
 import JobCreationPayment from "./screens/user/JobCreationPayment"
 import JobInfo from "./screens/user/JobInfo"
 import JobHistory from "./screens/user/JobHistory"
+
 import { config } from "./common/styles";
 import { getUser } from "./testData";
 
@@ -104,10 +106,10 @@ const RootNavigation = () => {
  
 
   const checkLoggedIn = async () => {
-    // const {authUser, userInfo} = await checkCredentials();
+    const {authUser, userInfo} = await checkCredentials();
     
     //TESTING
-    const authUser=null, userInfo = null
+    // const {authUser, userInfo} = getUser() 
     
     if(authUser && userInfo){
       dispatch(changeUserStatus({authUser, userInfo}))
@@ -236,10 +238,11 @@ const UserHistoryTab = () => {
 
 const UserAccountTab = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
       <Stack.Screen options={{ headerShown: false }} name="UserAccount" component={UserAccount}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser1" component={EditAccountUser1}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser2" component={EditAccountUser2}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="AddAddress" component={AddAddress}/>
     </Stack.Navigator>
   )
 }

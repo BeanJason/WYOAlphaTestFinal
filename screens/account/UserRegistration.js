@@ -84,13 +84,12 @@ const UserRegistration = ({ navigation }) => {
       data.lastName = data.lastName.trim()
       data.address = data.address.trim()
       data.city = data.city.trim()
-      let addressArray = [{
-        count: 1,
+      let addressArray = {
         street: data.address,
         city: data.city,
         zipCode: data.zipCode
-      }]
-      data.address = addressArray
+      }
+      data.address = [JSON.stringify(addressArray)]
       dispatch(register(data))
       navigation.navigate('ConfirmEmail',{name: 'ConfirmEmail'})
     }

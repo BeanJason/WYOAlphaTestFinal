@@ -36,6 +36,8 @@ export declare class Job {
   readonly currentStatus: Jobstatus | keyof typeof Jobstatus;
   readonly mainProvider?: string | null;
   readonly requestOwner: string;
+  readonly orderID: string;
+  readonly price: number;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Job, JobMetaData>);

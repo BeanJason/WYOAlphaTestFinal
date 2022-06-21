@@ -20,6 +20,8 @@ type Job @model @auth(rules: [{allow: public}]) {
   currentStatus: JOBSTATUS!
   mainProvider: ID @index(name: "byProvider")
   requestOwner: ID! @index(name: "byUser")
+  orderID: String!
+  price: Float!
 }
 
 type Provider @model @auth(rules: [{allow: public}]) {
@@ -50,7 +52,7 @@ type User @model @auth(rules: [{allow: public}]) {
   email: AWSEmail!
   phoneNumber: AWSPhone!
   dateOfBirth: AWSDate
-  address: [AWSJSON!]
+  address: [String!]
   jobs: [Job] @hasMany(indexName: "byUser", fields: ["id"])
 }
  

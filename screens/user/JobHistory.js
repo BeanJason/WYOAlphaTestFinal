@@ -19,9 +19,12 @@ import {
   import { FontAwesome } from "@expo/vector-icons"
   import JobCard from "../../common/components/JobCard";
   import { getJobHistory } from "../../testData";
+  import { DataStore } from "aws-amplify";
+  import { Job } from "../../src/models";
 
   
   const JobHistory = ({ navigation }) => {
+    const { userInfo } = useSelector((state) => state.auth);
     const [jobList, setJobList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filteredJobList, setFilteredJobList] = useState([]);
@@ -40,11 +43,11 @@ import {
 
     //Get all completed jobs
     useEffect(() => {
-      // fetchJobs();
+      fetchJobs();
 
       //TESTING
-      setJobList(getJobHistory())
-      setFilteredJobList(getJobHistory())
+      // setJobList(getJobHistory())
+      // setFilteredJobList(getJobHistory())
 
       setLoading(false)
     }, []);
