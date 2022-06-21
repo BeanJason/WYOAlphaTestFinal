@@ -46,18 +46,7 @@ import { changeUserInfo } from "../../../redux/authReducer";
 
 //Submit the user input
 const submitForm = (data) => {
-  data.type = 'User'
-  data.address = data.address.trim()
-  data.city = data.city.trim()
-  let addressArray = [{
-    count: 1,
-    street: data.address,
-    city: data.city,
-    zipCode: data.zipCode
-  }]
-  data.address = addressArray
-  dispatch(register(data))
-  navigation.navigate('UserHome',{name: 'UserHome'})
+  
 };
 
 const getUpdatedInfo = async() => {
@@ -65,7 +54,7 @@ const getUpdatedInfo = async() => {
 }
 
 useEffect(() => {
-  getUpdatedInfo()
+  // getUpdatedInfo()
   let list = []
   for(let next of userInfo.address){
     list.push(JSON.parse(next))

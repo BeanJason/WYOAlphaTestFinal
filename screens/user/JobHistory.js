@@ -43,11 +43,11 @@ import {
 
     //Get all completed jobs
     useEffect(() => {
-      fetchJobs();
+      // fetchJobs();
 
       //TESTING
-      // setJobList(getJobHistory())
-      // setFilteredJobList(getJobHistory())
+      setJobList(getJobHistory())
+      setFilteredJobList(getJobHistory())
 
       setLoading(false)
     }, []);
