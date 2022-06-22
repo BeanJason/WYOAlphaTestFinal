@@ -12,7 +12,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 import { useSelector, useDispatch } from "react-redux";
 import {Amplify, Auth} from "aws-amplify"
-import { checkCredentials } from "./credentials";
+import { checkCredentials, getStripeKey } from "./credentials";
 import { changeUserStatus } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
@@ -43,6 +43,8 @@ import JobHistory from "./screens/user/JobHistory"
 
 import { config } from "./common/styles";
 import { getUser } from "./testData";
+
+import {StripeProvider} from "@stripe/stripe-react-native"
 
 //CONFIGURE AMPLIFY
 Amplify.configure(awsconfig);
@@ -93,7 +95,10 @@ export default function App() {
 
   return (
     <Provider store={Store}>
-      <RootNavigation/>
+      <StripeProvider publishableKey= {getStripeKey()} >
+        <RootNavigation />
+      </StripeProvider>
+      
     </Provider>
   );
 }
@@ -107,7 +112,7 @@ const RootNavigation = () => {
 
   const checkLoggedIn = async () => {
     // const {authUser, userInfo} = await checkCredentials();
-    
+
     //TESTING
     const {authUser, userInfo} = getUser() 
     

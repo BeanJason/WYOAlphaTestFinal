@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native";
 import UserInput from "../../common/components/UserInput";
-import Spinner from "../../common/components/Spinner";
 import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useForm } from "react-hook-form";
@@ -142,7 +141,7 @@ const JobCreation1 = ({ navigation }) => {
           break;
         }
       }
-      
+      //Send info to the server
       //Send info to payment screen
       navigation.navigate("JobCreationPayment", { name: "JobCreationPayment" , data: data, userInfo: userInfo});
   }

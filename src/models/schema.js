@@ -104,18 +104,18 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "orderID": {
-                    "name": "orderID",
+                "paymentID": {
+                    "name": "paymentID",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": true,
+                    "isRequired": false,
                     "attributes": []
                 },
                 "price": {
                     "name": "price",
                     "isArray": false,
                     "type": "Float",
-                    "isRequired": true,
+                    "isRequired": false,
                     "attributes": []
                 },
                 "createdAt": {
@@ -477,6 +477,26 @@ export const schema = {
             ]
         }
     },
-    "nonModels": {},
-    "version": "4b73baf79238cf9ccb67d7565c5a4307"
+    "nonModels": {
+        "PaymentIntent": {
+            "name": "PaymentIntent",
+            "fields": {
+                "clientSecret": {
+                    "name": "clientSecret",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "amount": {
+                    "name": "amount",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": true,
+                    "attributes": []
+                }
+            }
+        }
+    },
+    "version": "6073066725d0f62240ace4f944bc4788"
 };

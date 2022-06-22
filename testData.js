@@ -4,8 +4,10 @@ export const getLoggedIn = () => {
 
 export const getUser = () => {
     let authUser = {
-        sub: '1A',
-        'custom:type': 'User'
+        "custom:type": "User",
+        "email": "kassimballout@gmail.com",
+        "email_verified": true,
+        "sub": "5dfc329e-8231-4fa3-b045-aad293ac531b",
     }
     let address = {
         street: '123 Main',

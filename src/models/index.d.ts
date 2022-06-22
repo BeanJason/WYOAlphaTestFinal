@@ -7,7 +7,11 @@ export enum Jobstatus {
   COMPLETED = "COMPLETED"
 }
 
-
+export declare class PaymentIntent {
+  readonly clientSecret: string;
+  readonly amount: number;
+  constructor(init: ModelInit<PaymentIntent>);
+}
 
 type JobMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
@@ -36,8 +40,8 @@ export declare class Job {
   readonly currentStatus: Jobstatus | keyof typeof Jobstatus;
   readonly mainProvider?: string | null;
   readonly requestOwner: string;
-  readonly orderID: string;
-  readonly price: number;
+  readonly paymentID?: string | null;
+  readonly price?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Job, JobMetaData>);
