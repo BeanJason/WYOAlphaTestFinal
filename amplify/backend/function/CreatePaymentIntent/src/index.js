@@ -23,10 +23,12 @@ exports.handler = async (event) => {
         currency: 'usd',
         metadata: {
             User: arguments.userID,
-            Email: arguments.email 
+            Email: arguments.email, 
+            Job: arguments.jobID
         }
     })
 
+    console.log(paymentIntent);
     return {
         clientSecret: paymentIntent.client_secret,
         amount: amount

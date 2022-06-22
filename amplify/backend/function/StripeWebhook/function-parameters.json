@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "storage": {
+      "Job:@model(appsync)": [
+        "create",
+        "read"
+      ],
+      "User:@model(appsync)": [
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

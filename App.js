@@ -13,7 +13,7 @@ import { Provider } from "react-redux";
 import { useSelector, useDispatch } from "react-redux";
 import {Amplify, Auth} from "aws-amplify"
 import { checkCredentials, getStripeKey } from "./credentials";
-import { changeUserStatus } from "./redux/authReducer";
+import { changeUserStatus, logout } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from "expo-asset"
@@ -108,13 +108,14 @@ const RootNavigation = () => {
   const [loading, setLoading] = useState(true);
   const {loggedIn} = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  // dispatch(logout())
  
 
   const checkLoggedIn = async () => {
-    // const {authUser, userInfo} = await checkCredentials();
+    const {authUser, userInfo} = await checkCredentials();
 
     //TESTING
-    const {authUser, userInfo} = getUser() 
+    // const {authUser, userInfo} = getUser() 
     
     if(authUser && userInfo){
       dispatch(changeUserStatus({authUser, userInfo}))

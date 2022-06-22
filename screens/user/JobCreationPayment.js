@@ -17,15 +17,15 @@ import {
   import { useEffect, useState } from "react";
   import { DataStore, API, graphqlOperation } from "aws-amplify";
   import { Job } from "../../src/models";
-  import {useStripe} from "@stripe/stripe-react-native"
+  import {initPaymentSheet, presentPaymentSheet} from "@stripe/stripe-react-native"
   import { createPaymentIntent } from "../../src/graphql/mutations"
+  import { createToast } from "../../common/components/Toast";
   
   //Login screen
   const JobCreationPayment = ({route, navigation }) => {
     const {data, userInfo} = route.params
     const { authUser } = useSelector((state) => state.auth);
     const [clientSecret, setclientSecret] = useState('')
-    const {initPaymentSheet, presentPaymentSheet} = useStripe();
     const [loading, setLoading] = useState(false)
 
     const submitJob = async () => {
@@ -34,15 +34,34 @@ import {
 
     //setup the payment screen
     const fetchPaymentIntent = async () => {
-      if(data.duration){
+      try {
+        const job = await DataStore.save(
+          new Job({
+          "jobTitle": data.jobTitle,
+          "jobDescription": data.jobDescription,
+          "address": data.address,
+          "city": data.city,
+          "zipCode": data.zipCode,
+          "duration": data.duration,
+          "requestDateTime": data.requestDateTime,
+          "backupProviders": [],
+          "currentStatus": "REQUESTED",
+          "requestOwner": userInfo.userID,
+          "paymentID": "123456",
+          "price": 2.00
+        })
+        );
         const response = await API.graphql(
           graphqlOperation(createPaymentIntent, {
             duration: data.duration,
             userID: userInfo.userID,
-            email: authUser.email
+            email: authUser.email,
+            jobID: job.id
           })
         )
         setclientSecret(response.data.createPaymentIntent.clientSecret)
+      } catch (error) {
+        console.log('error saving job ' + error);
       }
     }
 
@@ -60,7 +79,6 @@ import {
 
     //initialize screen
     const initializePaymentScreen = async () => {
-      console.log(clientSecret);
       if(!clientSecret){
         return;
       }
@@ -68,7 +86,6 @@ import {
         paymentIntentClientSecret: clientSecret,
         merchantDisplayName: 'WYOServices'
       })
-      console.log(initPay);
       if(initPay.error){
         setLoading(true)
       }
@@ -79,12 +96,13 @@ import {
       if(!clientSecret){
         return;
       }
-      const { error } = await presentPaymentSheet();
-      if (error) {
-        console.log(`Error code: ${error.code}`, error.message);
+      const payment  = await presentPaymentSheet();
+      if (payment.error) {
+        console.log(`Error code: ${payment.error.code}`, payment.error.message);
+        createToast('Error, ' + payment.error.message)
       } else {
+        createToast('Success, Your payment was confirmed!')
         submitJob();
-        console.log('Success', 'Your order is confirmed!');
       }
     }
 

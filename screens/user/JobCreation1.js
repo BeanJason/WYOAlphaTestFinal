@@ -135,9 +135,9 @@ const JobCreation1 = ({ navigation }) => {
       for(let next of userInfo.address){
         addr = JSON.parse(next)
         if(addr.street == address){
-          data.address = next.street
-          data.city = next.city
-          data.zipCode = next.zipCode
+          data.address = addr.street
+          data.city = addr.city
+          data.zipCode = addr.zipCode
           break;
         }
       }

@@ -8,13 +8,9 @@ import {
     TextInput
   } from "react-native";
   import { TouchableOpacity } from "react-native";
-  import UserInput from "../../common/components/UserInput";
   import Spinner from "../../common/components/Spinner";
   import { commonStyles } from "../../common/styles";
-  import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-  import { useForm } from "react-hook-form";
-  import { useSelector, useDispatch } from "react-redux";
-  import { login, resetState } from "../../redux/authReducer";
+  import { useSelector } from "react-redux";
   import { useEffect, useState } from "react";
   import { FontAwesome } from "@expo/vector-icons"
   import JobCard from "../../common/components/JobCard";
@@ -33,9 +29,9 @@ import {
 
     const fetchJobs = async () => {
       await DataStore.query(Job, (job) => {
-        job.requestOwner("eq", userInfo.userID) &&
-          job.currentStatus("eq", "COMPLETED");
+        job.requestOwner("eq", userInfo.userID)
       }).then((jobsFound) => {
+        jobsFound = jobsFound.filter(j => j.currentStatus == 'COMPLETED')
         setJobList(jobsFound);
         setFilteredJobList(jobsFound)
       });
@@ -43,11 +39,11 @@ import {
 
     //Get all completed jobs
     useEffect(() => {
-      // fetchJobs();
+      fetchJobs();
 
       //TESTING
-      setJobList(getJobHistory())
-      setFilteredJobList(getJobHistory())
+      // setJobList(getJobHistory())
+      // setFilteredJobList(getJobHistory())
 
       setLoading(false)
     }, []);

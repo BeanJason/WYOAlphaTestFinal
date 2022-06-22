@@ -8,7 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import { commonStyles } from "../../common/styles";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { DataStore } from "aws-amplify";
 import { Job } from "../../src/models";
 import JobCard from "../../common/components/JobCard";
@@ -22,9 +22,9 @@ const UserHome = ({ navigation }) => {
   
   const fetchJobs = async () => {
     await DataStore.query(Job, (job) => {
-      job.requestOwner("eq", userInfo.userID) &&
-        job.currentStatus("ne", "COMPLETED");
+      job.requestOwner("eq", userInfo.userID) 
     }).then((jobsFound) => {
+      jobsFound = jobsFound.filter(j => j.currentStatus != 'COMPLETED')
       setJobList(jobsFound);
     });
   };
@@ -32,10 +32,10 @@ const UserHome = ({ navigation }) => {
   //Get all current jobs
   useEffect(() => {
     //Get user's current jobs
-    // fetchJobs();
+    fetchJobs();
 
     //TESTING
-    setJobList(get1Job())
+    // setJobList(getManyJobs())
 
     setLoading(false)
   }, []);

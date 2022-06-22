@@ -71,18 +71,18 @@ const JobInfo = ({ route, navigation }) => {
   const cancelJob = async () => {
     setStartCancel(true)
     //REFUND
-    // await DataStore.delete(Job, job => job.id('eq', jobInfo.id)).then(
-    //   () => {
-    //     createToast('Your job request has been cancelled')
-    //     setTimeout(() => {
-    //       setStartCancel(false)
-    //       navigation.reset({ routes: [{name: 'UserHome'}]})
-    //       navigation.navigate('UserHome', {name: 'UserHome'})
-    //     }, 5000)
-    //   }
-    // ).catch((error) => {
-    //   console.log(error);
-    // })
+    await DataStore.delete(Job, job => job.id('eq', jobInfo.id)).then(
+      () => {
+        createToast('Your job request has been cancelled')
+        setTimeout(() => {
+          setStartCancel(false)
+          navigation.reset({ routes: [{name: 'UserHome'}]})
+          navigation.navigate('UserHome', {name: 'UserHome'})
+        }, 5000)
+      }
+    ).catch((error) => {
+      console.log(error);
+    })
   }
   
   useEffect(() => {
