@@ -74,7 +74,7 @@ const EditAccountUser2 = ({ navigation }) => {
   };
 
   useEffect(() => {
-    // getUpdatedInfo()
+    getUpdatedInfo()
     let list = [];
     for (let next of userInfo.address) {
       list.push(JSON.parse(next));

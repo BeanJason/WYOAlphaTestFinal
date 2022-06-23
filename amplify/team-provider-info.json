@@ -18,11 +18,11 @@
       "function": {
         "CreatePaymentIntent": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/CreatePaymentIntent-664a356d554d5553354f-build.zip"
+          "s3Key": "amplify-builds/CreatePaymentIntent-585a56534c6458476936-build.zip"
         },
         "StripeWebhook": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/StripeWebhook-6676782b774d74754a73-build.zip"
+          "s3Key": "amplify-builds/StripeWebhook-523849367663696b3852-build.zip"
         }
       }
     }

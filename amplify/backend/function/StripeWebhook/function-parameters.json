@@ -3,10 +3,8 @@
     "storage": {
       "Job:@model(appsync)": [
         "create",
-        "read"
-      ],
-      "User:@model(appsync)": [
-        "read"
+        "read",
+        "update"
       ]
     }
   },

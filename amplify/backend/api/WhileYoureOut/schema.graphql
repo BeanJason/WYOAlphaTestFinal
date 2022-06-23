@@ -1,10 +1,9 @@
-type Mutation {
-  createPaymentIntent(duration: Int!, userID: String!, email: String!, jobID: String!): PaymentIntent! @function(name: "CreatePaymentIntent-${env}")
+type PaymentIntent {
+  clientSecret: String!
 }
 
-type PaymentIntent{
-  clientSecret: String!
-  amount: Float!
+type Mutation {
+  createPaymentIntent(amount: Int!, email: String!, jobID: String!): PaymentIntent! @function(name: "CreatePaymentIntent-${env}")
 }
 
 enum JOBSTATUS {

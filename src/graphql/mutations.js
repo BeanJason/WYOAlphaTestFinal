@@ -3,19 +3,12 @@
 
 export const createPaymentIntent = /* GraphQL */ `
   mutation CreatePaymentIntent(
-    $duration: Int!
-    $userID: String!
+    $amount: Int!
     $email: String!
     $jobID: String!
   ) {
-    createPaymentIntent(
-      duration: $duration
-      userID: $userID
-      email: $email
-      jobID: $jobID
-    ) {
+    createPaymentIntent(amount: $amount, email: $email, jobID: $jobID) {
       clientSecret
-      amount
     }
   }
 `;

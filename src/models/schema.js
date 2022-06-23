@@ -487,16 +487,9 @@ export const schema = {
                     "type": "String",
                     "isRequired": true,
                     "attributes": []
-                },
-                "amount": {
-                    "name": "amount",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": true,
-                    "attributes": []
                 }
             }
         }
     },
-    "version": "6073066725d0f62240ace4f944bc4788"
+    "version": "616c111b423c920db83a8a9502b95c3a"
 };

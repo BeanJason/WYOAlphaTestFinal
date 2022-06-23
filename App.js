@@ -17,6 +17,8 @@ import { changeUserStatus, logout } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from "expo-asset"
+import { LogBox } from 'react-native';
+
 
 //SCREENS
 import RegistrationScreen from "./screens/account/RegistrationScreen";
@@ -43,8 +45,9 @@ import JobHistory from "./screens/user/JobHistory"
 
 import { config } from "./common/styles";
 import { getUser } from "./testData";
+// import {StripeProvider} from "@stripe/stripe-react-native"
+let StripeProvider
 
-import {StripeProvider} from "@stripe/stripe-react-native"
 
 //CONFIGURE AMPLIFY
 Amplify.configure(awsconfig);
@@ -86,13 +89,15 @@ export default function App() {
   }
 
   useEffect(() => {
+    LogBox.ignoreLogs(['new NativeEventEmitter'])
     loadAllResources();
+    StripeProvider = require('@stripe/stripe-react-native').StripeProvider
   }, [])
 
   if(!imagesLoaded || !fontsLoaded){
     return null;
   }
-
+  
   return (
     <Provider store={Store}>
       <StripeProvider publishableKey= {getStripeKey()} >
@@ -113,7 +118,7 @@ const RootNavigation = () => {
 
   const checkLoggedIn = async () => {
     const {authUser, userInfo} = await checkCredentials();
-
+    
     //TESTING
     // const {authUser, userInfo} = getUser() 
     
@@ -228,7 +233,7 @@ const UserJobCreationTab = () => {
   return(
   <Stack.Navigator>
     <Stack.Screen options={{headerShown: false }} name="JobCreation1" component={JobCreation1}/>
-    <Stack.Screen options={{ title: 'Create a Job' }} name="JobCreationPayment" component={JobCreationPayment}/>
+    <Stack.Screen options={{ headerShown: false, headerLeft: null}} name="JobCreationPayment" component={JobCreationPayment}/>
   </Stack.Navigator>
   )
 }

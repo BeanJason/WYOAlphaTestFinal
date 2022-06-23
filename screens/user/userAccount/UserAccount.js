@@ -30,7 +30,7 @@ const UserAccountTab = ({ navigation }) => {
         source={require("../../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
-          <Text style={styles.header1}>User Account</Text>
+          <Text style={styles.header1}>Account</Text>
 
           <View style={{alignItems: 'center', marginTop: 20}}>
             <TouchableOpacity onPress={() => {navigation.navigate('EditAccountUser1')}}>

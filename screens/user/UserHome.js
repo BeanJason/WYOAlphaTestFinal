@@ -31,6 +31,7 @@ const UserHome = ({ navigation }) => {
 
   //Get all current jobs
   useEffect(() => {
+    setJobList([])
     //Get user's current jobs
     fetchJobs();
 
