@@ -12,7 +12,7 @@ import {
   import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
   import { useSelector } from "react-redux";
   import { useEffect, useState } from "react";
-  import { DataStore, API, graphqlOperation, nav } from "aws-amplify";
+  import { DataStore, API, graphqlOperation } from "aws-amplify";
   import { Job } from "../../src/models";
   import {initPaymentSheet, presentPaymentSheet} from "@stripe/stripe-react-native"
   import { createToast } from "../../common/components/Toast";
@@ -38,14 +38,13 @@ import {
       setPaymentStatus('Payment was successful!')
       setTimeout(() => {
         navigation.reset({ routes: [{name: 'UserHome'}]})
-        navigation.navigate('UserHome', {name: 'UserHome'})
+        navigation.navigate('Home')
       }, 5000)
     }
 
     //setup the payment screen
     const fetchPaymentIntent = async () => {
       let price = 2000;
-      console.log(data.duration);
       switch (data.duration) {
         case 4:
           price = 2000;
@@ -99,7 +98,7 @@ import {
 
     //happens on page load
     useEffect(() => {
-      // fetchPaymentIntent();
+      fetchPaymentIntent();
     },[])
 
     //initialize screen when client secret is available
