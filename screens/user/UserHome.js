@@ -8,38 +8,33 @@ import {
   FlatList,
 } from "react-native";
 import { commonStyles } from "../../common/styles";
-import { useSelector } from "react-redux";
-import { DataStore } from "aws-amplify";
-import { Job } from "../../src/models";
+import { useDispatch, useSelector } from "react-redux";
 import JobCard from "../../common/components/JobCard";
 import Spinner from "../../common/components/Spinner";
 import { get1Job, getManyJobs } from "../../testData";
+import { initializeJobs } from "../../redux/jobsReducer";
 
 const UserHome = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
-  const [jobList, setJobList] = useState([]);
+  const { initialized, activeJobs } = useSelector((state) => state.jobs);
+  const dispatch = useDispatch()
+  const [jobList, setJobList] = useState(activeJobs);
   const [loading, setLoading] = useState(true)
-  
-  const fetchJobs = async () => {
-    await DataStore.query(Job, (job) => {
-      job.requestOwner("eq", userInfo.userID) 
-    }).then((jobsFound) => {
-      jobsFound = jobsFound.filter(j => j.currentStatus != 'COMPLETED')
-      setJobList(jobsFound);
-    });
-  };
 
   //Get all current jobs
   useEffect(() => {
-    setJobList([])
     //Get user's current jobs
-    fetchJobs();
-
+    if(!initialized){
+      dispatch(initializeJobs(userInfo.userID))
+    }
     //TESTING
     // setJobList(getManyJobs())
-
     setLoading(false)
   }, []);
+
+  useEffect(() => {
+    setJobList(activeJobs)
+  },[activeJobs])
 
   return (
     <ImageBackground

@@ -10,13 +10,14 @@ import {
   import Spinner from "../../common/components/Spinner";
   import { commonStyles } from "../../common/styles";
   import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-  import { useSelector } from "react-redux";
+  import { useDispatch, useSelector } from "react-redux";
   import { useEffect, useState } from "react";
   import { DataStore, API, graphqlOperation } from "aws-amplify";
   import { Job } from "../../src/models";
   import {initPaymentSheet, presentPaymentSheet} from "@stripe/stripe-react-native"
   import { createToast } from "../../common/components/Toast";
   import { createPaymentIntent } from "../../src/graphql/mutations";
+  import { reinitialize } from "../../redux/jobsReducer";
   
   //Login screen
   const JobCreationPayment = ({route, navigation }) => {
@@ -27,6 +28,7 @@ import {
     })
 
     const {data, userInfo} = route.params
+    const dispatch = useDispatch()
     const { authUser } = useSelector((state) => state.auth);
     const [clientSecret, setclientSecret] = useState('')
     const [loading, setLoading] = useState(false)
@@ -35,7 +37,8 @@ import {
 
     //post payment
     const submitJob = async () => {
-      setPaymentStatus('Payment was successful!')
+      setPaymentStatus('Payment was successful!');
+      dispatch(reinitialize())
       setTimeout(() => {
         navigation.reset({ routes: [{name: 'UserHome'}]})
         navigation.navigate('Home')
@@ -77,7 +80,7 @@ import {
           "currentStatus": "REQUESTED",
           "requestOwner": userInfo.userID,
           "price": price
-        })); 
+        }));
         try {
           const response = await API.graphql(
             graphqlOperation(createPaymentIntent, {
@@ -167,6 +170,14 @@ import {
           <Text style={styles.headerText}>Make a payment to complete your job request</Text>
 
           <View style={{alignItems: 'center', marginTop: 20}}>
+          <Text style={[styles.generalText, {textAlign: 'center'}]}>Please verify all the information for your job request below</Text>
+          <View style={styles.jobContainer}>
+          <Text style={styles.generalText}>Job Title: {data.jobTitle}</Text>
+          <Text style={styles.generalText}>Address: {data.address} {data.city} {data.zipCode}</Text>
+          <Text style={styles.generalText}>Job Duration: {data.duration}</Text>
+          <Text style={styles.generalText}>Job Date/Time: {getDateFormat()}</Text>
+          {data.jobDescription ? <Text style={styles.generalText}>Job Description: {data.jobDescription}</Text> : <></> }
+          </View>
           {loading ? (
             <View>
               <Text style={styles.generalText}>{paymentStatus}</Text>
@@ -174,14 +185,6 @@ import {
             </View>
             ): (
              <View>
-             <Text style={[styles.generalText, {textAlign: 'center'}]}>Please verify all the information for your job request below</Text>
-             <View style={styles.jobContainer}>
-              <Text style={styles.generalText}>Job Title: {data.jobTitle}</Text>
-              <Text style={styles.generalText}>Address: {data.address} {data.city} {data.zipCode}</Text>
-              <Text style={styles.generalText}>Job Duration: {data.duration}</Text>
-              <Text style={styles.generalText}>Job Date/Time: {getDateFormat()}</Text>
-              {data.jobDescription ? <Text style={styles.generalText}>Job Description: {data.jobDescription}</Text> : <></> }
-             </View>
               <View style={{flexDirection:'row', justifyContent: 'space-evenly'}}>
                 <TouchableOpacity 
                 onPress={() => cancelJob()}

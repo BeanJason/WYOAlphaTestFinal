@@ -10,36 +10,31 @@ import {
   import { TouchableOpacity } from "react-native";
   import Spinner from "../../common/components/Spinner";
   import { commonStyles } from "../../common/styles";
-  import { useSelector } from "react-redux";
+  import { useDispatch, useSelector } from "react-redux";
   import { useEffect, useState } from "react";
   import { FontAwesome } from "@expo/vector-icons"
   import JobCard from "../../common/components/JobCard";
   import { getJobHistory } from "../../testData";
-  import { DataStore } from "aws-amplify";
-  import { Job } from "../../src/models";
+  import { initializeJobs } from "../../redux/jobsReducer";
 
   
   const JobHistory = ({ navigation }) => {
     const { userInfo } = useSelector((state) => state.auth);
+    const { initialized, jobHistory } = useSelector((state) => state.jobs);
+    const dispatch = useDispatch()
     const [jobList, setJobList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filteredJobList, setFilteredJobList] = useState([]);
     const [search, setSearch] = useState('');
     const [sortDirection, setSortDirection] = useState('ascend')
 
-    const fetchJobs = async () => {
-      await DataStore.query(Job, (job) => {
-        job.requestOwner("eq", userInfo.userID)
-      }).then((jobsFound) => {
-        jobsFound = jobsFound.filter(j => j.currentStatus == 'COMPLETED')
-        setJobList(jobsFound);
-        setFilteredJobList(jobsFound)
-      });
-    };
 
     //Get all completed jobs
     useEffect(() => {
-      fetchJobs();
+      //get old jobs
+      if(!initialized){
+        dispatch(initializeJobs(userInfo.userID))
+      }    
 
       //TESTING
       // setJobList(getJobHistory())
@@ -47,6 +42,11 @@ import {
 
       setLoading(false)
     }, []);
+
+    useEffect(() => {
+      setJobList(jobHistory)
+      setFilteredJobList(jobHistory)
+    },[jobHistory])
 
     //Search
     const searchFilter = (text) => {

@@ -113,7 +113,6 @@ const RootNavigation = () => {
   const [loading, setLoading] = useState(true);
   const {loggedIn} = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  // dispatch(logout())
  
 
   const checkLoggedIn = async () => {

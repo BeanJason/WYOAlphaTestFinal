@@ -15,9 +15,12 @@ import { useEffect, useState } from "react";
 import { DataStore } from "aws-amplify";
 import { Provider, Job } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
+import { useDispatch } from "react-redux";
+import { addOrRemoveJob } from "../../redux/jobsReducer";
 
 //Login screen
 const JobInfo = ({ route, navigation }) => {
+  const dispatch = useDispatch();
   const { jobInfo } = route.params;
   const [mainProvider, setMainProvider] = useState('')
   const [backupProviders, setBackupProviders] = useState([])
@@ -51,7 +54,7 @@ const JobInfo = ({ route, navigation }) => {
       await DataStore.query(Provider, (provider) => {
         provider.id("eq", jobInfo.mainProvider)
       }).then((providerFound) => {
-        setMainProvider(providerFound);
+        setMainProvider(`${providerFound.firstName} ${providerFound.lastName}`);
       });
     }
     //set backup providers if available
@@ -61,7 +64,7 @@ const JobInfo = ({ route, navigation }) => {
         await DataStore.query(Provider, (provider) => {
           provider.id("eq", next)
         }).then((providerFound) => {
-          listOfBackups.push(providerFound)
+          listOfBackups.push(`${providerFound.firstName} ${providerFound.lastName}`)
         });
       }
       setBackupProviders(listOfBackups)
@@ -73,6 +76,7 @@ const JobInfo = ({ route, navigation }) => {
     //REFUND
     await DataStore.delete(Job, job => job.id('eq', jobInfo.id)).then(
       () => {
+        dispatch(addOrRemoveJob({type: 'REMOVE_ACTIVE_JOB', jobInfo}))
         createToast('Your job request has been cancelled')
         setTimeout(() => {
           setStartCancel(false)
@@ -86,7 +90,7 @@ const JobInfo = ({ route, navigation }) => {
   }
   
   useEffect(() => {
-    // getProviders()
+    getProviders()
     let date = new Date(jobInfo.requestDateTime)
     let today = new Date()
     if(date.getDate() > today.getDate()){

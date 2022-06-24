@@ -16,12 +16,19 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../redux/authReducer";
 import { useEffect } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { resetState } from "../../../redux/jobsReducer";
+
 
 
 //Login screen
 const UserAccountTab = ({ navigation }) => {
     //Set the dispatch to use functions from the redux reducers file
     const dispatch = useDispatch();
+
+    const resetAndLogout = () => {
+      dispatch(resetState())
+      dispatch(logout())
+    }
 
   return (
     <KeyboardAwareScrollView>
@@ -41,7 +48,7 @@ const UserAccountTab = ({ navigation }) => {
             </TouchableOpacity>
 
           
-            <TouchableOpacity onPress={() => dispatch(logout())}>
+            <TouchableOpacity onPress={resetAndLogout}>
               <View style={styles.button}>
                 <Text style={styles.btnText}>Logout</Text>
                 <MaterialIcons name="logout" size={25} style={{color: 'white', marginLeft: 10}} />
