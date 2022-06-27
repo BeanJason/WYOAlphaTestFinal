@@ -56,6 +56,9 @@ const UserRegistration = ({ navigation }) => {
         });
       }
     }
+    if(isSuccess){
+      navigation.navigate('ConfirmEmail',{name: 'ConfirmEmail'})
+    }
     //Reset the variable states after login or failed attempt
     dispatch(resetState())
   }, [isError, isSuccess, message, dispatch])

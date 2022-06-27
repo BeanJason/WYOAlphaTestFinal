@@ -45,12 +45,15 @@ const ProviderRegistration = ({ navigation }) => {
   //Anytime an error appears along with a message, display it on the screen
   useEffect(() => {
     if (isError) {
-      if (message === "Email already in use") {
+      if (message === 'An account with the given email already exists.') {
         setError("email", {
           type: "validate",
           message: "This email is already in use",
         });
       }
+    }
+    if(isSuccess){
+      navigation.navigate('ConfirmEmail',{name: 'ConfirmEmail'})
     }
     //Reset the variable states after login or failed attempt
     dispatch(resetState());
@@ -79,8 +82,11 @@ const ProviderRegistration = ({ navigation }) => {
       data.lastName = data.lastName.trim()
       data.address = data.address.trim()
       data.city = data.city.trim()
-      dispatch(register(data))
-      navigation.navigate('ConfirmEmail',{name: 'ConfirmEmail'})
+      try {
+        dispatch(register(data))
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       setBirthdayError("You must be 18 or older to use this app");
     }

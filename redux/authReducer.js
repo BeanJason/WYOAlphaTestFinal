@@ -60,7 +60,6 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                   "city": data.city,
                   "zipCode": data.zipCode,
                   "biography": data.biography,
-                  "profilePictureURL":  data.profilePictureURL,
                   "backgroundCheckStatus": false,
                   "employeeID": '-1',
                   "offenses": 0,
@@ -69,9 +68,7 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
             )
           }
           //If success
-          console.log(userData)
           if(userData != undefined){
-            console.log(userData);
             userInfo = {
               userID: userData.id,
               firstName: userData.firstName,
