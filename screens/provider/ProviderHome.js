@@ -13,6 +13,8 @@ import JobCard from "../../common/components/JobCard";
 import Spinner from "../../common/components/Spinner";
 import { get1Job, getManyJobs } from "../../testData";
 import { initializeJobs } from "../../redux/jobsReducer";
+import { TouchableOpacity } from "react-native-web";
+import { Ionicons } from '@expo/vector-icons'; 
 
 const ProviderHome = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -44,6 +46,9 @@ const ProviderHome = ({ navigation }) => {
       <SafeAreaView style={commonStyles.safeContainer}>
         <View style={styles.head}>
           <Text style={styles.name}>Welcome {userInfo.firstName}</Text>
+          {/* <TouchableOpacity>
+            <Ionicons name="filter-outline" size={24} color="black" />
+          </TouchableOpacity> */}
         </View>
         <View>
           <Text style={[styles.headerText, {textAlign: 'center'}]}>Available jobs</Text>
