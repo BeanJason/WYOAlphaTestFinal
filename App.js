@@ -238,7 +238,7 @@ const UserJobCreationTab = () => {
   return(
   <Stack.Navigator>
     <Stack.Screen options={{headerShown: false }} name="JobCreation1" component={JobCreation1}/>
-    <Stack.Screen options={{ headerShown: false, headerLeft: null}} name="JobCreationPayment" component={JobCreationPayment}/>
+    <Stack.Screen options={{ headerShown: false, headerLeft: null}} listeners={{beforeRemove: e => {console.log('left the screen')}}} name="JobCreationPayment" component={JobCreationPayment}/>
   </Stack.Navigator>
   )
 }

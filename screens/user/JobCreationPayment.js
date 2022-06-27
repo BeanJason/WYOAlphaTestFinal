@@ -24,8 +24,6 @@ import {
   const JobCreationPayment = ({route, navigation }) => {
 
     //prevent going back
-    const parent = navigation.getParent();
-    console.log(parent);
     navigation.addListener('beforeRemove', (event) => {
       event.preventDefault();
     })

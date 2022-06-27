@@ -3,39 +3,40 @@ import {User, Provider} from "./src/models"
 import { Auth } from "aws-amplify"
 
 export async function checkCredentials(){
-    let userData, userInfo, authUser
+    let userData, userInfo
     try {
-        authUser = await Auth.currentAuthenticatedUser({bypassCache: true})
-    } catch (error) {
-        console.log(error);
-        return {authUser, userInfo}
-    }
-    if(authUser == undefined){
-        return {authUser, userInfo}
-    }
-    try {
-        if(authUser?.attributes['custom:type'] === 'User'){
-            await DataStore.query(User, u => u.subID('eq', authUser?.attributes.sub)).then((foundUser) => userData = foundUser[0])
+        const {attributes} = await Auth.currentAuthenticatedUser({bypassCache: true})
+        if(attributes == undefined){
+            return {authUser: attributes, userInfo}
         }
-        else if(authUser?.attributes['custom:type' === 'Provider']){
-            await DataStore.query(Provider, u => u.subID('eq', authUser?.attributes.sub)).then((foundUser) => userData = foundUser[0])
-        }
-        //If success
-        if(userData != undefined){
-            userInfo = {
-              userID: userData.id,
-              firstName: userData.firstName,
-              lastName: userData.lastName,
-              address: userData.address,
-              phoneNumber: userData.phoneNumber
+        try {
+            if(attributes['custom:type'] == 'User'){
+                await DataStore.query(User, u => u.subID('eq', attributes.sub)).then((foundUser) => userData = foundUser[0])
             }
-            return {authUser: authUser.attributes, userInfo}
-          }
-
+            else if(attributes['custom:type'] == 'Provider'){
+                await DataStore.query(Provider, u => u.subID('eq', attributes.sub)).then((foundUser) => userData = foundUser[0])
+            }
+            //If success
+            if(userData != undefined){
+                userInfo = {
+                  userID: userData.id,
+                  firstName: userData.firstName,
+                  lastName: userData.lastName,
+                  address: userData.address,
+                  phoneNumber: userData.phoneNumber
+                }
+                return {authUser: attributes, userInfo}
+              }
+    
+        } catch (error) {
+            console.log(error);
+            return {authUser: null, userInfo}
+        }
     } catch (error) {
         console.log(error);
-        return {authUser, userInfo}
+        return {authUser: null, userInfo}
     }
+    
 }
 
 export function getStripeKey(){
