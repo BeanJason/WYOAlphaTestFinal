@@ -18,11 +18,14 @@ import {
   import { createToast } from "../../common/components/Toast";
   import { createPaymentIntent } from "../../src/graphql/mutations";
   import { reinitialize } from "../../redux/jobsReducer";
+  import { CommonActions } from "@react-navigation/native";
   
   //Login screen
   const JobCreationPayment = ({route, navigation }) => {
 
     //prevent going back
+    const parent = navigation.getParent();
+    console.log(parent);
     navigation.addListener('beforeRemove', (event) => {
       event.preventDefault();
     })
@@ -31,7 +34,7 @@ import {
     const dispatch = useDispatch()
     const { authUser } = useSelector((state) => state.auth);
     const [clientSecret, setclientSecret] = useState('')
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [paymentStatus, setPaymentStatus] = useState('Queuing your payment, please wait...')
     let newJob
 
@@ -40,62 +43,61 @@ import {
       setPaymentStatus('Payment was successful!');
       dispatch(reinitialize())
       setTimeout(() => {
-        navigation.reset({ routes: [{name: 'UserHome'}]})
         navigation.navigate('Home')
-      }, 5000)
+      }, 2000)
     }
 
     //setup the payment screen
     const fetchPaymentIntent = async () => {
-      let price = 2000;
-      switch (data.duration) {
-        case 4:
-          price = 2000;
-          break;
-        case 5:
-          price = 3000;
-          break;
-        case 6:
-          price = 4000;
-          break;
-        case 7:
-          price = 5000;
-          break;
-        case 8:
-          price = 6000;
-          break;
-      }
+      // let price = 2000;
+      // switch (data.duration) {
+      //   case 4:
+      //     price = 2000;
+      //     break;
+      //   case 5:
+      //     price = 3000;
+      //     break;
+      //   case 6:
+      //     price = 4000;
+      //     break;
+      //   case 7:
+      //     price = 5000;
+      //     break;
+      //   case 8:
+      //     price = 6000;
+      //     break;
+      // }
 
-      try {
-         newJob = await DataStore.save(
-          new Job({
-          "jobTitle": data.jobTitle,
-          "jobDescription": data.jobDescription,
-          "address": data.address,
-          "city": data.city,
-          "zipCode": data.zipCode,
-          "duration": data.duration,
-          "requestDateTime": data.requestDateTime,
-          "backupProviders": [],
-          "currentStatus": "REQUESTED",
-          "requestOwner": userInfo.userID,
-          "price": price
-        }));
-        try {
-          const response = await API.graphql(
-            graphqlOperation(createPaymentIntent, {
-              amount: price,
-              email: authUser.email,
-              jobID: newJob.id
-            })
-          )
-          setclientSecret(response.data.createPaymentIntent.clientSecret)
-        } catch (error) {
-          console.log(error);
-        }
-      } catch (error) {
-        console.log('error saving job: ' + error);
-      } 
+      // try {
+      //    newJob = await DataStore.save(
+      //     new Job({
+      //     "jobTitle": data.jobTitle,
+      //     "jobDescription": data.jobDescription,
+      //     "address": data.address,
+      //     "city": data.city,
+      //     "zipCode": data.zipCode,
+      //     "duration": data.duration,
+      //     "requestDateTime": data.requestDateTime,
+      //     "backupProviders": [],
+      //     "currentStatus": "REQUESTED",
+      //     "requestOwner": userInfo.userID,
+      //     "price": price
+      //   }));
+      //   try {
+      //     const response = await API.graphql(
+      //       graphqlOperation(createPaymentIntent, {
+      //         amount: price,
+      //         email: authUser.email,
+      //         jobID: newJob.id
+      //       })
+      //     )
+      //     setclientSecret(response.data.createPaymentIntent.clientSecret)
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // } catch (error) {
+      //   console.log('error saving job: ' + error);
+      // } 
      
     }
 
@@ -156,30 +158,30 @@ import {
       if (formatDate.getHours() >= 12) {
         amOrPm = "PM";
       }
-      let date = formatDate.toLocaleDateString() +" At "+ " " + hour + ":" + min + amOrPm
+      let date = formatDate.toLocaleDateString() +" at " + hour + ":" + min + amOrPm
       return date
     }
   
     return (
       <KeyboardAwareScrollView>
         <ImageBackground
-          style={commonStyles.background}
+          style={[commonStyles.background, {flex: 1}]}
           source={require("../../assets/wyo_background.png")}
         >
           <SafeAreaView style={commonStyles.safeContainer}>
           <Text style={styles.headerText}>Make a payment to complete your job request</Text>
 
-          <View style={{alignItems: 'center', marginTop: 20}}>
-          <Text style={[styles.generalText, {textAlign: 'center'}]}>Please verify all the information for your job request below</Text>
-          <View style={styles.jobContainer}>
-          <Text style={styles.generalText}>Job Title: {data.jobTitle}</Text>
-          <Text style={styles.generalText}>Address: {data.address} {data.city} {data.zipCode}</Text>
-          <Text style={styles.generalText}>Job Duration: {data.duration}</Text>
-          <Text style={styles.generalText}>Job Date/Time: {getDateFormat()}</Text>
-          {data.jobDescription ? <Text style={styles.generalText}>Job Description: {data.jobDescription}</Text> : <></> }
-          </View>
+          <View style={{alignItems: 'center', marginTop: 20, flex: 1}}>
+            <Text style={[styles.generalText, {textAlign: 'center'}]}>Please verify all the information for your job request below</Text>
+            <View style={styles.jobContainer}>
+              <Text style={styles.generalText}>Job Title: {data.jobTitle}</Text>
+              <Text style={styles.generalText}>Address: {data.address} {data.city} {data.zipCode}</Text>
+              <Text style={styles.generalText}>Job Duration: {data.duration}</Text>
+              <Text style={styles.generalText}>Job Date & Time: {getDateFormat()}</Text>
+              {data.jobDescription ? <Text style={styles.generalText}>Job Description: {data.jobDescription}</Text> : <></> }
+            </View>
           {loading ? (
-            <View>
+            <View style={{flex: 1}}>
               <Text style={styles.generalText}>{paymentStatus}</Text>
               <Spinner color={'black'}/> 
             </View>

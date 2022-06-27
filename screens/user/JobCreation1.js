@@ -22,6 +22,7 @@ import { Job } from "../../src/models";
 import DropDownPicker from "react-native-dropdown-picker";
 import NumericInput from 'react-native-numeric-input';
 import { checkCredentials } from "../../credentials";
+import { CommonActions } from "@react-navigation/native";
 
 const JobCreation1 = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);

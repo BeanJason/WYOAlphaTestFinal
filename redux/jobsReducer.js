@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { DataStore } from "aws-amplify";
+import { API, DataStore, graphqlOperation } from "aws-amplify";
+import { refundPayment } from "../src/graphql/mutations";
+import { getUnacceptedJobs } from "../common/functions";
 import { Job } from "../src/models";
 
 
@@ -14,9 +16,29 @@ const initialState = {
 export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, thunkAPI) => {
     const {userID} = data;
     try {
-        const response = await DataStore.query(Job, (job) => {
+        let response = await DataStore.query(Job, (job) => {
             job.requestOwner('eq', userID)
         })
+        let filteredArray = getUnacceptedJobs(response.filter((job) => job.currentStatus == "REQUESTED"))
+        if(filteredArray.length != 0){
+            let refundStatus
+            for(let job of filteredArray){
+                //refund any unaccepted jobs
+                try {
+                    refundStatus = await API.graphql( graphqlOperation(refundPayment, {
+                          isCancel: false,
+                          jobID: job.id
+                        })
+                    )
+                    if(refundStatus){
+                       response = response.filter((j) => j.id != job.id)
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }
+        await DataStore.clear()
         return {allJobs: response}
     } catch (error) {
         return thunkAPI.rejectWithValue('Error getting job list ' + error.message)

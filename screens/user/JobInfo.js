@@ -12,7 +12,8 @@ import Spinner from "../../common/components/Spinner";
 import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useEffect, useState } from "react";
-import { DataStore } from "aws-amplify";
+import { API, DataStore, graphqlOperation } from "aws-amplify";
+import { refundPayment } from "../../src/graphql/mutations";
 import { Provider, Job } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch } from "react-redux";
@@ -74,26 +75,31 @@ const JobInfo = ({ route, navigation }) => {
   const cancelJob = async () => {
     setStartCancel(true)
     //REFUND
-    await DataStore.delete(Job, job => job.id('eq', jobInfo.id)).then(
-      () => {
-        dispatch(addOrRemoveJob({type: 'REMOVE_ACTIVE_JOB', jobInfo}))
-        createToast('Your job request has been cancelled')
-        setTimeout(() => {
-          setStartCancel(false)
-          navigation.reset({ routes: [{name: 'UserHome'}]})
-          navigation.navigate('UserHome', {name: 'UserHome'})
-        }, 5000)
-      }
-    ).catch((error) => {
+    try {
+      let refundStatus = await API.graphql(graphqlOperation(refundPayment, {
+          isCancel: true,
+          jobID: jobInfo.id
+        })
+        )
+        if(refundStatus){
+          dispatch(addOrRemoveJob({type: 'REMOVE_ACTIVE_JOB', jobInfo}))
+          createToast('Your job request has been cancelled')
+          setTimeout(() => {
+            setStartCancel(false)
+            navigation.reset({ routes: [{name: 'UserHome'}]})
+            navigation.navigate('UserHome', {name: 'UserHome'})
+          }, 5000)
+        }
+    } catch (error) {
       console.log(error);
-    })
+    }
   }
   
   useEffect(() => {
     getProviders()
     let date = new Date(jobInfo.requestDateTime)
     let today = new Date()
-    if(date.getDate() > today.getDate()){
+    if(date.toLocaleDateString() > today.toLocaleDateString()){
       setShowCancel(true)
     }
     setLoading(false)

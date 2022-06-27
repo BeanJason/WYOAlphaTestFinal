@@ -12,6 +12,11 @@ export const createPaymentIntent = /* GraphQL */ `
     }
   }
 `;
+export const refundPayment = /* GraphQL */ `
+  mutation RefundPayment($isCancel: Boolean!, $jobID: String!) {
+    refundPayment(isCancel: $isCancel, jobID: $jobID)
+  }
+`;
 export const createJob = /* GraphQL */ `
   mutation CreateJob(
     $input: CreateJobInput!

@@ -45,6 +45,7 @@ import JobHistory from "./screens/user/JobHistory"
 
 import { config } from "./common/styles";
 import { getUser } from "./testData";
+import { resetState } from "./redux/jobsReducer";
 // import {StripeProvider} from "@stripe/stripe-react-native"
 let StripeProvider
 
@@ -122,6 +123,7 @@ const RootNavigation = () => {
     // const {authUser, userInfo} = getUser() 
     
     if(authUser && userInfo){
+      dispatch(resetState())
       dispatch(changeUserStatus({authUser, userInfo}))
     }
     setLoading(false)

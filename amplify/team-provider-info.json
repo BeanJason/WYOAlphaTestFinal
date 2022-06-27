@@ -23,6 +23,10 @@
         "StripeWebhook": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
           "s3Key": "amplify-builds/StripeWebhook-523849367663696b3852-build.zip"
+        },
+        "RefundPayment": {
+          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
+          "s3Key": "amplify-builds/RefundPayment-66324156755456624c74-build.zip"
         }
       }
     }
