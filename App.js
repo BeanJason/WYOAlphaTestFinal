@@ -43,6 +43,10 @@ import JobCreationPayment from "./screens/user/JobCreationPayment"
 import JobInfo from "./screens/user/JobInfo"
 import JobHistory from "./screens/user/JobHistory"
 
+//Provider Screens
+import ProviderHome from "./screens/provider/ProviderHome";
+import ProviderJobHistory from "./screens/provider/ProviderJobHistory"
+
 import { config } from "./common/styles";
 import { getUser } from "./testData";
 import { resetState } from "./redux/jobsReducer";
@@ -177,8 +181,8 @@ const AuthNavigation = () => {
       {authUser['custom:type']  === 'User' ? (
         <Stack.Screen options={{headerShown: false}} name="UserNavigation" component={UserNavigation}/>
       ) : (
-        <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
-      )
+        <Stack.Screen options={{headerShown: false}} name="ProviderNavigation" component={ProviderNavigation}/>
+      ) 
       }
     </> 
     }
@@ -258,3 +262,75 @@ const UserAccountTab = () => {
     </Stack.Navigator>
   )
 }
+
+//Provider NAVIGATION
+const ProviderNavigation = () => {
+  return (
+    <Tab.Navigator 
+      initialRouteName="ProviderHome"
+      screenOptions={(route) => ({
+        unmountOnBlur: true,
+        tabBarActiveTintColor: 'blue',
+        tabBarInactiveTintColor: 'grey',  
+        tabBarLabelStyle: {paddingBottom: 10, fontSize: 15, fontFamily: 'Montserrat-Bold'},
+        tabBarStyle:{padding: 10, height: 70},
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+          let name = route.route.name
+          if (name === 'Home'){
+            iconName = focused ? 'home' : 'home-outline'
+          } else if (name === 'Create Job') {
+            iconName = focused ? 'create' : 'create-outline'
+          } else if (name === 'Job History') {
+            iconName = focused ? 'time' : 'time-outline'
+          } else if (name === 'Account') {
+            iconName = focused ? 'person' : 'person-outline'
+          }
+          return (<Ionicons name={iconName} size={size} color={color} />)
+        }
+      })}
+      >
+      <Tab.Screen options={{headerShown: false}} name='Home' component={ProviderHomeTab}/>
+      <Tab.Screen options={{headerShown: false}} name='Job History' component={ProviderHistoryTab}/>
+      {/* <Tab.Screen options={{headerShown: false}} name='Account' component={ProviderAccountTab}/> */}
+    </Tab.Navigator> 
+  )
+}
+
+const ProviderHomeTab = () => {
+  return (
+    <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
+      <Stack.Screen options={{headerShown: false}} name='ProviderHome' component={ProviderHome}/>
+      <Stack.Screen options={{ title: 'Job Information' }} name="JobInfo" component={JobInfo}/>
+    </Stack.Navigator>
+  )
+}
+
+// const ProviderJobCreationTab = () => {
+//   return(
+//   <Stack.Navigator>
+//     <Stack.Screen options={{headerShown: false }} name="JobCreation1" component={JobCreation1}/>
+//     <Stack.Screen options={{ headerShown: false, headerLeft: null}} name="JobCreationPayment" component={JobCreationPayment}/>
+//   </Stack.Navigator>
+//   )
+// }
+
+const ProviderHistoryTab = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen options={{headerShown: false }} name="ProviderJobHistory" component={ProviderJobHistory}/>
+      <Stack.Screen options={{ title: 'Job Information' }} name="JobInfo" component={JobInfo}/>
+    </Stack.Navigator>
+  )
+}
+
+// const ProviderAccountTab = () => {
+//   return (
+//     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
+//       <Stack.Screen options={{ headerShown: false }} name="UserAccount" component={UserAccount}/>
+//       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser1" component={EditAccountUser1}/>
+//       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser2" component={EditAccountUser2}/>
+//       <Stack.Screen options={{ title: 'Edit Account Info' }} name="AddAddress" component={AddAddress}/>
+//     </Stack.Navigator>
+//   )
+// }
