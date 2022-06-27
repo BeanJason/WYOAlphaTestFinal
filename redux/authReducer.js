@@ -48,6 +48,7 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
           }
           //If Provider
           else if(data.type === 'Provider'){
+            console.log('Registering provider');
             userData = await DataStore.save(
               new Provider({
                   "subID": authUser?.userSub,

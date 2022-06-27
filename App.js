@@ -45,7 +45,9 @@ import JobHistory from "./screens/user/JobHistory"
 
 //Provider Screens
 import ProviderHome from "./screens/provider/ProviderHome";
-import ProviderJobHistory from "./screens/provider/ProviderJobHistory"
+import ProviderJobHistory from "./screens/provider/ProviderJobHistory";
+import ProviderAccount from "./screens/provider/providerAccount/ProviderAccount";
+
 
 import { config } from "./common/styles";
 import { getUser } from "./testData";
@@ -93,7 +95,8 @@ export default function App() {
     setImagesLoaded(true)
   }
 
-  useEffect(() => {
+  useEffect(() => { 
+    //
     LogBox.ignoreLogs(['new NativeEventEmitter'])
     loadAllResources();
     StripeProvider = require('@stripe/stripe-react-native').StripeProvider
@@ -292,7 +295,7 @@ const ProviderNavigation = () => {
       >
       <Tab.Screen options={{headerShown: false}} name='Home' component={ProviderHomeTab}/>
       <Tab.Screen options={{headerShown: false}} name='Job History' component={ProviderHistoryTab}/>
-      {/* <Tab.Screen options={{headerShown: false}} name='Account' component={ProviderAccountTab}/> */}
+      <Tab.Screen options={{headerShown: false}} name='Account' component={ProviderAccountTab}/>
     </Tab.Navigator> 
   )
 }
@@ -324,13 +327,13 @@ const ProviderHistoryTab = () => {
   )
 }
 
-// const ProviderAccountTab = () => {
-//   return (
-//     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
-//       <Stack.Screen options={{ headerShown: false }} name="UserAccount" component={UserAccount}/>
-//       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser1" component={EditAccountUser1}/>
-//       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser2" component={EditAccountUser2}/>
-//       <Stack.Screen options={{ title: 'Edit Account Info' }} name="AddAddress" component={AddAddress}/>
-//     </Stack.Navigator>
-//   )
-// }
+const ProviderAccountTab = () => {
+  return (
+    <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
+      <Stack.Screen options={{ headerShown: false }} name="ProviderAccount" component={ProviderAccount}/>
+      {/* <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser1" component={EditAccountUser1}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser2" component={EditAccountUser2}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="AddAddress" component={AddAddress}/> */}
+    </Stack.Navigator>
+  )
+}
