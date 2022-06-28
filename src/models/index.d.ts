@@ -9,6 +9,7 @@ export enum Jobstatus {
 
 export declare class PaymentIntent {
   readonly clientSecret: string;
+  readonly id: string;
   constructor(init: ModelInit<PaymentIntent>);
 }
 

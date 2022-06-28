@@ -8,6 +8,7 @@ import { Job } from "../src/models";
 const initialState = {
     activeJobs: [],
     jobHistory: [],
+    newJobID: "",
     message: "",
     initialized: false
 }
@@ -72,6 +73,9 @@ export const jobsReducer = createSlice({
             state.activeJobs = []
             state.jobHistory = []
             state.initialized = false;
+        },
+        storeNewJobID: (state, action) => {
+            state.newJobID = action.payload.jobID
         }
     },
     extraReducers: (builder) => {
@@ -90,5 +94,5 @@ export const jobsReducer = createSlice({
 
 })
 
-export const {addOrRemoveJob, resetState, reinitialize} = jobsReducer.actions
+export const {addOrRemoveJob, resetState, reinitialize, storeNewJobID} = jobsReducer.actions
 export default jobsReducer.reducer

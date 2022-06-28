@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(113, 124, 206, 0.95)",
     alignContent: "flex-start",
     justifyContent: 'center',
-    height: '10%'
+    height: '10%',
+    marginTop: 10
   },
   body: {
     flex: 1,

@@ -171,6 +171,7 @@ const JobCreation1 = ({ navigation }) => {
             {/* address */}
             <View style={styles.field}>
               <DropDownPicker
+                textStyle={{fontFamily: "Montserrat-Bold"}}
                 placeholder="Address"
                 listMode="SCROLLVIEW"
                 open={open}
@@ -291,6 +292,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 32,
     fontSize: 16,
+    fontFamily: "Montserrat-Bold"
   },
   field: {
     marginTop: 10,

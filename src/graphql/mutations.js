@@ -9,6 +9,7 @@ export const createPaymentIntent = /* GraphQL */ `
   ) {
     createPaymentIntent(amount: $amount, email: $email, jobID: $jobID) {
       clientSecret
+      id
     }
   }
 `;

@@ -28,5 +28,6 @@ exports.handler = async (event) => {
 
   return {
     clientSecret: paymentIntent.client_secret,
+    id: arguments.jobID
   };
 };

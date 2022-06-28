@@ -9,8 +9,8 @@ import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch, Provider } from "react-redux";
-import {Amplify, Auth} from "aws-amplify"
-import { checkCredentials, getStripeKey } from "./credentials";
+import {Amplify, Auth, nav} from "aws-amplify"
+import { checkCredentials, stripeKey } from "./credentials";
 import { changeUserStatus, logout } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
@@ -51,6 +51,7 @@ import ProviderAccount from "./screens/provider/providerAccount/ProviderAccount"
 import { config } from "./common/styles";
 import { getUser } from "./testData";
 import { resetState } from "./redux/jobsReducer";
+import { checkUnverifiedJob } from "./common/functions";
 
 
 //CONFIGURE AMPLIFY
@@ -103,7 +104,7 @@ export default function App() {
   
   return (
     <Provider store={Store}>
-      <StripeProvider publishableKey = {getStripeKey()} >
+      <StripeProvider publishableKey = "pk_test_51LAbv7GUC6WuR4axP3o28XT3NNuJW1Reiy10HWN33J35I6hAaEEs18ZVnmUVbCSwmv4sLic0KdI6ZnFnjkl1B5yW00IAMz9BzM" >
         <RootNavigation />
       </StripeProvider>
       
@@ -119,7 +120,13 @@ const RootNavigation = () => {
  
 
   const checkLoggedIn = async () => {
-    const {authUser, userInfo} = await checkCredentials();
+    const res =  await checkCredentials();
+    let authUser = null
+    let userInfo = null
+    if(res) {
+      authUser = res.authUser,
+      userInfo = res.userInfo
+    }
     
     //TESTING
     // const {authUser, userInfo} = getUser() 
@@ -215,7 +222,17 @@ const UserNavigation = () => {
       })}
       >
       <Tab.Screen options={{headerShown: false}} name='Home' component={UserHomeTab}/>
-      <Tab.Screen options={{headerShown: false}} name='Create Job' component={UserJobCreationTab}/>
+      <Tab.Screen options={{headerShown: false}} 
+      listeners={({route}) => ({
+        blur: async (event) => {
+          if(route.state){
+            if(route.state.routes[1].name == 'JobCreationPayment'){
+              await checkUnverifiedJob(route.state.routes[1].params.jobInfo)
+            }
+          }
+        }
+      }) } 
+      name='Create Job' component={UserJobCreationTab}/>
       <Tab.Screen options={{headerShown: false}} name='Job History' component={UserHistoryTab}/>
       <Tab.Screen options={{headerShown: false}} name='Account' component={UserAccountTab}/>
     </Tab.Navigator> 
@@ -235,7 +252,7 @@ const UserJobCreationTab = () => {
   return(
   <Stack.Navigator>
     <Stack.Screen options={{headerShown: false }} name="JobCreation1" component={JobCreation1}/>
-    <Stack.Screen options={{ headerShown: false, headerLeft: null}} listeners={{tabPress: e => {console.log('left the screen')}}} name="JobCreationPayment" component={JobCreationPayment}/>
+    <Stack.Screen options={{ headerShown: false, headerLeft: null}} name="JobCreationPayment" component={JobCreationPayment}/>
   </Stack.Navigator>
   )
 }

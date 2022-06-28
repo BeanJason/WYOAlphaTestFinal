@@ -17,8 +17,8 @@ import {
   import {initPaymentSheet, presentPaymentSheet} from "@stripe/stripe-react-native"
   import { createToast } from "../../common/components/Toast";
   import { createPaymentIntent } from "../../src/graphql/mutations";
-  import { reinitialize } from "../../redux/jobsReducer";
-  import { CommonActions } from "@react-navigation/native";
+  import { addOrRemoveJob, storeNewJobID } from "../../redux/jobsReducer";
+  import * as queries from "../../src/graphql/queries"
   
   //Login screen
   const JobCreationPayment = ({route, navigation }) => {
@@ -31,71 +31,102 @@ import {
     const {data, userInfo} = route.params
     const dispatch = useDispatch()
     const { authUser } = useSelector((state) => state.auth);
+    const { newJobID } = useSelector((state) => state.jobs);
     const [clientSecret, setclientSecret] = useState('')
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [paymentStatus, setPaymentStatus] = useState('Queuing your payment, please wait...')
-    let newJob
+    let newJob, paidJob, timer
+    let counter = 0
 
     //post payment
     const submitJob = async () => {
-      setPaymentStatus('Payment was successful!');
-      dispatch(reinitialize())
+      console.log(newJobID);
+      setPaymentStatus('Submitting your payment...');
       setTimeout(() => {
-        navigation.navigate('Home')
+        setPaymentStatus('Verifying payment')
+        timer = setInterval(verifyPaid, 5000)
       }, 2000)
+    }
+
+    //verify payment for a job
+    const verifyPaid = async () => {
+      console.log('observing');
+      counter++;
+      if(counter >= 4){
+        setPaymentStatus("Payment verification failed!")
+        dispatch(storeNewJobID({jobID: ""}))
+        clearInterval(timer)
+      }
+      else{
+        if(newJobID != ""){
+          paidJob = await API.graphql(graphqlOperation(queries.getJob, {id: newJobID}));
+          if(paidJob.data.getJob.paymentID != "" && paidJob.data.getJob.paymentID != null){
+            clearInterval(timer)
+            dispatch(addOrRemoveJob({type: 'ADD_ACTIVE_JOB', jobInfo: paidJob.data.getJob}))
+            dispatch(storeNewJobID({jobID: ""}))
+            setTimeout(() => {
+              route.params.jobInfo = paidJob.data.getJob
+              setPaymentStatus('Payment was successful!')
+              navigation.navigate("Home")
+            }, 2000)
+          }
+        }
+      }
     }
 
     //setup the payment screen
     const fetchPaymentIntent = async () => {
-      // let price = 2000;
-      // switch (data.duration) {
-      //   case 4:
-      //     price = 2000;
-      //     break;
-      //   case 5:
-      //     price = 3000;
-      //     break;
-      //   case 6:
-      //     price = 4000;
-      //     break;
-      //   case 7:
-      //     price = 5000;
-      //     break;
-      //   case 8:
-      //     price = 6000;
-      //     break;
-      // }
+      let price = 2000;
+      switch (data.duration) {
+        case 4:
+          price = 2000;
+          break;
+        case 5:
+          price = 3000;
+          break;
+        case 6:
+          price = 4000;
+          break;
+        case 7:
+          price = 5000;
+          break;
+        case 8:
+          price = 6000;
+          break;
+      }
 
-      // try {
-      //    newJob = await DataStore.save(
-      //     new Job({
-      //     "jobTitle": data.jobTitle,
-      //     "jobDescription": data.jobDescription,
-      //     "address": data.address,
-      //     "city": data.city,
-      //     "zipCode": data.zipCode,
-      //     "duration": data.duration,
-      //     "requestDateTime": data.requestDateTime,
-      //     "backupProviders": [],
-      //     "currentStatus": "REQUESTED",
-      //     "requestOwner": userInfo.userID,
-      //     "price": price
-      //   }));
-      //   try {
-      //     const response = await API.graphql(
-      //       graphqlOperation(createPaymentIntent, {
-      //         amount: price,
-      //         email: authUser.email,
-      //         jobID: newJob.id
-      //       })
-      //     )
-      //     setclientSecret(response.data.createPaymentIntent.clientSecret)
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // } catch (error) {
-      //   console.log('error saving job: ' + error);
-      // } 
+      try {
+         newJob = await DataStore.save(
+          new Job({
+          "jobTitle": data.jobTitle,
+          "jobDescription": data.jobDescription,
+          "address": data.address,
+          "city": data.city,
+          "zipCode": data.zipCode,
+          "duration": data.duration,
+          "requestDateTime": data.requestDateTime,
+          "backupProviders": [],
+          "currentStatus": "REQUESTED",
+          "requestOwner": userInfo.userID,
+          "price": price
+        }));
+        try {
+          const response = await API.graphql(
+            graphqlOperation(createPaymentIntent, {
+              amount: price,
+              email: authUser.email,
+              jobID: newJob.id
+            })
+          )
+          setclientSecret(response.data.createPaymentIntent.clientSecret)
+          dispatch(storeNewJobID({jobID:  response.data.createPaymentIntent.id}))
+          route.params.jobInfo = newJob
+        } catch (error) {
+          console.log(error);
+        }
+      } catch (error) {
+        console.log('error saving job: ' + error);
+      } 
      
     }
 
