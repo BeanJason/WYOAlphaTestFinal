@@ -7,15 +7,14 @@ import {
   FlatList,
   Modal,
   Dimensions,
+  TouchableOpacity
 } from "react-native";
-import { TouchableOpacity } from "react-native";
 import UserInput from "../../../common/components/UserInput";
 import Spinner from "../../../common/components/Spinner";
 import { commonStyles } from "../../../common/styles";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { checkCredentials } from "../../../credentials";
 import { DataStore } from "aws-amplify";

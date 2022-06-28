@@ -2,27 +2,21 @@ import {
   StyleSheet,
   TextInput,
   Text,
-  Image,
   View,
   ImageBackground,
   SafeAreaView,
+  TouchableOpacity
 } from "react-native";
-import { TouchableOpacity } from "react-native";
 import UserInput from "../../common/components/UserInput";
 import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useForm } from "react-hook-form";
-import { useSelector, useDispatch } from "react-redux";
-import { login, resetState } from "../../redux/authReducer";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { DataStore, nav } from "aws-amplify";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Job } from "../../src/models";
 import DropDownPicker from "react-native-dropdown-picker";
 import NumericInput from 'react-native-numeric-input';
-import { checkCredentials } from "../../credentials";
-import { CommonActions } from "@react-navigation/native";
 
 const JobCreation1 = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);

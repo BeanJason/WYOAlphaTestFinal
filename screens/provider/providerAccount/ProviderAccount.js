@@ -21,7 +21,7 @@ import { resetState } from "../../../redux/jobsReducer";
 
 
 //Login screen
-const ProviderAccountTab = ({ navigation }) => {
+const ProviderAccount = ({ navigation }) => {
     //Set the dispatch to use functions from the redux reducers file
     const dispatch = useDispatch();
 
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProviderAccountTab;
+export default ProviderAccount;

@@ -3,7 +3,7 @@ import authReducer from "./authReducer";
 import jobsReducer  from "./jobsReducer";
 
 //Initialize the state management store with the reducer
-export const Store = configureStore({
+const Store = configureStore({
     reducer: {
        auth: authReducer,
        jobs: jobsReducer
@@ -13,3 +13,5 @@ export const Store = configureStore({
             serializableCheck: false
         })
 })
+
+export default Store

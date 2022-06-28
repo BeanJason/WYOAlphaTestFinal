@@ -5,23 +5,19 @@ import {
   View,
   ImageBackground,
   SafeAreaView,
+  TouchableOpacity
 } from "react-native";
-import { TouchableOpacity } from "react-native";
-import UserInput from "../../../common/components/UserInput";
-import Spinner from "../../../common/components/Spinner";
 import { commonStyles } from "../../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useForm } from "react-hook-form";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logout } from "../../../redux/authReducer";
-import { useEffect } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { resetState } from "../../../redux/jobsReducer";
 
 
 
 //Login screen
-const UserAccountTab = ({ navigation }) => {
+const UserAccount = ({ navigation }) => {
     //Set the dispatch to use functions from the redux reducers file
     const dispatch = useDispatch();
 
@@ -88,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserAccountTab;
+export default UserAccount;

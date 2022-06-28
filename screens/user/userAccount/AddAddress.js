@@ -1,13 +1,11 @@
 import {
     StyleSheet,
-    TextInput,
     Text,
-    Image,
     View,
     ImageBackground,
     SafeAreaView,
+    TouchableOpacity
   } from "react-native";
-  import { TouchableOpacity } from "react-native";
   import UserInput from "../../../common/components/UserInput";
   import { commonStyles } from "../../../common/styles";
   import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

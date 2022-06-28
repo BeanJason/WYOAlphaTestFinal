@@ -4,9 +4,9 @@ import {
     View,
     ImageBackground,
     SafeAreaView,
-    Dimensions
+    Dimensions,
+    TouchableOpacity
   } from "react-native";
-  import { TouchableOpacity } from "react-native";
   import Spinner from "../../common/components/Spinner";
   import { commonStyles } from "../../common/styles";
   import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

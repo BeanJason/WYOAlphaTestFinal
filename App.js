@@ -1,16 +1,14 @@
 //OTHER FILES
 import Spinner from "./common/components/Spinner"
-import { Store } from "./redux/store";
+import Store  from "./redux/store";
 import awsconfig from "./src/aws-exports"
 
 //LIBRARY IMPORTS
-import * as Font from "expo-font";
 import { useFonts } from "expo-font";
 import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Provider } from "react-redux";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, Provider } from "react-redux";
 import {Amplify, Auth} from "aws-amplify"
 import { checkCredentials, getStripeKey } from "./credentials";
 import { changeUserStatus, logout } from "./redux/authReducer";
@@ -18,6 +16,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from "expo-asset"
 import { LogBox } from 'react-native';
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 
 //SCREENS
@@ -52,8 +51,6 @@ import ProviderAccount from "./screens/provider/providerAccount/ProviderAccount"
 import { config } from "./common/styles";
 import { getUser } from "./testData";
 import { resetState } from "./redux/jobsReducer";
-// import {StripeProvider} from "@stripe/stripe-react-native"
-let StripeProvider
 
 
 //CONFIGURE AMPLIFY
@@ -96,10 +93,8 @@ export default function App() {
   }
 
   useEffect(() => { 
-    //
     LogBox.ignoreLogs(['new NativeEventEmitter'])
     loadAllResources();
-    StripeProvider = require('@stripe/stripe-react-native').StripeProvider
   }, [])
 
   if(!imagesLoaded || !fontsLoaded){
@@ -108,7 +103,7 @@ export default function App() {
   
   return (
     <Provider store={Store}>
-      <StripeProvider publishableKey= {getStripeKey()} >
+      <StripeProvider publishableKey = {getStripeKey()} >
         <RootNavigation />
       </StripeProvider>
       
@@ -146,10 +141,9 @@ const RootNavigation = () => {
       <Spinner />
     )
   }
-
   return (
     <NavigationContainer>
-      {loggedIn === false ? <GuestNavigation /> : <AuthNavigation />}
+      {loggedIn === true ? <AuthNavigation /> : <GuestNavigation />}
     </NavigationContainer>
   );
 };
@@ -241,7 +235,7 @@ const UserJobCreationTab = () => {
   return(
   <Stack.Navigator>
     <Stack.Screen options={{headerShown: false }} name="JobCreation1" component={JobCreation1}/>
-    <Stack.Screen options={{ headerShown: false, headerLeft: null}} listeners={{beforeRemove: e => {console.log('left the screen')}}} name="JobCreationPayment" component={JobCreationPayment}/>
+    <Stack.Screen options={{ headerShown: false, headerLeft: null}} listeners={{tabPress: e => {console.log('left the screen')}}} name="JobCreationPayment" component={JobCreationPayment}/>
   </Stack.Navigator>
   )
 }

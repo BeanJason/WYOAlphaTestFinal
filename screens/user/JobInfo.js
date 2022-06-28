@@ -6,15 +6,15 @@ import {
   SafeAreaView,
   Dimensions,
   Modal,
+  TouchableOpacity
 } from "react-native";
-import { TouchableOpacity } from "react-native";
 import Spinner from "../../common/components/Spinner";
 import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useEffect, useState } from "react";
 import { API, DataStore, graphqlOperation } from "aws-amplify";
 import { refundPayment } from "../../src/graphql/mutations";
-import { Provider, Job } from "../../src/models";
+import { Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch } from "react-redux";
 import { addOrRemoveJob } from "../../redux/jobsReducer";

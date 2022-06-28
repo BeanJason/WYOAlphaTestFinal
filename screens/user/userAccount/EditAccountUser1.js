@@ -1,22 +1,18 @@
 import {
     StyleSheet,
     Text,
-    Image,
     View,
     ImageBackground,
     SafeAreaView,
+    TouchableOpacity
   } from "react-native";
-  import { TouchableOpacity } from "react-native";
   import UserInput from "../../../common/components/UserInput";
-  import Spinner from "../../../common/components/Spinner";
   import { commonStyles } from "../../../common/styles";
   import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
   import { useForm } from "react-hook-form";
-  import { useSelector, useDispatch } from "react-redux";
-  import { login, resetState } from "../../../redux/authReducer";
-  import { useEffect } from "react";
-import { Auth } from "aws-amplify";
-import { checkCredentials } from "../../../credentials";
+  import { useSelector } from "react-redux";
+  import { Auth } from "aws-amplify";
+  import { checkCredentials } from "../../../credentials";
   
   //Login screen
   const EditAccountUser1 = ({ navigation }) => {

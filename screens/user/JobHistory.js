@@ -5,9 +5,9 @@ import {
     ImageBackground,
     SafeAreaView,
     FlatList,
-    TextInput
+    TextInput,
+    TouchableOpacity
   } from "react-native";
-  import { TouchableOpacity } from "react-native";
   import Spinner from "../../common/components/Spinner";
   import { commonStyles } from "../../common/styles";
   import { useDispatch, useSelector } from "react-redux";

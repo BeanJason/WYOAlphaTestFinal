@@ -1,13 +1,12 @@
-import { DataStore } from "aws-amplify"
+import { DataStore, Auth } from "aws-amplify"
 import {User, Provider} from "./src/models"
-import { Auth } from "aws-amplify"
 
 export async function checkCredentials(){
-    let userData, userInfo
-    try {
-        const {attributes} = await Auth.currentAuthenticatedUser({bypassCache: true})
+    let userData, userInfo, attributes
+    await Auth.currentAuthenticatedUser({bypassCache: true}).then( async (res) => {
+        attributes = res.attributes;
         if(attributes == undefined){
-            return {authUser: attributes, userInfo}
+            return {authUser: null, userInfo}
         }
         try {
             if(attributes['custom:type'] == 'User'){
@@ -30,13 +29,10 @@ export async function checkCredentials(){
     
         } catch (error) {
             console.log(error);
-            return {authUser: null, userInfo}
+            return {authUser: null, userInfo: null}
         }
-    } catch (error) {
-        console.log(error);
-        return {authUser: null, userInfo}
-    }
-    
+    })
+    return {authUser: null, userInfo: null}    
 }
 
 export function getStripeKey(){
