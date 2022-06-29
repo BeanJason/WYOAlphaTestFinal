@@ -50,7 +50,7 @@ import EditProviderAccount from "./screens/provider/providerAccount/EditProvider
 
 import { config } from "./common/styles";
 import { getUser } from "./testData";
-import { resetState } from "./redux/jobsReducer";
+import { resetState, storeNewJobID } from "./redux/jobsReducer";
 import { checkUnverifiedJob } from "./common/functions";
 
 

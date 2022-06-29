@@ -173,7 +173,7 @@ import {
     }
 
     const cancelJob = async () => {
-      await DataStore.delete(Job, job => job.id('eq', newJob?.id))
+      dispatch(storeNewJobID(""))
       navigation.navigate('Home')
     }
 

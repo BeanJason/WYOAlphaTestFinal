@@ -58,8 +58,8 @@ import {
             phoneNumber: original.phoneNumber
         }
         dispatch(changeUserInfo({userInfo: newInfo}))
-        navigation.reset({ routes: [{name: 'EditAccountUser2'}]})
-        navigation.navigate('EditAccountUser2', {name: 'EditAccountUser2'})
+        navigation.reset({ routes: [{name: 'EditAccountUser'}]})
+        navigation.navigate('EditAccountUser', {name: 'EditAccountUser'})
     };
   
     return (
