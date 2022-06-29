@@ -21,7 +21,7 @@ import { resetState } from "../../../redux/jobsReducer";
 
 
 //Login screen
-const ProviderAccount = ({ navigation }) => {
+const EditProviderAccount = ({ navigation }) => {
     //Set the dispatch to use functions from the redux reducers file
     const dispatch = useDispatch();
 
@@ -37,24 +37,7 @@ const ProviderAccount = ({ navigation }) => {
         source={require("../../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
-          <Text style={styles.header1}>Account</Text>
-
-          <View style={{alignItems: 'center', marginTop: 20}}>
-            <TouchableOpacity onPress={() => {navigation.navigate('EditAccountUser1')}}>
-              <View style={styles.button}>
-                <Text style={styles.btnText}>Edit Account</Text>
-                <FontAwesome name="cog" size={25} style={{color: 'white', marginLeft: 5}} />
-              </View>
-            </TouchableOpacity>
-
-          
-            <TouchableOpacity onPress={resetAndLogout}>
-              <View style={styles.button}>
-                <Text style={styles.btnText}>Logout</Text>
-                <MaterialIcons name="logout" size={25} style={{color: 'white', marginLeft: 10}} />
-              </View>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.header1}>Provider Account Edit</Text>
 
         </SafeAreaView>
       </ImageBackground>
@@ -88,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProviderAccount;
+export default EditProviderAccount;

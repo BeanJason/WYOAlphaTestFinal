@@ -1,4 +1,6 @@
 import { DataStore } from "aws-amplify"
+import { useDispatch } from "react-redux"
+import { storeNewJobID } from "../redux/jobsReducer"
 import { Job } from "../src/models"
 
 export const getUnacceptedJobs = (activeJobs) => {
@@ -25,11 +27,15 @@ export const getUnacceptedJobs = (activeJobs) => {
 //delete job if user changes tab or payment ID is not found
 export const checkUnverifiedJob = async (job) => {
     if(job.paymentID == null){
+        const dispatch = useDispatch();
+        dispatch(storeNewJobID(""))
         await DataStore.delete(Job, job.id)
     }
     else{
         console.log(job.paymentID);
         if(job.paymentID == '' || job.paymentID == undefined || job.paymentID == null){
+            const dispatch = useDispatch();
+            dispatch(storeNewJobID(""))
             await DataStore.delete(Job, job.id)
         }
     }

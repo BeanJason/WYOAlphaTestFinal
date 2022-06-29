@@ -7,17 +7,16 @@ import {
   SafeAreaView,
   TouchableOpacity
 } from "react-native";
-import { commonStyles } from "../../../common/styles";
+import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useDispatch } from "react-redux";
-import { logout } from "../../../redux/authReducer";
+import { logout } from "../../redux/authReducer";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
-import { resetState } from "../../../redux/jobsReducer";
+import { resetState } from "../../redux/jobsReducer";
 
 
 
-//Login screen
-const UserAccount = ({ navigation }) => {
+const MyAccount = ({ navigation }) => {
     //Set the dispatch to use functions from the redux reducers file
     const dispatch = useDispatch();
 
@@ -30,13 +29,13 @@ const UserAccount = ({ navigation }) => {
     <KeyboardAwareScrollView>
       <ImageBackground
         style={commonStyles.background}
-        source={require("../../../assets/wyo_background.png")}
+        source={require("../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
           <Text style={styles.header1}>Account</Text>
 
           <View style={{alignItems: 'center', marginTop: 20}}>
-            <TouchableOpacity onPress={() => {navigation.navigate('EditAccountUser1')}}>
+            <TouchableOpacity onPress={() => {navigation.navigate('VerifyAccount')}}>
               <View style={styles.button}>
                 <Text style={styles.btnText}>Edit Account</Text>
                 <FontAwesome name="cog" size={25} style={{color: 'white', marginLeft: 5}} />
@@ -84,4 +83,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserAccount;
+export default MyAccount;

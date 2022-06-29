@@ -60,7 +60,7 @@ const getUserData = async (attributes) => {
 //get provider personal data
 const getProviderData = async (attributes) => {
     try {
-        const userData = await DataStore.query(Provider, user => user.subID("eq", attributes.sub))[0]
+        const userData = await DataStore.query(Provider, user => user.subID("eq", attributes.sub))
         if(userData[0] == null || userData[0] == undefined){
             return null
            }

@@ -13,7 +13,6 @@ const initialState = {
   message: "",
   authUser: null,
   userInfo: null,
-  type: null
 };
 
 //ASYNC FUNCTIONS
@@ -131,6 +130,8 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
 export const logout = createAsyncThunk("auth/logout", async () => {
   try {
       await Auth.signOut();
+      await DataStore.clear();
+      await DataStore.start();
   } catch (error) {
       console.log('error signing out');
   }

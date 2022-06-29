@@ -33,19 +33,19 @@ import ForgotPassword2 from "./screens/account/forgotPassword/ForgotPassword2";
 //USER SCREENS
 import ConfirmEmail from "./screens/account/ConfirmEmail";
 import UserHome from "./screens/user/UserHome";
-import UserAccount from "./screens/user/userAccount/UserAccount"
-import EditAccountUser2 from "./screens/user/userAccount/EditAccountUser2"
+import MyAccount from "./screens/commonScreens/MyAccount"
+import EditAccountUser from "./screens/user/userAccount/EditAccountUser"
 import AddAddress from "./screens/user/userAccount/AddAddress"
-import EditAccountUser1 from "./screens/user/userAccount/EditAccountUser1"
+import VerifyAccount from "./screens/commonScreens/VerifyAccount"
 import JobCreation1 from "./screens/user/JobCreation1"
 import JobCreationPayment from "./screens/user/JobCreationPayment"
-import JobInfo from "./screens/user/JobInfo"
-import JobHistory from "./screens/user/JobHistory"
+import JobInfo from "./screens/commonScreens/JobInfo"
+import JobHistory from "./screens/commonScreens/JobHistory"
 
 //Provider Screens
 import ProviderHome from "./screens/provider/ProviderHome";
-import ProviderJobHistory from "./screens/provider/ProviderJobHistory";
-import ProviderAccount from "./screens/provider/providerAccount/ProviderAccount";
+import JobSearch1 from "./screens/provider/JobSearch1";
+import EditProviderAccount from "./screens/provider/providerAccount/EditProviderAccount";
 
 
 import { config } from "./common/styles";
@@ -276,9 +276,9 @@ const UserHistoryTab = () => {
 const UserAccountTab = () => {
   return (
     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
-      <Stack.Screen options={{ headerShown: false }} name="UserAccount" component={UserAccount}/>
-      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser1" component={EditAccountUser1}/>
-      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser2" component={EditAccountUser2}/>
+      <Stack.Screen options={{ headerShown: false }} name="MyAccount" component={MyAccount}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="VerifyAccount" component={VerifyAccount}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser" component={EditAccountUser}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="AddAddress" component={AddAddress}/>
     </Stack.Navigator>
   )
@@ -300,7 +300,7 @@ const ProviderNavigation = () => {
           let name = route.route.name
           if (name === 'Home'){
             iconName = focused ? 'home' : 'home-outline'
-          } else if (name === 'Create Job') {
+          } else if (name === 'Job Search') {
             iconName = focused ? 'create' : 'create-outline'
           } else if (name === 'Job History') {
             iconName = focused ? 'time' : 'time-outline'
@@ -312,6 +312,7 @@ const ProviderNavigation = () => {
       })}
       >
       <Tab.Screen options={{headerShown: false}} name='Home' component={ProviderHomeTab}/>
+      <Tab.Screen options={{headerShown: false}} name='Job Search' component={ProviderJobSearchTab}/>
       <Tab.Screen options={{headerShown: false}} name='Job History' component={ProviderHistoryTab}/>
       <Tab.Screen options={{headerShown: false}} name='Account' component={ProviderAccountTab}/>
     </Tab.Navigator> 
@@ -327,19 +328,18 @@ const ProviderHomeTab = () => {
   )
 }
 
-// const ProviderJobCreationTab = () => {
-//   return(
-//   <Stack.Navigator>
-//     <Stack.Screen options={{headerShown: false }} name="JobCreation1" component={JobCreation1}/>
-//     <Stack.Screen options={{ headerShown: false, headerLeft: null}} name="JobCreationPayment" component={JobCreationPayment}/>
-//   </Stack.Navigator>
-//   )
-// }
+const ProviderJobSearchTab = () => {
+  return(
+  <Stack.Navigator>
+    <Stack.Screen options={{headerShown: false }} name="JobSearch1" component={JobSearch1}/>
+  </Stack.Navigator>
+  )
+}
 
 const ProviderHistoryTab = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen options={{headerShown: false }} name="ProviderJobHistory" component={ProviderJobHistory}/>
+      <Stack.Screen options={{headerShown: false }} name="JobHistory" component={JobHistory}/>
       <Stack.Screen options={{ title: 'Job Information' }} name="JobInfo" component={JobInfo}/>
     </Stack.Navigator>
   )
@@ -348,10 +348,9 @@ const ProviderHistoryTab = () => {
 const ProviderAccountTab = () => {
   return (
     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
-      <Stack.Screen options={{ headerShown: false }} name="ProviderAccount" component={ProviderAccount}/>
-      {/* <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser1" component={EditAccountUser1}/>
-      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser2" component={EditAccountUser2}/>
-      <Stack.Screen options={{ title: 'Edit Account Info' }} name="AddAddress" component={AddAddress}/> */}
+      <Stack.Screen options={{ headerShown: false }} name="MyAccount" component={MyAccount}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="VerifyAccount" component={VerifyAccount}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditProviderAccount" component={EditProviderAccount}/>
     </Stack.Navigator>
   )
 }

@@ -6,15 +6,15 @@ import {
     SafeAreaView,
     TouchableOpacity
   } from "react-native";
-  import UserInput from "../../../common/components/UserInput";
-  import { commonStyles } from "../../../common/styles";
+  import UserInput from "../../common/components/UserInput";
+  import { commonStyles } from "../../common/styles";
   import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
   import { useForm } from "react-hook-form";
   import { useDispatch, useSelector } from "react-redux";
   import { Auth } from "aws-amplify";
   
   //Login screen
-  const EditAccountUser1 = ({ navigation }) => {
+  const VerifyAccount = ({ navigation }) => {
     //Set variables for user input
     const {
       control,
@@ -29,7 +29,12 @@ import {
     const submitForm = async (data) => {
      try {
         await Auth.signIn({username: authUser.email, password: data.password})
-        navigation.navigate('EditAccountUser2',{name: 'EditAccountUser2'})
+        if(authUser['custom:type'] == 'Provider'){
+          navigation.navigate('EditProviderAccount',{name: 'EditProviderAccount'})
+        }
+        else{
+          navigation.navigate('EditAccountUser',{name: 'EditAccountUser'})
+        }
      } catch (error) {
       setError("password", {
         type: "mismatch",
@@ -44,7 +49,7 @@ import {
       <KeyboardAwareScrollView>
         <ImageBackground
           style={commonStyles.background}
-          source={require("../../../assets/wyo_background.png")}
+          source={require("../../assets/wyo_background.png")}
         >
           <SafeAreaView style={commonStyles.safeContainer}>
           <Text style={styles.header2}>Verify your password before editing your account</Text>
@@ -131,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditAccountUser1;
+export default VerifyAccount;

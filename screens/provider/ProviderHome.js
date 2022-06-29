@@ -25,10 +25,8 @@ const ProviderHome = ({ navigation }) => {
 
   //Get all current jobs
   useEffect(() => {
-    //Get user's current jobs
-    if(!initialized){
-      dispatch(initializeJobs(userInfo.userID))
-    }
+    //Get provider's current jobs
+
     //TESTING
     // setJobList(getManyJobs())
     setLoading(false)
@@ -51,13 +49,13 @@ const ProviderHome = ({ navigation }) => {
           </TouchableOpacity> */}
         </View>
         <View>
-          <Text style={[styles.headerText, {textAlign: 'center'}]}>Available jobs</Text>
+          <Text style={[styles.headerText, {textAlign: 'center'}]}>Active jobs</Text>
         </View>
         {loading ? <Spinner color={'blue'}/> : (
         <View style={styles.body}>
         {jobList.length == 0 ? <Text style={{fontFamily: 'Montserrat-Italic', flex: 1, margin: 20}}>You have no current jobs</Text> : (
           <View style={{flex: 1}}>
-            <Text style={styles.helpText}>Click on any of the following jobs for more details and to sign up!</Text>
+            <Text style={styles.helpText}>Click on any of the following jobs for more details</Text>
             <FlatList
               keyExtractor={(item) => item.id}
               data={jobList}
@@ -77,7 +75,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(113, 124, 206, 0.95)",
     alignContent: "flex-start",
     justifyContent: 'center',
-    height: '10%'
+    height: '10%',
+    marginTop: 10
   },
   body: {
     flex: 1,

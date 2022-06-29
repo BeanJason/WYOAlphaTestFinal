@@ -23,7 +23,7 @@ import { changeUserInfo } from "../../../redux/authReducer";
 import { changeUserStatus } from "../../../redux/authReducer";
 
 //Login screen
-const EditAccountUser2 = ({ navigation }) => {
+const EditAccountUser = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
   const [phoneNumber, setphoneNumber] = useState(userInfo.phoneNumber)
   const [address, setAddress] = useState([]);
@@ -336,4 +336,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditAccountUser2;
+export default EditAccountUser;
