@@ -39,7 +39,6 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
                 }
             }
         }
-        await DataStore.clear()
         return {allJobs: response}
     } catch (error) {
         return thunkAPI.rejectWithValue('Error getting job list ' + error.message)

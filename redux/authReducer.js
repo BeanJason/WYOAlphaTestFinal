@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Auth } from "aws-amplify";
 import { DataStore } from "aws-amplify";
+import { checkCredentials } from "../credentials";
 import {User, Provider} from "../src/models"
 
 //Initial values
@@ -97,7 +98,6 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
 
 //Login
 export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
-    let user, userData, userInfo
     let message = ''
 
     //try logging in
@@ -107,45 +107,22 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
       message = error.message
       return thunkAPI.rejectWithValue(message);
     }
-    try {
-      user = await Auth.currentUserInfo();
-    } catch (error) {
-      message = error.message
-      return thunkAPI.rejectWithValue(message);
-    }
     
 
-    //if successful try to get user info from DB
-    if(message == ''){
-      try {
-        //get from User table
-        if(user?.attributes['custom:type'] === 'User'){
-          await DataStore.query(User, u => u.subID('eq', user?.attributes.sub)).then((foundUser) => userData = foundUser[0])
-        }
-        //get from Provider table
-        else if(user.attributes['custom:type'] === 'Provider'){
-          await DataStore.query(Provider, u => u.subID('eq', user?.attributes.sub)).then((foundUser) => userData = foundUser[0])
-        }
-        //If success
-        if(userData != undefined){
-          userInfo = {
-            userID: userData.id,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            address: userData.address,
-            phoneNumber: userData.phoneNumber
-          }
-          return {authUser: user.attributes, userInfo}
-        }
-        else{
-          message = 'User not found';
-          return thunkAPI.rejectWithValue(message);
-        }
-      } catch (error) {
-        message = error.message;
-        console.log(error);
-        return thunkAPI.rejectWithValue(message);
-      }
+    //if sign in success get auth and data info
+    const dataCheck = await checkCredentials();
+    if(dataCheck.authUser == null){
+      message = "Could not get authenticated user data"
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+    else if(dataCheck.userInfo == null){
+      message = "User data not found"
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+    else if(dataCheck.authUser != null && dataCheck.userInfo != null){
+      return {authUser: dataCheck.authUser, userInfo: dataCheck.userInfo}
     }
 }
 );

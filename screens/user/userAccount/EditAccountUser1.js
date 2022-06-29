@@ -10,9 +10,8 @@ import {
   import { commonStyles } from "../../../common/styles";
   import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
   import { useForm } from "react-hook-form";
-  import { useSelector } from "react-redux";
+  import { useDispatch, useSelector } from "react-redux";
   import { Auth } from "aws-amplify";
-  import { checkCredentials } from "../../../credentials";
   
   //Login screen
   const EditAccountUser1 = ({ navigation }) => {
@@ -29,8 +28,7 @@ import {
     //Submit the user input
     const submitForm = async (data) => {
      try {
-       await Auth.signIn({username: authUser.email, password: data.password})
-       checkCredentials();
+        await Auth.signIn({username: authUser.email, password: data.password})
         navigation.navigate('EditAccountUser2',{name: 'EditAccountUser2'})
      } catch (error) {
       setError("password", {

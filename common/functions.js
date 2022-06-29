@@ -24,7 +24,11 @@ export const getUnacceptedJobs = (activeJobs) => {
 
 //delete job if user changes tab or payment ID is not found
 export const checkUnverifiedJob = async (job) => {
-    if(job?.paymentID){
+    if(job.paymentID == null){
+        await DataStore.delete(Job, job.id)
+    }
+    else{
+        console.log(job.paymentID);
         if(job.paymentID == '' || job.paymentID == undefined || job.paymentID == null){
             await DataStore.delete(Job, job.id)
         }

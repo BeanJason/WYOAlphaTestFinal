@@ -2,44 +2,80 @@ import { DataStore, Auth } from "aws-amplify"
 import {User, Provider} from "./src/models"
 
 export async function checkCredentials(){
-    let userData, userInfo, attributes
-    await Auth.currentAuthenticatedUser({bypassCache: true}).then( async (res) => {
-        attributes = res.attributes;
-        if(attributes == undefined){
-            console.log('undefined');
-            return {authUser: null, userInfo}
-        }
-    }).catch((error) => {
-        console.log(error);
-        return {authUser: null, userInfo: null}    
-    })
-
-    if(attributes){
-        try {
-            if(attributes['custom:type'] == 'User'){
-                await DataStore.query(User, u => u.subID('eq', attributes.sub)).then((foundUser) => userData = foundUser[0])
-            }
-            else if(attributes['custom:type'] == 'Provider'){
-                await DataStore.query(Provider, u => u.subID('eq', attributes.sub)).then((foundUser) => userData = foundUser[0])
-            }
-            
-        } catch (error) {
-            console.log(error);
-            return {authUser: null, userInfo: null}
-        }
+    let authUser = await getAuthData();
+    if(authUser == null){
+        return {authUser: null, userInfo: null}
     }
-    
-    //If success
-    if(userData != undefined){
-        userInfo = {
-            userID: userData.id,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            address: userData.address,
-            phoneNumber: userData.phoneNumber
-        }
-        return {authUser: attributes, userInfo}
-      }
+    console.log('auth user success: ' + authUser);
+    let userInfo = null
+    if(authUser['custom:type'] == 'User'){
+        userInfo = await getUserData(authUser);
+    }
+    else if (authUser['custom:type'] == 'Provider'){
+        userInfo = await getProviderData(authUser);
+    }
+    console.log('User Info: ' + userInfo);
+    if(userInfo == null){
+        return {authUser: authUser, userInfo: null}
+    }
+    return {authUser, userInfo}
+}
+
+//get login data, user type, sub id
+const getAuthData = async () => {
+    try {
+       const {attributes} = await Auth.currentAuthenticatedUser({bypassCache: true})
+       if(attributes == undefined){
+        return null
+       }
+       return attributes
+    } catch (error) {
+        console.log(error);
+        return null
+    }
+}
+
+//get user personal data
+const getUserData = async (attributes) => {
+    try {
+       const userData = await DataStore.query(User, user => user.subID("eq", attributes.sub))
+       if(userData[0] == null || userData[0] == undefined){
+        return null
+       }
+       console.log('found user');
+       const userInfo = {
+            userID: userData[0].id,
+            firstName: userData[0].firstName,
+            lastName: userData[0].lastName,
+            address: userData[0].address,
+            phoneNumber: userData[0].phoneNumber
+       }
+       return userInfo
+    } catch (error) {
+        console.log(error);
+        return null
+    }
+}
+
+//get provider personal data
+const getProviderData = async (attributes) => {
+    try {
+        const userData = await DataStore.query(Provider, user => user.subID("eq", attributes.sub))[0]
+        if(userData[0] == null || userData[0] == undefined){
+            return null
+           }
+           const userInfo = {
+                userID: userData[0].id,
+                firstName: userData[0].firstName,
+                lastName: userData[0].lastName,
+                address: userData[0].address,
+                phoneNumber: userData[0].phoneNumber
+           }
+        return userInfo
+     } catch (error) {
+         console.log(error);
+         return null
+     }
 }
 
 export const stripeKey = "pk_test_51LAbv7GUC6WuR4axP3o28XT3NNuJW1Reiy10HWN33J35I6hAaEEs18ZVnmUVbCSwmv4sLic0KdI6ZnFnjkl1B5yW00IAMz9BzM"

@@ -20,6 +20,7 @@ import { checkCredentials } from "../../../credentials";
 import { DataStore } from "aws-amplify";
 import { User } from "../../../src/models";
 import { changeUserInfo } from "../../../redux/authReducer";
+import { changeUserStatus } from "../../../redux/authReducer";
 
 //Login screen
 const EditAccountUser2 = ({ navigation }) => {
@@ -69,7 +70,10 @@ const EditAccountUser2 = ({ navigation }) => {
   };
 
   const getUpdatedInfo = async () => {
-    await checkCredentials();
+    const newData = await checkCredentials();
+    if(newData.authUser != null && newData.userInfo != null){
+      dispatch(changeUserStatus({authUser: newData.authUser, userInfo: newData.userInfo}))
+    }
   };
 
   useEffect(() => {

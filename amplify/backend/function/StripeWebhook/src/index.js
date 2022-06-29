@@ -19,7 +19,7 @@ async function getItem(id) {
       id: id,
     },
     ExpressionAttributeNames: {
-      "#D": "price",
+      "#D": "duration",
     },
     Select: "SPECIFIC_ATTRIBUTES",
     ProjectionExpression: "#D",
@@ -32,7 +32,7 @@ async function getItem(id) {
   }
 }
 
-async function updatePaymentID(id, paid) {
+async function updatePaymentID(id, paymentID) {
   let params = {
     TableName: tableName,
     Key: {
@@ -43,9 +43,8 @@ async function updatePaymentID(id, paid) {
       "#paymentID": "paymentID",
     },
     ExpressionAttributeValues: {
-      ":newpaymentID": paid,
+      ":newpaymentID": paymentID,
     },
-    ReturnValues: "UPDATED_NEW"
   };
 
   try {
@@ -64,8 +63,7 @@ exports.handler = async (event) => {
   switch (body.type) {
     case "payment_intent.succeeded":
       let jobID = body.data.object.metadata.Job;
-      console.log(jobID);
-      let actualPrice = 0;
+      let actualPrice = 2000;
       let jobData;
 
       try {
@@ -74,7 +72,23 @@ exports.handler = async (event) => {
         console.log(error);
       }
 
-      actualPrice = jobData.Item.price
+      switch (jobData.Item.duration) {
+        case 4:
+          actualPrice = 2000;
+          break;
+        case 5:
+          actualPrice = 3000;
+          break;
+        case 6:
+          actualPrice = 4000;
+          break;
+        case 7:
+          actualPrice = 5000;
+          break;
+        case 8:
+          actualPrice = 6000;
+          break;
+      }
 
       //correct price paid
       if (actualPrice == body.data.object.amount_received) {

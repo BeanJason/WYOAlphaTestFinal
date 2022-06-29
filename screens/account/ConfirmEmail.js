@@ -13,8 +13,6 @@ import { useForm } from "react-hook-form";
 import UserInput from "../../common/components/UserInput";
 import { createToast } from "../../common/components/Toast";
 import { Auth } from "aws-amplify";
-import { checkCredentials } from "../../credentials";
-import { changeUserStatus } from "../../redux/authReducer";
 
 //Email verification screen after successful registration or if not verified yet
 const ConfirmEmail = ({ navigation }) => {

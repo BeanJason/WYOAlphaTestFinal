@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch, Provider } from "react-redux";
-import {Amplify, Auth, nav} from "aws-amplify"
+import {Amplify, Auth, DataStore, Hub, nav} from "aws-amplify"
 import { checkCredentials, stripeKey } from "./credentials";
 import { changeUserStatus, logout } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
@@ -61,6 +61,7 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [dataStoreLoaded, setDataStoreLoaded] = useState(false);
 
   //Load custom fonts
   const [fontsLoaded] = useFonts({
@@ -87,10 +88,22 @@ export default function App() {
     return cacheImages
   }
 
+  const loadDataStore = async () => {
+    Hub.listen("datastore", async hubData => {
+      const {event, data} = hubData.payload
+      if(event === 'ready'){
+        console.log('datastore is ready!');
+        setDataStoreLoaded(true)
+      }
+    })
+    await DataStore.start()
+  }
 
   let loadAllResources = async () => {
+    await DataStore.clear()
     await loadAssetsAsync()
     setImagesLoaded(true)
+    loadDataStore()
   }
 
   useEffect(() => { 
@@ -98,7 +111,7 @@ export default function App() {
     loadAllResources();
   }, [])
 
-  if(!imagesLoaded || !fontsLoaded){
+  if(!imagesLoaded || !fontsLoaded || !dataStoreLoaded){
     return null;
   }
   
@@ -120,13 +133,7 @@ const RootNavigation = () => {
  
 
   const checkLoggedIn = async () => {
-    const res =  await checkCredentials();
-    let authUser = null
-    let userInfo = null
-    if(res) {
-      authUser = res.authUser,
-      userInfo = res.userInfo
-    }
+    const {authUser, userInfo} = await checkCredentials();
     
     //TESTING
     // const {authUser, userInfo} = getUser() 

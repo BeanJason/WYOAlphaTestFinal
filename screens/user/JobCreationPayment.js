@@ -40,7 +40,6 @@ import {
 
     //post payment
     const submitJob = async () => {
-      console.log(newJobID);
       setPaymentStatus('Submitting your payment...');
       setTimeout(() => {
         setPaymentStatus('Verifying payment')
