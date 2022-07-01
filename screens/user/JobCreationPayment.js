@@ -183,10 +183,15 @@ import {
       let hour = formatDate.getHours() % 12 || 12;
       let min = (formatDate.getMinutes() < 10 ? "0" : "") + formatDate.getMinutes();
       let amOrPm = "AM";
+      let durationAmOrPm = "AM"
       if (formatDate.getHours() >= 12) {
         amOrPm = "PM";
       }
-      let date = formatDate.toLocaleDateString() +" at " + hour + ":" + min + amOrPm
+      if(formatDate.getHours() + data.duration >= 12){
+        durationAmOrPm = "PM"
+      }
+      let durationHour = (formatDate.getHours() + data.duration) % 12 || 12
+      let date = `${formatDate.toLocaleDateString()} from ${hour}:${min}${amOrPm}-${durationHour}:${min}${durationAmOrPm}`
       return date
     }
   
@@ -204,7 +209,7 @@ import {
             <View style={styles.jobContainer}>
               <Text style={styles.generalText}>Job Title: {data.jobTitle}</Text>
               <Text style={styles.generalText}>Address: {data.address} {data.city} {data.zipCode}</Text>
-              <Text style={styles.generalText}>Job Duration: {data.duration}</Text>
+              <Text style={styles.generalText}>Job Duration: {data.duration} Hrs.</Text>
               <Text style={styles.generalText}>Job Date & Time: {getDateFormat()}</Text>
               {data.jobDescription ? <Text style={styles.generalText}>Job Description: {data.jobDescription}</Text> : <></> }
             </View>

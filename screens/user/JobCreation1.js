@@ -48,7 +48,7 @@ const JobCreation1 = ({ navigation }) => {
 
   useEffect(() => {
     let nextDay = new Date()
-    nextDay.setDate(nextDay.getDate() + 1)
+    nextDay.setDate(nextDay.getDate() + 2)
     setDateOfToday(nextDay)
 
     let items = []

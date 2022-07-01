@@ -1,15 +1,22 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Dimensions, Pressable } from "react-native";
+import { useSelector } from "react-redux";
 
 
 const JobCard = ({ jobInfo }) => {
   const [date, setDate] = useState("");
   const [numOfProvider, setNumOfProviders] = useState("");
   const navigation = useNavigation();
+  const {authUser} = useSelector((state) => state.auth);
 
   const onPress = () => {
-    navigation.navigate('JobInfo', {name: 'JobInfo', jobInfo})
+    if(authUser['custom:type'] == 'Provider'){
+      navigation.navigate('ProviderJobInfo', {name: 'ProviderJobInfo', jobInfo})
+    }
+    else{
+      navigation.navigate('UserJobInfo', {name: 'UserJobInfo', jobInfo})
+    }
   }
 
   useEffect(() => {
@@ -24,7 +31,7 @@ const JobCard = ({ jobInfo }) => {
     }
     setDate(formatDate.toLocaleDateString() + " " + hour + ":" + min + amOrPm);
     let count = 0;
-    if (jobInfo.acceptedBy) {
+    if (jobInfo.mainProvider != null) {
       count++;
     }
     if(jobInfo.backupProviders){

@@ -14,21 +14,22 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useEffect, useState } from "react";
 import { API, DataStore, graphqlOperation } from "aws-amplify";
 import { refundPayment } from "../../src/graphql/mutations";
-import { Provider } from "../../src/models";
+import { Job, Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
-import { useDispatch } from "react-redux";
-import { addOrRemoveJob } from "../../redux/jobsReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { addOrRemoveJob } from "../../redux/jobsProviderReducer";
 
 //Login screen
-const JobInfo = ({ route, navigation }) => {
+const ProviderJobInfo = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { jobInfo } = route.params;
   const [mainProvider, setMainProvider] = useState('')
   const [backupProviders, setBackupProviders] = useState([])
-  const [showCancel, setShowCancel] = useState(false)
+  const [canCancel, setCanCancel] = useState(false)
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [startCancel, setStartCancel] = useState(false)
+  const { userInfo } = useSelector((state) => state.auth);
 
   const getDateFormat = () => {
     let date = new Date(jobInfo.requestDateTime)
@@ -52,20 +53,21 @@ const JobInfo = ({ route, navigation }) => {
   const getProviders = async () => {
     //set main provider if available
     if(jobInfo.mainProvider){
-      await DataStore.query(Provider, (provider) => {
-        provider.id("eq", jobInfo.mainProvider)
-      }).then((providerFound) => {
-        setMainProvider(`${providerFound.firstName} ${providerFound.lastName}`);
-      });
+      if(jobInfo.mainProvider == userInfo.userID){
+        setMainProvider(`${userInfo.firstName} ${userInfo.lastName}`);
+      }
+      else{
+        await DataStore.query(Provider, provider => provider.id("eq", jobInfo.mainProvider)).then((providerFound) => {
+          setMainProvider(`${providerFound[0].firstName} ${providerFound[0].lastName}`);
+        });
+      }
     }
     //set backup providers if available
     if(jobInfo.backupProviders && jobInfo.backupProviders.length != 0){
       let listOfBackups = []
       for(let next of jobInfo.backupProviders){
-        await DataStore.query(Provider, (provider) => {
-          provider.id("eq", next)
-        }).then((providerFound) => {
-          listOfBackups.push(`${providerFound.firstName} ${providerFound.lastName}`)
+        await DataStore.query(Provider, provider => provider.id("eq", next)).then((providerFound) => {
+          listOfBackups.push(`${providerFound[0].firstName} ${providerFound[0].lastName}`)
         });
       }
       setBackupProviders(listOfBackups)
@@ -74,33 +76,72 @@ const JobInfo = ({ route, navigation }) => {
 
   const cancelJob = async () => {
     setStartCancel(true)
-    //REFUND
+    //cancel services
+    let original
+    let success = false;
     try {
-      let refundStatus = await API.graphql(graphqlOperation(refundPayment, {
-          isCancel: true,
-          jobID: jobInfo.id
-        })
-        )
-        if(refundStatus){
-          dispatch(addOrRemoveJob({type: 'REMOVE_ACTIVE_JOB', jobInfo}))
-          createToast('Your job request has been cancelled')
-          setTimeout(() => {
-            setStartCancel(false)
-            navigation.reset({ routes: [{name: 'UserHome'}]})
-            navigation.navigate('UserHome', {name: 'UserHome'})
-          }, 5000)
-        }
+      original = await DataStore.query(Job, jobInfo.id)
     } catch (error) {
       console.log(error);
     }
+
+    if(original){
+      //if provider was the main get the next backup and set as main if available
+      if(original.mainProvider == userInfo.userID){
+        if(original.backupProviders){
+          let newMain = original.backupProviders[0]
+          try {
+            await DataStore.save(Job.copyOf(original, updated => {
+                updated.mainProvider = newMain
+                updated.backupProviders = updated.backupProviders.filter(id => id != newMain)
+            }))
+            success = true
+          } catch (error) {
+              console.log(error);
+          }
+        }
+        //if no backups remove main provider only
+        else{
+          try {
+            await DataStore.save(Job.copyOf(original, updated => {
+                updated.mainProvider = null
+            }))
+            success = true
+          } catch (error) {
+              console.log(error);
+          }
+        }
+      }
+      //If provider was a backup
+      else if(original.backupProviders.includes(userInfo.userID)){
+        try {
+          await DataStore.save(Job.copyOf(original, updated => {
+            updated.backupProviders = updated.backupProviders.filter(id => id != userInfo.userID)
+          }))
+          success = true
+        } catch (error) {
+            console.log(error);
+        }
+      }
+
+      dispatch(addOrRemoveJob({type: 'REMOVE_ACTIVE_JOB', jobInfo}))
+      createToast('Your job service has been cancelled')
+      setTimeout(() => {
+        setStartCancel(false)
+        navigation.reset({ routes: [{name: 'ProviderHome'}]})
+        navigation.navigate('ProviderHome', {name: 'ProviderHome'})
+      }, 5000)
+    }
+    
   }
   
   useEffect(() => {
     getProviders()
-    let date = new Date(jobInfo.requestDateTime)
+    let date = new Date(jobInfo.createdAt)
+    date.setHours(date.getHours() + 24)
     let today = new Date()
-    if(date.toLocaleDateString() > today.toLocaleDateString()){
-      setShowCancel(true)
+    if(date.toLocaleDateString() > today.toLocaleDateString() || (date.toLocaleDateString() == today.toLocaleDateString() && date.toLocaleTimeString() > today.toLocaleTimeString())){
+      setCanCancel(true)
     }
     setLoading(false)
   },[])
@@ -125,10 +166,10 @@ const JobInfo = ({ route, navigation }) => {
             hardwareAccelerated
           >
             <View style={styles.centeredView}>
+            {canCancel ? (
               <View style={styles.warningModal}>
                 <Text style={styles.modalTitle}>Warning</Text>
-                <Text style={styles.modalText}>After cancellation of this job you will be 
-                refunded through your original payment method. Are you sure you want to cancel this job?
+                <Text style={styles.modalText}>Are you sure you want to cancel service for this job?
                 </Text>
                 {startCancel ?  <Spinner color={'black'}/> : (
                   //Buttons
@@ -148,22 +189,36 @@ const JobInfo = ({ route, navigation }) => {
                   </View>
                 )}
               </View>
+            ):
+              <View style={styles.warningModal}>
+                <Text style={styles.modalTitle}>Cancellation</Text>
+                <Text style={styles.modalText}>You are no longer able to cancel services for this job at this time.
+                </Text>
+                <TouchableOpacity
+                    onPress={() => setShowModal(false)}
+                    style={[styles.button, {alignSelf: 'center', marginTop: 10}]}
+                  >
+                  <Text style={styles.btnText}>Back</Text>
+                  </TouchableOpacity>
+              </View>
+            }
             </View>
           </Modal>
 
 
           <Text style={styles.head}>Job Details</Text>
           <View style={styles.jobContainer}>
-            {showCancel == false ? <></> : (
-              <View style={{alignItems: 'flex-end', marginBottom: -10}}>
-                <TouchableOpacity
-                  onPress={() => setShowModal(true)}
-                  style={styles.button}
-                >
-                <Text style={styles.btnText}>Cancel Job</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+            <View style={{alignItems: 'flex-end', marginBottom: -10}}>
+              {jobInfo.currentStatus != 'COMPLETED' ? 
+                  <TouchableOpacity
+                    onPress={() => setShowModal(true)}
+                    style={styles.button}
+                    >
+                    <Text style={styles.btnText}>Cancel Job</Text> 
+                  </TouchableOpacity>
+                : <></>
+                }
+            </View>
             <Text style={styles.title}>{jobInfo.jobTitle}</Text>
             <Text style={styles.generalText}>{jobInfo.address}</Text>
             <Text style={styles.generalText}>{jobInfo.city} {jobInfo.zipCode}</Text>
@@ -268,4 +323,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default JobInfo;
+export default ProviderJobInfo;

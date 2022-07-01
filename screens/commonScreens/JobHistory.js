@@ -85,7 +85,7 @@ import {
       >
         <SafeAreaView style={commonStyles.safeContainer}>
           <View>
-            <Text style={[styles.headerText, {textAlign: 'center'}]}>Job History</Text>
+            <Text style={[styles.headerText, {textAlign: 'center'}]}>User History</Text>
           </View>
           {loading ? <Spinner color={'blue'}/> : (
           <View style={styles.body}>

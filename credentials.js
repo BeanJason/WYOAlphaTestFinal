@@ -69,6 +69,8 @@ const getProviderData = async (attributes) => {
                 firstName: userData[0].firstName,
                 lastName: userData[0].lastName,
                 address: userData[0].address,
+                city: userData[0].city,
+                zipCode: userData[0].zipCode,
                 phoneNumber: userData[0].phoneNumber
            }
         return userInfo

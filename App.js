@@ -39,17 +39,18 @@ import AddAddress from "./screens/user/userAccount/AddAddress"
 import VerifyAccount from "./screens/commonScreens/VerifyAccount"
 import JobCreation1 from "./screens/user/JobCreation1"
 import JobCreationPayment from "./screens/user/JobCreationPayment"
-import JobInfo from "./screens/commonScreens/JobInfo"
+import UserJobInfo from "./screens/user/UserJobInfo"
 import JobHistory from "./screens/commonScreens/JobHistory"
 
 //Provider Screens
 import ProviderHome from "./screens/provider/ProviderHome";
 import JobSearch1 from "./screens/provider/JobSearch1";
 import EditProviderAccount from "./screens/provider/providerAccount/EditProviderAccount";
+import ProviderJobInfo from "./screens/provider/ProviderJobInfo";
 
 
 import { config } from "./common/styles";
-import { getUser } from "./testData";
+import { getProvider, getUser } from "./testData";
 import { resetState, storeNewJobID } from "./redux/jobsReducer";
 import { checkUnverifiedJob } from "./common/functions";
 
@@ -136,7 +137,8 @@ const RootNavigation = () => {
     const {authUser, userInfo} = await checkCredentials();
     
     //TESTING
-    // const {authUser, userInfo} = getUser() 
+    // const {authUser, userInfo} = getUser()
+    // const {authUser, userInfo} = getProvider()
     
     if(authUser && userInfo){
       dispatch(resetState())
@@ -219,7 +221,7 @@ const UserNavigation = () => {
             iconName = focused ? 'home' : 'home-outline'
           } else if (name === 'Create Job') {
             iconName = focused ? 'create' : 'create-outline'
-          } else if (name === 'Job History') {
+          } else if (name === 'History') {
             iconName = focused ? 'time' : 'time-outline'
           } else if (name === 'Account') {
             iconName = focused ? 'person' : 'person-outline'
@@ -240,7 +242,7 @@ const UserNavigation = () => {
         }
       }) } 
       name='Create Job' component={UserJobCreationTab}/>
-      <Tab.Screen options={{headerShown: false}} name='Job History' component={UserHistoryTab}/>
+      <Tab.Screen options={{headerShown: false}} name='History' component={UserHistoryTab}/>
       <Tab.Screen options={{headerShown: false}} name='Account' component={UserAccountTab}/>
     </Tab.Navigator> 
   )
@@ -250,7 +252,7 @@ const UserHomeTab = () => {
   return (
     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
       <Stack.Screen options={{headerShown: false}} name='UserHome' component={UserHome}/>
-      <Stack.Screen options={{ title: 'Job Information' }} name="JobInfo" component={JobInfo}/>
+      <Stack.Screen options={{ title: 'Job Information' }} name="UserJobInfo" component={UserJobInfo}/>
     </Stack.Navigator>
   )
 }
@@ -268,7 +270,7 @@ const UserHistoryTab = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen options={{headerShown: false }} name="JobHistory" component={JobHistory}/>
-      <Stack.Screen options={{ title: 'Job Information' }} name="JobInfo" component={JobInfo}/>
+      <Stack.Screen options={{ title: 'Job Information' }} name="UserJobInfo" component={UserJobInfo}/>
     </Stack.Navigator>
   )
 }
@@ -301,8 +303,8 @@ const ProviderNavigation = () => {
           if (name === 'Home'){
             iconName = focused ? 'home' : 'home-outline'
           } else if (name === 'Job Search') {
-            iconName = focused ? 'create' : 'create-outline'
-          } else if (name === 'Job History') {
+            iconName = focused ? 'search' : 'search-outline'
+          } else if (name === 'History') {
             iconName = focused ? 'time' : 'time-outline'
           } else if (name === 'Account') {
             iconName = focused ? 'person' : 'person-outline'
@@ -313,7 +315,7 @@ const ProviderNavigation = () => {
       >
       <Tab.Screen options={{headerShown: false}} name='Home' component={ProviderHomeTab}/>
       <Tab.Screen options={{headerShown: false}} name='Job Search' component={ProviderJobSearchTab}/>
-      <Tab.Screen options={{headerShown: false}} name='Job History' component={ProviderHistoryTab}/>
+      <Tab.Screen options={{headerShown: false}} name='History' component={ProviderHistoryTab}/>
       <Tab.Screen options={{headerShown: false}} name='Account' component={ProviderAccountTab}/>
     </Tab.Navigator> 
   )
@@ -323,7 +325,7 @@ const ProviderHomeTab = () => {
   return (
     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
       <Stack.Screen options={{headerShown: false}} name='ProviderHome' component={ProviderHome}/>
-      <Stack.Screen options={{ title: 'Job Information' }} name="JobInfo" component={JobInfo}/>
+      <Stack.Screen options={{ title: 'Job Information' }} name="ProviderJobInfo" component={ProviderJobInfo}/>
     </Stack.Navigator>
   )
 }
@@ -340,7 +342,7 @@ const ProviderHistoryTab = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen options={{headerShown: false }} name="JobHistory" component={JobHistory}/>
-      <Stack.Screen options={{ title: 'Job Information' }} name="JobInfo" component={JobInfo}/>
+      <Stack.Screen options={{ title: 'Job Information' }} name="ProviderJobInfo" component={ProviderJobInfo}/>
     </Stack.Navigator>
   )
 }

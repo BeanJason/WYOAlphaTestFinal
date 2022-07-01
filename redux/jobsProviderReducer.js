@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { API, DataStore, graphqlOperation } from "aws-amplify";
-import { refundPayment } from "../src/graphql/mutations";
-import { getUnacceptedJobs } from "../common/functions";
 import { Job } from "../src/models";
 
 
@@ -16,36 +14,19 @@ const initialState = {
 //ASYNC FUNCTIONS
 export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, thunkAPI) => {
     const {userID} = data;
-    try {
-        let response = await DataStore.query(Job, job => job.requestOwner("eq", userID))
-        let filteredArray = getUnacceptedJobs(response.filter((job) => job.currentStatus == "REQUESTED"))
-        if(filteredArray.length != 0){
-            let refundStatus
-            for(let job of filteredArray){
-                //refund any unaccepted jobs
-                try {
-                    refundStatus = await API.graphql( graphqlOperation(refundPayment, {
-                          isCancel: false,
-                          jobID: job.id
-                        })
-                    )
-                    if(refundStatus){
-                       response = response.filter((j) => j.id != job.id)
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
-            }
+    if(userID){
+        try {
+            let response = await DataStore.query(Job, job =>  job.or(job => job.mainProvider("eq", userID).backupProviders("contains", userID)))
+            return {allJobs: response, userID: userID}
+        } catch (error) {
+            return thunkAPI.rejectWithValue('Error getting job list ' + error.message)
         }
-        return {allJobs: response}
-    } catch (error) {
-        return thunkAPI.rejectWithValue('Error getting job list ' + error.message)
     }
 })
 
 //State management for jobs active and old
-export const jobsReducer = createSlice({
-    name: 'jobs',
+export const jobsProviderReducer = createSlice({
+    name: 'jobsProvider',
     initialState,
     reducers: {
         addOrRemoveJob: (state, action) => {
@@ -91,5 +72,5 @@ export const jobsReducer = createSlice({
 
 })
 
-export const {addOrRemoveJob, resetState, reinitialize, storeNewJobID} = jobsReducer.actions
-export default jobsReducer.reducer
+export const {addOrRemoveJob, resetState, reinitialize, storeNewJobID} = jobsProviderReducer.actions
+export default jobsProviderReducer.reducer

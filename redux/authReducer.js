@@ -70,12 +70,25 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
           }
           //If success
           if(userData != undefined){
-            userInfo = {
-              userID: userData.id,
-              firstName: userData.firstName,
-              lastName: userData.lastName,
-              address: userData.address,
-              phoneNumber: userData.phoneNumber
+            if(data.type == 'Provider'){
+              userInfo = {
+                userID: userData.id,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                address: userData.address,
+                city: userData.city,
+                zipCode: userData.zipCode,
+                phoneNumber: userData.phoneNumber
+              }
+            }
+            else{
+              userInfo = {
+                userID: userData.id,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                address: userData.address,
+                phoneNumber: userData.phoneNumber
+              }
             }
             let attr = {
               sub: authUser.userSub,
