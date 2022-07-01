@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, Dimensions, Pressable } from "react-native";
 import { useSelector } from "react-redux";
 
 
-const JobCard = ({ jobInfo }) => {
+const JobCard = ({ jobInfo, signUp = false }) => {
   const [date, setDate] = useState("");
   const [numOfProvider, setNumOfProviders] = useState("");
   const navigation = useNavigation();
@@ -12,7 +12,12 @@ const JobCard = ({ jobInfo }) => {
 
   const onPress = () => {
     if(authUser['custom:type'] == 'Provider'){
-      navigation.navigate('ProviderJobInfo', {name: 'ProviderJobInfo', jobInfo})
+      if(signUp){
+        navigation.navigate('JobSignUp', {name: 'JobSignUp', jobInfo})
+      }
+      else{
+        navigation.navigate('ProviderJobInfo', {name: 'ProviderJobInfo', jobInfo})
+      }
     }
     else{
       navigation.navigate('UserJobInfo', {name: 'UserJobInfo', jobInfo})

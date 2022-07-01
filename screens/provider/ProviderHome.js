@@ -65,11 +65,8 @@ const ProviderHome = ({ navigation }) => {
         </View>
         {loading ? <Spinner color={'blue'}/> : (
         <View style={styles.body}>
-        {jobList.length == 0 ? <Text style={{fontFamily: 'Montserrat-Italic', flex: 1, margin: 20}}>You have no current jobs</Text> : (
-          <View style={{flex: 1}}>
-            <Text style={styles.helpText}>Click on any of the following jobs for more details</Text>
-            {/* Radio Buttons */}
-            <View style={{flexDirection: "row", alignItems: 'center', justifyContent:'center'}}>
+        {/* Radio Buttons */}
+        <View style={{flexDirection: "row", alignItems: 'center', justifyContent:'center'}}>
               <RadioButton
                 value="allJobs"
                 status={checkedBtn === 'allJobs' ? 'checked': 'unchecked'}
@@ -92,6 +89,9 @@ const ProviderHome = ({ navigation }) => {
               />
               <Text style={{fontFamily: 'Montserrat-Bold', margin: 10}}>Backup Jobs</Text>
             </View>
+        {jobList.length == 0 ? <Text style={{fontFamily: 'Montserrat-Italic', flex: 1, margin: 20}}>You have no current jobs</Text> : (
+          <View style={{flex: 1}}>
+            <Text style={styles.helpText}>Click on any of the following jobs for more details</Text>
             <FlatList
               keyExtractor={(item) => item.id}
               data={jobList}

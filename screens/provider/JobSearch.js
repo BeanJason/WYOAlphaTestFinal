@@ -17,11 +17,13 @@ import JobCard from "../../common/components/JobCard";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getJobHistory } from "../../testData";
 import { initializeJobs } from "../../redux/jobsReducer";
-import { DataStore } from "aws-amplify";
+import { API, DataStore, graphqlOperation } from "aws-amplify";
 import { Job } from "../../src/models";
+import * as queries from "../../src/graphql/queries"
 
 
-const JobSearch1 = ({ navigation }) => {
+
+const JobSearch = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true);
@@ -40,9 +42,22 @@ const JobSearch1 = ({ navigation }) => {
   //initial setup
   const setup = async () => {
     //get all jobs requested or accepted
-    let all = await DataStore.query(Job, job => job.or(job => job.currentStatus("eq", "REQUESTED").currentStatus("eq", "ACCEPTED")))
+    let filter = {
+      and: [
+        { _deleted: {ne: true} },
+        {mainProvider: {ne: userInfo.userID}},
+        {backupProviders: {notContains: userInfo.userID}},
+        {
+          or:[
+            { currentStatus: {eq: 'REQUESTED'} },
+            { currentStatus: {eq: 'ACCEPTED'} }
+          ]
+        }
+      ]
+    }
+    const response = await API.graphql({query: queries.listJobs, variables: {filter: filter}})
+    let all = response.data.listJobs.items
     setAllJobs(all)
-    
     //map all zipCodes
     let count = 0;
     for(let job of all){
@@ -54,7 +69,15 @@ const JobSearch1 = ({ navigation }) => {
         zipCodeMap.set(`${job.zipCode} - ${job.city}`, ++count)
       }
     }
-    
+    //map providers zip code
+    count = zipCodeMap.get(`${userInfo.zipCode} - ${userInfo.city}`)
+    if(count == undefined){
+      zipCodeMap.set(`${userInfo.zipCode} - ${userInfo.city}`, 0)
+    }
+    else{
+      zipCodeMap.set(`${userInfo.zipCode} - ${userInfo.city}`, count)
+    }
+
     //set zip codes in search bar
     let items = []
     for(const area of zipCodeMap.keys()){
@@ -87,7 +110,7 @@ const JobSearch1 = ({ navigation }) => {
     >
       <SafeAreaView style={commonStyles.safeContainer}>
         <View>
-          <Text style={[styles.headerText, {textAlign: 'center'}]}>Available Jobs</Text>
+          <Text style={[styles.headerText, {textAlign: 'center'}]}>Job Search</Text>
           <Text style={styles.helpText}>Click on any of the following jobs to sign up as a provider</Text>
         </View>
         <View style={styles.body}>
@@ -95,12 +118,15 @@ const JobSearch1 = ({ navigation }) => {
               <View style={{marginRight: 10, alignItems: 'center'}}>
                 <View style={styles.field}>
                 <DropDownPicker
-                  style={{width: 330}}
+                  style={{width: 320}}
                   textStyle={{fontFamily: "Montserrat-Bold"}}
-                  placeholder={zipCodeSelected}
-                  listMode="SCROLLVIEW"
+                  modalContentContainerStyle={styles.warningModal}
+                  placeholder= {'Town: ' + zipCodeSelected}
+                  listMode="MODAL"
+                  searchable={true}
+                  searchPlaceholder='Select a town to see the available jobs'
                   open={open}
-                  value={zipCodeSelected}
+                  value={'Town: ' + zipCodeSelected}
                   items={zipCodesList}
                   setOpen={setOpen}
                   setValue={setZipCodeSelected}
@@ -110,15 +136,18 @@ const JobSearch1 = ({ navigation }) => {
               </View>
               
             {loading ? <Spinner color={'blue'} /> : (
-              <View style={{flex: 1, marginTop: 30}}>
+              <View style={{flex: 1, marginTop: 10, marginBottom: 20}}>
                 {filteredJobList.length == 0 && !open ? 
-                <Text>There are no available jobs currently in the {zipCodeSelected} area.</Text>
+                <Text style={styles.helpText}>There are no available jobs currently in the {zipCodeSelected} area.</Text>
                 :(
-                  <FlatList
-                  data={filteredJobList}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => <JobCard jobInfo={item} />}
-                />
+                  <View>
+                    <Text style={styles.helpText}>There are {filteredJobList.length} available jobs in the {zipCodeSelected} area.</Text>
+                    <FlatList
+                    data={filteredJobList}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => <JobCard jobInfo={item} signUp={true} />}
+                  />
+                  </View>
                 )}
               </View>
             )}
@@ -162,6 +191,10 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     justifyContent: "space-evenly",
   },
+  warningModal: {
+    textAlign: 'center',
+    margin: 10
+  },
 });
 
-export default JobSearch1;
+export default JobSearch;

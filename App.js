@@ -44,9 +44,10 @@ import JobHistory from "./screens/commonScreens/JobHistory"
 
 //Provider Screens
 import ProviderHome from "./screens/provider/ProviderHome";
-import JobSearch1 from "./screens/provider/JobSearch1";
+import JobSearch from "./screens/provider/JobSearch";
 import EditProviderAccount from "./screens/provider/providerAccount/EditProviderAccount";
 import ProviderJobInfo from "./screens/provider/ProviderJobInfo";
+import JobSignUp from "./screens/provider/JobSignUp"
 
 
 import { config } from "./common/styles";
@@ -333,7 +334,8 @@ const ProviderHomeTab = () => {
 const ProviderJobSearchTab = () => {
   return(
   <Stack.Navigator>
-    <Stack.Screen options={{headerShown: false }} name="JobSearch1" component={JobSearch1}/>
+    <Stack.Screen options={{headerShown: false }} name="JobSearch" component={JobSearch}/>
+    <Stack.Screen options={{title: 'Job Sign Up' }} name="JobSignUp" component={JobSignUp}/>
   </Stack.Navigator>
   )
 }
