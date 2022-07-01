@@ -40,13 +40,14 @@ import VerifyAccount from "./screens/commonScreens/VerifyAccount"
 import JobCreation1 from "./screens/user/JobCreation1"
 import JobCreationPayment from "./screens/user/JobCreationPayment"
 import UserJobInfo from "./screens/user/UserJobInfo"
-import JobHistory from "./screens/commonScreens/JobHistory"
+import UserJobHistory from "./screens/user/UserJobHistory"
 
 //Provider Screens
 import ProviderHome from "./screens/provider/ProviderHome";
 import JobSearch from "./screens/provider/JobSearch";
 import EditProviderAccount from "./screens/provider/providerAccount/EditProviderAccount";
 import ProviderJobInfo from "./screens/provider/ProviderJobInfo";
+import ProviderJobHistory from "./screens/provider/ProviderJobHistory";
 import JobSignUp from "./screens/provider/JobSignUp"
 
 
@@ -270,7 +271,7 @@ const UserJobCreationTab = () => {
 const UserHistoryTab = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen options={{headerShown: false }} name="JobHistory" component={JobHistory}/>
+      <Stack.Screen options={{headerShown: false }} name="UserJobHistory" component={UserJobHistory}/>
       <Stack.Screen options={{ title: 'Job Information' }} name="UserJobInfo" component={UserJobInfo}/>
     </Stack.Navigator>
   )
@@ -343,7 +344,7 @@ const ProviderJobSearchTab = () => {
 const ProviderHistoryTab = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen options={{headerShown: false }} name="JobHistory" component={JobHistory}/>
+      <Stack.Screen options={{headerShown: false }} name="ProviderJobHistory" component={ProviderJobHistory}/>
       <Stack.Screen options={{ title: 'Job Information' }} name="ProviderJobInfo" component={ProviderJobInfo}/>
     </Stack.Navigator>
   )

@@ -18,8 +18,8 @@ import {
   import { initializeJobs } from "../../redux/jobsReducer";
 
   
-  const JobHistory = ({ navigation }) => {
-    const { userInfo } = useSelector((state) => state.auth);
+  const UserJobHistory = ({ navigation }) => {
+    const { authUser, userInfo } = useSelector((state) => state.auth);
     const { initialized, jobHistory } = useSelector((state) => state.jobs);
     const dispatch = useDispatch()
     const [jobList, setJobList] = useState([]);
@@ -157,5 +157,5 @@ import {
     }
   });
   
-  export default JobHistory;
+  export default UserJobHistory;
   

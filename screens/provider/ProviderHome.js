@@ -6,6 +6,7 @@ import {
   Text,
   SafeAreaView,
   FlatList,
+  RefreshControl
 } from "react-native";
 import { commonStyles } from "../../common/styles";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +18,10 @@ import { TouchableOpacity } from "react-native-web";
 import { Ionicons } from '@expo/vector-icons'; 
 import {RadioButton} from "react-native-paper"
 
+
+
+
+
 const ProviderHome = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
   const { initialized, activeJobs } = useSelector((state) => state.providerJobs);
@@ -24,6 +29,13 @@ const ProviderHome = ({ navigation }) => {
   const [jobList, setJobList] = useState([]);
   const [loading, setLoading] = useState(true)
   const [checkedBtn, setCheckedBtn] = useState('allJobs')
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+      dispatch(initializeJobs({userID: userInfo.userID}))
+      setRefreshing(false);
+  }, [refreshing]);
 
   //Get all current jobs
   useEffect(() => {
@@ -94,6 +106,7 @@ const ProviderHome = ({ navigation }) => {
             <Text style={styles.helpText}>Click on any of the following jobs for more details</Text>
             <FlatList
               keyExtractor={(item) => item.id}
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
               data={jobList}
               renderItem={({ item }) => <JobCard jobInfo={item} />}
             />

@@ -17,7 +17,7 @@ import { refundPayment } from "../../src/graphql/mutations";
 import { Job, Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch, useSelector } from "react-redux";
-import { addOrRemoveJob } from "../../redux/jobsProviderReducer";
+import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
 
 //Login screen
 const ProviderJobInfo = ({ route, navigation }) => {
@@ -128,7 +128,6 @@ const ProviderJobInfo = ({ route, navigation }) => {
       createToast('Your job service has been cancelled')
       setTimeout(() => {
         setStartCancel(false)
-        navigation.reset({ routes: [{name: 'ProviderHome'}]})
         navigation.navigate('ProviderHome', {name: 'ProviderHome'})
       }, 5000)
     }
@@ -137,12 +136,7 @@ const ProviderJobInfo = ({ route, navigation }) => {
   
   useEffect(() => {
     getProviders()
-    let date = new Date(jobInfo.createdAt)
-    date.setHours(date.getHours() + 24)
-    let today = new Date()
-    if(date.toLocaleDateString() > today.toLocaleDateString() || (date.toLocaleDateString() == today.toLocaleDateString() && date.toLocaleTimeString() > today.toLocaleTimeString())){
-      setCanCancel(true)
-    }
+    setCanCancel(true)
     setLoading(false)
   },[])
 

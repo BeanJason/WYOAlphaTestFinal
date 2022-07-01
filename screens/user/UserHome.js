@@ -6,6 +6,7 @@ import {
   Text,
   SafeAreaView,
   FlatList,
+  RefreshControl
 } from "react-native";
 import { commonStyles } from "../../common/styles";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +21,16 @@ const UserHome = ({ navigation }) => {
   const dispatch = useDispatch()
   const [jobList, setJobList] = useState(activeJobs);
   const [loading, setLoading] = useState(true)
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    dispatch(initializeJobs({
+      userID: userInfo.userID
+    }))
+    setRefreshing(false);
+  }, [refreshing]);
 
   //Get all current jobs
   useEffect(() => {
@@ -55,6 +66,10 @@ const UserHome = ({ navigation }) => {
             <Text style={styles.helpText}>Click on any of the following jobs for more details</Text>
             <FlatList
               keyExtractor={(item) => item.id}
+              refreshControl = {
+                  <RefreshControl refreshing = {refreshing}
+                  onRefresh = {onRefresh}
+                  />}
               data={jobList}
               renderItem={({ item }) => <JobCard jobInfo={item} />}
             />

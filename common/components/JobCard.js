@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 
 const JobCard = ({ jobInfo, signUp = false }) => {
   const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [numOfProvider, setNumOfProviders] = useState("");
   const navigation = useNavigation();
   const {authUser} = useSelector((state) => state.auth);
@@ -31,10 +32,17 @@ const JobCard = ({ jobInfo, signUp = false }) => {
       (formatDate.getMinutes() < 10 ? "0" : "") + formatDate.getMinutes();
     
     let amOrPm = "AM";
+    let durationAmOrPm = "AM"
+    let durationHour = (formatDate.getHours() + jobInfo.duration) % 12 || 12
     if (formatDate.getHours() >= 12) {
       amOrPm = "PM";
     }
-    setDate(formatDate.toLocaleDateString() + " " + hour + ":" + min + amOrPm);
+    if(formatDate.getHours() + jobInfo.duration >= 12){
+      durationAmOrPm = "PM"
+    }
+
+    setDate(formatDate.toLocaleDateString());
+    setTime(`from ${hour}:${min}${amOrPm}-${durationHour}:${min}${durationAmOrPm}`)
     let count = 0;
     if (jobInfo.mainProvider != null) {
       count++;
@@ -53,9 +61,9 @@ const JobCard = ({ jobInfo, signUp = false }) => {
         </Text>
         <Text style={[styles.generalText]}>Duration: {jobInfo.duration} Hrs</Text>
         <Text style={[styles.generalText]}>{`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}</Text>
-
-        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
-          <Text style={[styles.generalText]}>Date: {date}</Text>
+        <Text style={[styles.generalText]}>Date: {date}</Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Text style={[styles.generalText]}>Time: {time}</Text>
           <Text style={[styles.generalText]}>Num {numOfProvider}</Text>
         </View>
       </View>
@@ -65,9 +73,11 @@ const JobCard = ({ jobInfo, signUp = false }) => {
 
 const styles = StyleSheet.create({
   jobContainer: {
-    borderColor: "rgba(0,221,255,0.9)",
+    //borderColor: "rgba(0,221,255,0.9)",
+    borderColor: "rgba(241,190,72,0.9)",
     borderWidth: 1,
-    backgroundColor: "rgba(0,221,255,0.9)",
+    //backgroundColor: "rgba(0,221,255,0.9)",
+    backgroundColor: "rgba(241,190,72,0.9)",
     borderRadius: 10,
     padding: 10,
     width: Dimensions.get("window").width,
