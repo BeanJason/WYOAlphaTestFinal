@@ -48,7 +48,8 @@ const getUserData = async (attributes) => {
             firstName: userData[0].firstName,
             lastName: userData[0].lastName,
             address: userData[0].address,
-            phoneNumber: userData[0].phoneNumber
+            phoneNumber: userData[0].phoneNumber,
+            contactMethod: userData[0].contactMethod
        }
        return userInfo
     } catch (error) {

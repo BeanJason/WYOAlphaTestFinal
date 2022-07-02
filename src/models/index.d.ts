@@ -81,6 +81,7 @@ export declare class User {
   readonly phoneNumber: string;
   readonly dateOfBirth?: string | null;
   readonly address?: string[] | null;
+  readonly contactMethod?: string | null;
   readonly jobs?: (Job | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;

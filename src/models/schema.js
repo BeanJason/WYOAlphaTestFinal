@@ -409,6 +409,13 @@ export const schema = {
                     "attributes": [],
                     "isArrayNullable": true
                 },
+                "contactMethod": {
+                    "name": "contactMethod",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "jobs": {
                     "name": "jobs",
                     "isArray": true,
@@ -498,5 +505,5 @@ export const schema = {
             }
         }
     },
-    "version": "ebcfda9c6505e481c511ced3e4ad7cbe"
+    "version": "edb6072984c93df8b1ca22b10676ff89"
 };

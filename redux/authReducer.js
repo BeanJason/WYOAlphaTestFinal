@@ -43,6 +43,7 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                 "phoneNumber": data.phoneNumber,
                 "dateOfBirth": data.dateOfBirth,
                 "address": data.address,
+                "contactMethod": "phone"
               })
             );
           }
@@ -87,7 +88,8 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 address: userData.address,
-                phoneNumber: userData.phoneNumber
+                phoneNumber: userData.phoneNumber,
+                contactMethod: userData.contactMethod
               }
             }
             let attr = {

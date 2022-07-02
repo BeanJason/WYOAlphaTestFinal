@@ -222,6 +222,7 @@ export const getUser = /* GraphQL */ `
       phoneNumber
       dateOfBirth
       address
+      contactMethod
       jobs {
         nextToken
         startedAt
@@ -250,6 +251,7 @@ export const listUsers = /* GraphQL */ `
         phoneNumber
         dateOfBirth
         address
+        contactMethod
         createdAt
         updatedAt
         _version
@@ -283,6 +285,7 @@ export const syncUsers = /* GraphQL */ `
         phoneNumber
         dateOfBirth
         address
+        contactMethod
         createdAt
         updatedAt
         _version

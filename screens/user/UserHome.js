@@ -21,7 +21,6 @@ const UserHome = ({ navigation }) => {
   const dispatch = useDispatch()
   const [jobList, setJobList] = useState(activeJobs);
   const [loading, setLoading] = useState(true)
-
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(async () => {

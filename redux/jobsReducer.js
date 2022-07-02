@@ -15,7 +15,7 @@ const initialState = {
 
 //ASYNC FUNCTIONS
 export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, thunkAPI) => {
-    const {userID} = data;
+    const userID = data;
     try {
         let response = await DataStore.query(Job, job => job.requestOwner("eq", userID))
         let filteredArray = getUnacceptedJobs(response.filter((job) => job.currentStatus == "REQUESTED"))

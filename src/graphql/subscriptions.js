@@ -186,6 +186,7 @@ export const onCreateUser = /* GraphQL */ `
       phoneNumber
       dateOfBirth
       address
+      contactMethod
       jobs {
         nextToken
         startedAt
@@ -209,6 +210,7 @@ export const onUpdateUser = /* GraphQL */ `
       phoneNumber
       dateOfBirth
       address
+      contactMethod
       jobs {
         nextToken
         startedAt
@@ -232,6 +234,7 @@ export const onDeleteUser = /* GraphQL */ `
       phoneNumber
       dateOfBirth
       address
+      contactMethod
       jobs {
         nextToken
         startedAt

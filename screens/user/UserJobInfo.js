@@ -23,22 +23,31 @@ import { addOrRemoveJob } from "../../redux/jobsReducer";
 const UserJobInfo = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { jobInfo } = route.params;
+  const { userInfo } = useSelector((state) => state.auth);
   const [mainProvider, setMainProvider] = useState('')
   const [backupProviders, setBackupProviders] = useState([])
   const [canCancel, setCanCancel] = useState(false)
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [startCancel, setStartCancel] = useState(false)
+  const [date, setDate] = useState()
+  const [time, setTime] = useState()
 
   const getDateFormat = () => {
-    let date = new Date(jobInfo.requestDateTime)
-    let hours = date.getHours() % 12 || 12;
-    let min = (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
+    let formatDate = new Date(jobInfo.requestDateTime)
+    let hours = formatDate.getHours() % 12 || 12;
+    let min = (formatDate.getMinutes() < 10 ? "0" : "") + formatDate.getMinutes();
+    let durationHour = (formatDate.getHours() + jobInfo.duration) % 12 || 12
     let amOrPm = "AM";
-    if (date.getHours() >= 12) {
+    let durationAmOrPm = "AM"
+    if (formatDate.getHours() >= 12) {
       amOrPm = "PM";
     }
-    return `${date.toDateString()} ${hours}:${min}${amOrPm}`
+    if(formatDate.getHours() + jobInfo.duration >= 12){
+      durationAmOrPm = "PM"
+    }
+    setDate(formatDate.toLocaleDateString())
+    setTime(`from ${hours}:${min}${amOrPm}-${durationHour}:${min}${durationAmOrPm}`)
   }
 
   const getBackupProviders = () => {
@@ -92,6 +101,7 @@ const UserJobInfo = ({ route, navigation }) => {
   }
   
   useEffect(() => {
+    getDateFormat()
     getProviders()
     let date = new Date(jobInfo.createdAt)
     date.setHours(date.getHours() + 24)
@@ -178,9 +188,11 @@ const UserJobInfo = ({ route, navigation }) => {
               }
             </View>
             <Text style={styles.title}>{jobInfo.jobTitle}</Text>
-            <Text style={styles.generalText}>{jobInfo.address}</Text>
-            <Text style={styles.generalText}>{jobInfo.city} {jobInfo.zipCode}</Text>
-            <Text style={[styles.generalText, {marginBottom: 40}]}>Scheduled for {getDateFormat()}</Text>
+            <Text style={styles.generalText}>Duration: {jobInfo.duration}</Text>
+            <Text style={styles.generalText}>Address: {jobInfo.address}</Text>
+            <Text style={styles.generalText}>City: {jobInfo.city} {jobInfo.zipCode}</Text>
+            <Text style={styles.generalText}>Scheduled for {date}</Text>
+            <Text style={[styles.generalText, {marginBottom: 30}]}>{time}</Text>
             {jobInfo.jobDescription ? <Text style={[styles.generalText, {marginBottom: 30}]}>Job Description: {jobInfo.jobDescription}</Text> : <></>}
             <Text style={[styles.generalText, {marginBottom: 10}]}>Main Provider: {mainProvider ? mainProvider : 'None'}</Text>
             {backupProviders.length == 0 ? <></> : (
