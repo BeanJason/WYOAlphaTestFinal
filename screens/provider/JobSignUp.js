@@ -14,7 +14,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useEffect, useState } from "react";
 import { API, DataStore, graphqlOperation } from "aws-amplify";
 import { refundPayment } from "../../src/graphql/mutations";
-import { Job, Provider } from "../../src/models";
+import { Job, Provider, User } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
@@ -36,17 +36,26 @@ const JobSignUp = ({ route, navigation }) => {
   const [startSignUp, setStartSignUp] = useState(false);
   const [role, setRole] = useState("Main Provider");
   const { userInfo } = useSelector((state) => state.auth);
+  const [date, setDate] = useState()
+  const [time, setTime] = useState()
+  const [ownerName, setOwnerName] = useState('')
 
   const getDateFormat = () => {
-    let date = new Date(jobInfo.requestDateTime);
-    let hours = date.getHours() % 12 || 12;
-    let min = (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
+    let formatDate = new Date(jobInfo.requestDateTime)
+    let hours = formatDate.getHours() % 12 || 12;
+    let min = (formatDate.getMinutes() < 10 ? "0" : "") + formatDate.getMinutes();
+    let durationHour = (formatDate.getHours() + jobInfo.duration) % 12 || 12
     let amOrPm = "AM";
-    if (date.getHours() >= 12) {
+    let durationAmOrPm = "AM"
+    if (formatDate.getHours() >= 12) {
       amOrPm = "PM";
     }
-    return `${date.toDateString()} ${hours}:${min}${amOrPm}`;
-  };
+    if(formatDate.getHours() + jobInfo.duration >= 12){
+      durationAmOrPm = "PM"
+    }
+    setDate(formatDate.toLocaleDateString())
+    setTime(`from ${hours}:${min}${amOrPm}-${durationHour}:${min}${durationAmOrPm}`)
+  }
 
   const getBackupProviders = () => {
     let text = "";
@@ -86,6 +95,11 @@ const JobSignUp = ({ route, navigation }) => {
       setBackupProviders(listOfBackups);
     }
   };
+
+  const getRequestOwnerName = async () => {
+    await DataStore.query(User, jobInfo.requestOwner).then((user) => setOwnerName(user.firstName + " " + user.lastName))
+      .catch((error) => console.log(error))
+  }
 
   const signUpForJob = async () => {
     setStartSignUp(true);
@@ -137,13 +151,14 @@ const JobSignUp = ({ route, navigation }) => {
   };
 
   useEffect(() => {
+    getDateFormat();
     getProviders();
+    getRequestOwnerName();
     //check for time conflict
     let jobStart = new Date(jobInfo.requestDateTime);
     let jobEnd = new Date(jobInfo.requestDateTime)
     jobEnd.setHours(jobEnd.getHours() + jobInfo.duration)
     const jobRange = moment.range(jobStart, jobEnd)
-    const range2 = jobRange
     
     let start, end, range;
     for (let job of activeJobs) {
@@ -250,13 +265,11 @@ const JobSignUp = ({ route, navigation }) => {
               </TouchableOpacity>
             </View>
             <Text style={styles.title}>{jobInfo.jobTitle}</Text>
-            <Text style={styles.generalText}>{jobInfo.address}</Text>
-            <Text style={styles.generalText}>
-              {jobInfo.city} {jobInfo.zipCode}
-            </Text>
-            <Text style={[styles.generalText, { marginBottom: 40 }]}>
-              Scheduled for {getDateFormat()}
-            </Text>
+            <Text style={styles.generalText}>Request Owner: {ownerName}</Text>
+            <Text style={styles.generalText}>Duration: {jobInfo.duration}</Text>
+            <Text style={styles.generalText}>City: {jobInfo.city} {jobInfo.zipCode}</Text>
+            <Text style={styles.generalText}>Scheduled for {date}</Text>
+            <Text style={[styles.generalText, {marginBottom: 30}]}>{time}</Text>
             {jobInfo.jobDescription ? (
               <Text style={[styles.generalText, { marginBottom: 30 }]}>
                 Job Description: {jobInfo.jobDescription}

@@ -108,7 +108,7 @@ const ProviderHome = ({ navigation }) => {
               keyExtractor={(item) => item.id}
               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
               data={jobList}
-              renderItem={({ item }) => <JobCard jobInfo={item} />}
+              renderItem={({ item }) => <JobCard jobInfo={item} type={'service'}/>}
             />
           </View>
         )}

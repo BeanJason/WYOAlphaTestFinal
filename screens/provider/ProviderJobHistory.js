@@ -20,7 +20,7 @@ import {
   
   const ProviderJobHistory = ({ navigation }) => {
     const { authUser, userInfo } = useSelector((state) => state.auth);
-    const { initialized, jobHistory } = useSelector((state) => state.jobs);
+    const { initialized, jobHistory } = useSelector((state) => state.providerJobs);
     const dispatch = useDispatch()
     const [jobList, setJobList] = useState([]);
     const [loading, setLoading] = useState(true);

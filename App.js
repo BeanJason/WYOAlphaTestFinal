@@ -49,6 +49,7 @@ import EditProviderAccount from "./screens/provider/providerAccount/EditProvider
 import ProviderJobInfo from "./screens/provider/ProviderJobInfo";
 import ProviderJobHistory from "./screens/provider/ProviderJobHistory";
 import JobSignUp from "./screens/provider/JobSignUp"
+import ServiceView from "./screens/provider/ServiceView"
 
 
 import { config } from "./common/styles";
@@ -327,7 +328,7 @@ const ProviderHomeTab = () => {
   return (
     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
       <Stack.Screen options={{headerShown: false}} name='ProviderHome' component={ProviderHome}/>
-      <Stack.Screen options={{ title: 'Job Information' }} name="ProviderJobInfo" component={ProviderJobInfo}/>
+      <Stack.Screen options={{ title: 'Job Information' }} name="ServiceView" component={ServiceView}/>
     </Stack.Navigator>
   )
 }

@@ -1,20 +1,27 @@
 import { useNavigation } from "@react-navigation/native";
+import { DataStore } from "aws-amplify";
 import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Dimensions, Pressable } from "react-native";
 import { useSelector } from "react-redux";
+import { User } from "../../src/models";
 
 
-const JobCard = ({ jobInfo, signUp = false }) => {
+const JobCard = ({ jobInfo, type = '' }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [ownerName, setOwnerName] = useState("");
   const [numOfProvider, setNumOfProviders] = useState("");
   const navigation = useNavigation();
   const {authUser} = useSelector((state) => state.auth);
 
-  const onPress = () => {
+  const onPress = async () => {
     if(authUser['custom:type'] == 'Provider'){
-      if(signUp){
+      if(type == 'signUp'){
         navigation.navigate('JobSignUp', {name: 'JobSignUp', jobInfo})
+      }
+      else if(type == 'service'){
+        const owner = await DataStore.query(User, jobInfo.requestOwner)
+        navigation.navigate('ServiceView', {name: 'ServiceView', jobInfo, owner})
       }
       else{
         navigation.navigate('ProviderJobInfo', {name: 'ProviderJobInfo', jobInfo})
@@ -23,6 +30,11 @@ const JobCard = ({ jobInfo, signUp = false }) => {
     else{
       navigation.navigate('UserJobInfo', {name: 'UserJobInfo', jobInfo})
     }
+  }
+
+  const getRequestOwnerName = async () => {
+      await DataStore.query(User, jobInfo.requestOwner).then((user) => setOwnerName(user.firstName + " " + user.lastName))
+      .catch((error) => console.log(error))
   }
 
   useEffect(() => {
@@ -51,6 +63,7 @@ const JobCard = ({ jobInfo, signUp = false }) => {
       count += jobInfo.backupProviders.length;
     }
     setNumOfProviders(count);
+    getRequestOwnerName();
   }, [jobInfo]);
 
   return (
@@ -59,12 +72,13 @@ const JobCard = ({ jobInfo, signUp = false }) => {
         <Text style={[styles.generalText, styles.title]}>
           {jobInfo.jobTitle}
         </Text>
-        <Text style={[styles.generalText]}>Duration: {jobInfo.duration} Hrs</Text>
-        <Text style={[styles.generalText]}>{`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}</Text>
-        <Text style={[styles.generalText]}>Date: {date}</Text>
+        <Text style={styles.generalText}>Request Owner: {ownerName}</Text>
+        <Text style={styles.generalText}>Duration: {jobInfo.duration} Hrs</Text>
+        <Text style={styles.generalText}>{`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}</Text>
+        <Text style={styles.generalText}>Date: {date}</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={[styles.generalText]}>Time: {time}</Text>
-          <Text style={[styles.generalText]}>Num {numOfProvider}</Text>
+          <Text style={styles.generalText}>Time: {time}</Text>
+          <Text style={styles.generalText}>Num {numOfProvider}</Text>
         </View>
       </View>
       </Pressable>

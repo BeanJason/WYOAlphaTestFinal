@@ -29,7 +29,6 @@ const JobSearch = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [filteredJobList, setFilteredJobList] = useState([]);
   const zipCodeMap = new Map();
-  const [allJobs, setAllJobs] = useState([])
   const [sortDirection, setSortDirection] = useState('ascend')
 
 
@@ -57,7 +56,6 @@ const JobSearch = ({ navigation }) => {
     }
     const response = await API.graphql({query: queries.listJobs, variables: {filter: filter}})
     let all = response.data.listJobs.items
-    setAllJobs(all)
     //map all zipCodes
     let count = 0;
     for(let job of all){
@@ -98,7 +96,27 @@ const JobSearch = ({ navigation }) => {
   useEffect(() => {
     if(zipCodeSelected){
       let zip = zipCodeSelected.split(' ')[0]
-      setFilteredJobList(allJobs.filter(job => job.zipCode == zip))
+      const getJobsFromZipCode = async () => {
+         //get jobs from selected zip code
+          let filter = {
+            and: [
+              { _deleted: {ne: true} },
+              {mainProvider: {ne: userInfo.userID}},
+              {backupProviders: {notContains: userInfo.userID}},
+              {zipCode: {eq: zip}},
+              {
+                or:[
+                  { currentStatus: {eq: 'REQUESTED'} },
+                  { currentStatus: {eq: 'ACCEPTED'} }
+                ]
+              }
+            ]
+          }
+          const response = await API.graphql({query: queries.listJobs, variables: {filter: filter}})
+          const all = response.data.listJobs.items
+          setFilteredJobList(all)
+      }
+      getJobsFromZipCode()
     }
   },[zipCodeSelected])
 
@@ -145,7 +163,7 @@ const JobSearch = ({ navigation }) => {
                     <FlatList
                     data={filteredJobList}
                     keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => <JobCard jobInfo={item} signUp={true} />}
+                    renderItem={({ item }) => <JobCard jobInfo={item} type={'signUp'} />}
                   />
                   </View>
                 )}

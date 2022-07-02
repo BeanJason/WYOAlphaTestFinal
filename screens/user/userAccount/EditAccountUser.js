@@ -21,6 +21,7 @@ import { DataStore } from "aws-amplify";
 import { User } from "../../../src/models";
 import { changeUserInfo } from "../../../redux/authReducer";
 import { changeUserStatus } from "../../../redux/authReducer";
+import { RadioButton } from "react-native-paper"
 
 //Login screen
 const EditAccountUser = ({ navigation }) => {
@@ -30,6 +31,7 @@ const EditAccountUser = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [startDelete, setStartDelete] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState("");
+  const [checkedBtn, setCheckedBtn] = useState(userInfo.contactMethod)
   const dispatch = useDispatch();
 
   //Set variables for user input
@@ -41,32 +43,85 @@ const EditAccountUser = ({ navigation }) => {
   } = useForm();
 
   //change phone number
-  const changeNumber = async (data) => {
-    const original = await DataStore.query(User, userInfo.userID);
-    try {
-      await DataStore.save(
-        User.copyOf(original, (updated) => {
-          updated.phoneNumber = data.phoneNumber
-        })
-      );
-
-      let newInfo = {
-        userID: original.id,
-        firstName: original.firstName,
-        lastName: original.lastName,
-        address: original.address,
-        phoneNumber: data.phoneNumber,
-      };
-      dispatch(changeUserInfo({ userInfo: newInfo }));
-      setphoneNumber(data.phoneNumber);
-
-    } catch (error) {
-      setError('phoneNumber', {
-        type: 'validate',
-        message: 'Please enter a valid phone number'
-      })
+  const submitData = async (data) => {
+    if(data.phoneNumber || checkedBtn != userInfo.contactMethod){
+      const original = await DataStore.query(User, userInfo.userID);
+      //only change phone
+      if(data.phoneNumber && checkedBtn == userInfo.contactMethod){
+        try {
+          await DataStore.save(
+            User.copyOf(original, (updated) => {
+              updated.phoneNumber = data.phoneNumber
+            })
+          );
+    
+          let newInfo = {
+            userID: original.id,
+            firstName: original.firstName,
+            lastName: original.lastName,
+            address: original.address,
+            phoneNumber: data.phoneNumber,
+            contactMethod: original.contactMethod
+          };
+          dispatch(changeUserInfo({ userInfo: newInfo }));
+          setphoneNumber(data.phoneNumber);
+        } catch (error) {
+          setError('phoneNumber', {
+            type: 'validate',
+            message: 'Please enter a valid phone number'
+          })
+        }
+      }
+      //only change contact
+      if(!data.phoneNumber && checkedBtn != userInfo.contactMethod){
+        try {
+          await DataStore.save(
+            User.copyOf(original, (updated) => {
+              updated.contactMethod = checkedBtn
+            })
+          );
+    
+          let newInfo = {
+            userID: original.id,
+            firstName: original.firstName,
+            lastName: original.lastName,
+            address: original.address,
+            phoneNumber: original.phoneNumber,
+            contactMethod: checkedBtn
+          };
+          dispatch(changeUserInfo({ userInfo: newInfo }));
+        } catch (error) {
+          setError('phoneNumber', {
+            type: 'validate',
+            message: 'Please enter a valid phone number'
+          })
+        }
+      }
+      //change both
+      if(data.phoneNumber && checkedBtn != userInfo.contactMethod){
+        try {
+          await DataStore.save(
+            User.copyOf(original, (updated) => {
+              updated.phoneNumber = data.phoneNumber
+              updated.contactMethod = checkedBtn
+            })
+          );
+    
+          let newInfo = {
+            userID: original.id,
+            firstName: original.firstName,
+            lastName: original.lastName,
+            address: original.address,
+            phoneNumber: data.phoneNumber,
+            contactMethod: checkedBtn
+          };
+          dispatch(changeUserInfo({ userInfo: newInfo }));
+          setphoneNumber(data.phoneNumber);
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
-
   };
 
   const getUpdatedInfo = async () => {
@@ -74,6 +129,7 @@ const EditAccountUser = ({ navigation }) => {
     if(newData.authUser != null && newData.userInfo != null){
       dispatch(changeUserStatus({authUser: newData.authUser, userInfo: newData.userInfo}))
     }
+    
   };
 
   useEffect(() => {
@@ -207,13 +263,27 @@ const EditAccountUser = ({ navigation }) => {
             onKeyPress
             maxLength={12}
             keyboardType="numeric"
-            rules={{
-              required: "Phone Number is Required",
-            }}
             placeholder={phoneNumber}
             control={control}
           />
-          <TouchableOpacity onPress={handleSubmit(changeNumber)} style={styles.button}>
+          <Text style={[styles.generalText, {marginTop: 20, borderBottomWidth: 1, alignSelf: 'center'}]}>Preferred Method of Contact:</Text>
+          <View style={{flexDirection: "row", alignItems: 'center', justifyContent:'center'}}>
+              <RadioButton
+                value="phone"
+                status={checkedBtn === 'phone' ? 'checked': 'unchecked'}
+                onPress={() => setCheckedBtn('phone')}
+                color='black'
+              />
+              <Text style={[styles.generalText, {marginRight: 50}]}>Phone</Text>
+              <RadioButton
+                value="email"
+                status={checkedBtn === 'email' ? 'checked': 'unchecked'}
+                onPress={() => setCheckedBtn('email')}
+                color='black'
+              />
+              <Text style={styles.generalText}>Email</Text>
+          </View>
+          <TouchableOpacity onPress={handleSubmit(submitData)} style={styles.button}>
             <Text style={styles.btnText}>Change</Text>
           </TouchableOpacity>
         </View>
