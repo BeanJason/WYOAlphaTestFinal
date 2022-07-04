@@ -5,7 +5,8 @@ import {
   View,
   ImageBackground,
   SafeAreaView,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from "react-native";
 import UserInput from "../../common/components/UserInput";
 import { commonStyles } from "../../common/styles";
@@ -17,6 +18,7 @@ import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import DropDownPicker from "react-native-dropdown-picker";
 import NumericInput from 'react-native-numeric-input';
+import CurrencyInput from 'react-native-currency-input';
 
 const JobCreation1 = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -45,8 +47,19 @@ const JobCreation1 = ({ navigation }) => {
   const [mode, setMode] = useState('date');
   const [dateOfToday, setDateOfToday] = useState(new Date())
 
+  //price
+  const [price, setPrice] = useState()
+  const [tip, setTip] = useState()
+  const [priceText, setPriceText] = useState()
+  const [tipText, setTipText] = useState()
+  const [total, setTotal] = useState()
+  const [showModal, setShowModal] = useState(false)
+  const [otherTip, setOtherTip] = useState()
+  const [otherTipText, setOtherTipText] = useState('$0.00')
+
 
   useEffect(() => {
+    setPrice(2000)
     let nextDay = new Date()
     nextDay.setDate(nextDay.getDate() + 2)
     setDateOfToday(nextDay)
@@ -143,13 +156,125 @@ const JobCreation1 = ({ navigation }) => {
     
   };
 
+
+  //Prices
+  //duration change
+  const onDurationChange = (value) => {
+    if(value >= 4 && value <= 8){
+      setDuration(value)
+      switch(value){
+        case 4:
+          setPrice(2000)
+          convertMoneyToText('price')
+          break;
+        case 5:
+          setPrice(3000)
+          convertMoneyToText('price')
+          break;
+        case 6:
+          setPrice(4000)
+          convertMoneyToText('price')
+          break;
+        case 7:
+          setPrice(5000)
+          convertMoneyToText('price')
+          break;
+        case 8:
+          setPrice(6000)
+          convertMoneyToText('price')
+          break;
+      }
+    }
+  }
+
+  const onTipChange = (value) => {
+    let result = price
+    switch (value){
+      case -1:
+        console.log(otherTip);
+        setOtherTip()
+        setTip(otherTip)
+      case 10:
+        result = 0.10 * result
+        setTip(result)
+        break;
+      case 15:
+        result = 0.15 * result
+        setTip(result)
+        break;
+      case 20:
+        result = 0.20 * result
+        setTip(result)
+        break;
+    }
+  }
+
+  useEffect(() => {
+    convertMoneyToText('price')
+  }, [price])
+
+  useEffect(() => {
+    convertMoneyToText('tip')
+  }, [tip])
+  
+  const convertMoneyToText = (type) => {
+    if(type == 'tip'){
+      let result = tip / 100
+      setTipText(result.toFixed(2))
+    }
+    else{
+      let result = price / 100
+      setPriceText(result.toFixed(2))
+    }
+  }
+
   return (
     <KeyboardAwareScrollView>
       <ImageBackground
-        style={commonStyles.background}
+        style={[commonStyles.background, {height: 1000}]}
         source={require("../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
+
+        {/* Modal for tips */}
+        <Modal
+          visible={showModal}
+          transparent
+          animationType='slide'
+          hardwareAccelerated
+          >
+          <View style={[styles.centeredView]}>
+            <View style={ styles.warningModal}>
+              <Text style={styles.modalTitle}>Other Tip Amount</Text>
+              <CurrencyInput
+                placeholder="$ Amount"
+                keyboardType="numeric"
+                value={otherTip}
+                onChangeValue={setOtherTip}
+                prefix='$'
+                precision={2}
+                style={[styles.tipInput, commonStyles.inputBorder, {alignSelf: 'center'}]}
+              />
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  onPress={() => setShowModal(false)}
+                  style={[styles.tipButton, {alignSelf: 'flex-end'}]}
+                  >
+                  <Text style={styles.tipText}>Cancel</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                  onPress={() => onTipChange(-1)}
+                  style={[styles.tipButton, {alignSelf: 'flex-end'}]}
+                  >
+                  <Text style={styles.tipText}>Done</Text>
+                  </TouchableOpacity>
+                </View>
+            </View>
+          </View>
+        </Modal>
+
+
           <Text style={styles.header2}>
             Please provide information for your job request
           </Text>
@@ -185,12 +310,6 @@ const JobCreation1 = ({ navigation }) => {
               />
               {addressError ? ( <Text style={commonStyles.errorMsg}>{addressError}</Text> ) : ( <></> )}
 
-              {/* duration */}
-              <View style = {styles.durationStyle}>
-                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 17}}>Duration in hours</Text>
-                <NumericInput inputStyle={{backgroundColor: 'white', borderRadius: 5}} rounded value={duration} minValue={4} maxValue={8} type='up-down' onChange={value => setDuration(value)} />
-              </View>
-
               {/* date of job */}
               <View style={styles.field}>
                 <View>
@@ -224,12 +343,62 @@ const JobCreation1 = ({ navigation }) => {
                       is24Hour={false}
                       minimumDate={dateOfToday}
                       onTouchEnd={canceDate}
-                      // onTouchCancel={canceDate}
                     />
                   )}
                 </View>
                 {dateError ? (
                   <Text style={commonStyles.errorMsg}>{dateError}</Text>) : ( <></> )}
+              </View>
+            </View>
+
+            {/* duration */}
+            <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 17}}>Duration in hours: 4-8</Text>
+            <View style={[styles.field, {flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}]}>
+              <View style = {styles.durationStyle}>
+                <NumericInput inputStyle={{backgroundColor: 'white', borderRadius: 5}} rounded value={duration} minValue={4} maxValue={8} type='up-down' onChange={(value) => onDurationChange(value)} />
+              </View>
+              <View style={styles.priceStyle}>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 18, padding: 5, marginLeft: 10}}>Cost:</Text>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 18, }}>${priceText}</Text>
+              </View>
+            </View>
+
+            {/* Tips */}
+            <View style = {styles.field}>
+              <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 17, textAlign: 'center'}}>Would you like to give a tip?</Text>
+              <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+                <TouchableOpacity
+                onPress={() => onTipChange(10)}
+                style={styles.tipButton}
+                >
+                <Text style={styles.tipText}>10%</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                onPress={() => onTipChange(15)}
+                style={styles.tipButton}
+                >
+                <Text style={styles.tipText}>15%</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                onPress={() => onTipChange(20)}
+                style={styles.tipButton}
+                >
+                <Text style={styles.tipText}>20%</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                onPress={() => setShowModal(true)}
+                style={styles.tipButton}
+                >
+                <Text style={styles.tipText}>Other</Text>
+                </TouchableOpacity>
+
+              </View>
+              <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 18, textAlign: 'right' }}>Tip: </Text>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 18, textAlign: 'right' }}>${tipText}</Text>
               </View>
             </View>
 
@@ -318,6 +487,11 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     marginRight: 25,
   },
+  priceStyle:{
+    alignItems: "center",
+    flexDirection: 'row',
+    marginTop: 10
+  },
   btnText: {
     color: "white",
     fontFamily: "Montserrat-Bold",
@@ -325,12 +499,52 @@ const styles = StyleSheet.create({
   },
   durationStyle: {
     marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "Black",
-    paddingBottom: 5,
-    justifyContent: "space-evenly",
-
-  }
+  },
+  tipButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 80,
+    height: 40,
+    backgroundColor: "black",
+    borderRadius: 10,
+    marginVertical: 10,
+    marginLeft: 25,
+    marginRight: 25,
+  },
+  tipText: {
+    color: "white",
+    fontFamily: "Montserrat-Bold",
+    fontSize: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#00000090'
+  },
+  warningModal: {
+    width: 350,
+    height: 150,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 10,
+    alignSelf: 'center'
+  },
+  modalTitle: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 25,
+    borderBottomColor: 'black',
+    borderBottomWidth: 2,
+    marginBottom: 10,
+    alignSelf: 'center',
+  },
+  tipInput: {
+    width: 200,
+    height: 40,
+    fontSize: 16,
+    fontFamily: "Montserrat-Bold"
+  },
 });
 
 export default JobCreation1;
