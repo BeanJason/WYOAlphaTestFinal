@@ -129,7 +129,6 @@ const EditAccountUser = ({ navigation }) => {
     if(newData.authUser != null && newData.userInfo != null){
       dispatch(changeUserStatus({authUser: newData.authUser, userInfo: newData.userInfo}))
     }
-    
   };
 
   useEffect(() => {

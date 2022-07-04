@@ -18,7 +18,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { getJobHistory } from "../../testData";
 import { initializeJobs } from "../../redux/jobsReducer";
 import { API, DataStore, graphqlOperation } from "aws-amplify";
-import { Job } from "../../src/models";
+import { Global, Job } from "../../src/models";
 import * as queries from "../../src/graphql/queries"
 
 
@@ -28,7 +28,6 @@ const JobSearch = ({ navigation }) => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true);
   const [filteredJobList, setFilteredJobList] = useState([]);
-  const zipCodeMap = new Map();
   const [sortDirection, setSortDirection] = useState('ascend')
 
 
@@ -40,52 +39,21 @@ const JobSearch = ({ navigation }) => {
 
   //initial setup
   const setup = async () => {
-    //get all jobs requested or accepted
     let filter = {
-      and: [
-        { _deleted: {ne: true} },
-        {mainProvider: {ne: userInfo.userID}},
-        {backupProviders: {notContains: userInfo.userID}},
-        {
-          or:[
-            { currentStatus: {eq: 'REQUESTED'} },
-            { currentStatus: {eq: 'ACCEPTED'} }
-          ]
-        }
-      ]
+       count: {ne: 0}
     }
-    const response = await API.graphql({query: queries.listJobs, variables: {filter: filter}})
-    let all = response.data.listJobs.items
-    //map all zipCodes
-    let count = 0;
-    for(let job of all){
-      count = zipCodeMap.get(`${job.zipCode} - ${job.city}`)
-      if(count == undefined){
-        zipCodeMap.set(`${job.zipCode} - ${job.city}`, 0)
-      }
-      else{
-        zipCodeMap.set(`${job.zipCode} - ${job.city}`, ++count)
-      }
-    }
-    //map providers zip code
-    count = zipCodeMap.get(`${userInfo.zipCode} - ${userInfo.city}`)
-    if(count == undefined){
-      zipCodeMap.set(`${userInfo.zipCode} - ${userInfo.city}`, 0)
-    }
-    else{
-      zipCodeMap.set(`${userInfo.zipCode} - ${userInfo.city}`, count)
-    }
+    let global = await API.graphql({query: queries.listCodes, variables: {filter: filter}})
+    let list = global.data.listCodes.items
 
     //set zip codes in search bar
     let items = []
-    for(const area of zipCodeMap.keys()){
+    for(const area of list){
       items.push({
-        label: area,
-        value: area
+        label: `${area.zipCode} - ${area.city}` ,
+        value: `${area.zipCode} - ${area.city}`
       })
     }
     setZipCodesList(items)
-    setZipCodeSelected(`${userInfo.zipCode} - ${userInfo.city}`)
   }
   
   useEffect(() => {
@@ -116,6 +84,7 @@ const JobSearch = ({ navigation }) => {
           const all = response.data.listJobs.items
           setFilteredJobList(all)
       }
+      setup()
       getJobsFromZipCode()
     }
   },[zipCodeSelected])
@@ -139,7 +108,7 @@ const JobSearch = ({ navigation }) => {
                   style={{width: 320}}
                   textStyle={{fontFamily: "Montserrat-Bold"}}
                   modalContentContainerStyle={styles.warningModal}
-                  placeholder= {'Town: ' + zipCodeSelected}
+                  placeholder= { zipCodeSelected ? 'Town: ' + zipCodeSelected : "Select a city"}
                   listMode="MODAL"
                   searchable={true}
                   searchPlaceholder='Select a town to see the available jobs'
@@ -156,7 +125,7 @@ const JobSearch = ({ navigation }) => {
             {loading ? <Spinner color={'blue'} /> : (
               <View style={{flex: 1, marginTop: 10, marginBottom: 20}}>
                 {filteredJobList.length == 0 && !open ? 
-                <Text style={styles.helpText}>There are no available jobs currently in the {zipCodeSelected} area.</Text>
+                <Text style={styles.helpText}>There are no available jobs currently in the selected area.</Text>
                 :(
                   <View>
                     <Text style={styles.helpText}>There are {filteredJobList.length} available jobs in the {zipCodeSelected} area.</Text>

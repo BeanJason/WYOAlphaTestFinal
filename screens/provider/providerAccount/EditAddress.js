@@ -12,11 +12,11 @@ import {
   import { useForm } from "react-hook-form";
   import { useSelector, useDispatch } from "react-redux";
   import { DataStore } from "aws-amplify";
-  import { User } from "../../../src/models";
+  import { Provider } from "../../../src/models";
   import { changeUserInfo } from "../../../redux/authReducer";
   
   //Login screen
-  const AddAddress = ({ navigation }) => {
+  const EditAddress = ({ navigation }) => {
     const { userInfo } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     
@@ -34,29 +34,27 @@ import {
         //Success
         data.address = data.address.trim()
         data.city = data.city.trim()
-        let original = await DataStore.query(User, userInfo.userID);
-        let newAddr = {
-            street: data.address,
-            city: data.city,
-            zipCode: data.zipCode
-        }
-        let list = Array.from(original.address)
-        list.push(JSON.stringify(newAddr))
+        let original = await DataStore.query(Provider, userInfo.userID);
         try {
-            await DataStore.save(User.copyOf(original, updated => {
-                updated.address.push(JSON.stringify(newAddr))
+            await DataStore.save(Provider.copyOf(original, updated => {
+                updated.address = data.address,
+                updated.city = data.city,
+                updated.zipCode = data.zipCode
             }))
             let newInfo = {
               userID: original.id,
               firstName: original.firstName,
               lastName: original.lastName,
-              address: list,
+              address: data.address,
+              city: data.city,
+              zipCode: data.zipCode,
               phoneNumber: original.phoneNumber,
-              contactMethod: original.contactMethod
+              biography: original.biography,
+              backgroundCheck: original.backgroundCheckStatus
           }
           dispatch(changeUserInfo({userInfo: newInfo}))
-          navigation.reset({ routes: [{name: 'EditAccountUser'}]})
-          navigation.navigate('EditAccountUser', {name: 'EditAccountUser'})
+          navigation.reset({ routes: [{name: 'EditAccountProvider'}]})
+          navigation.navigate('EditAccountProvider', {name: 'EditAccountProvider'})
         } catch (error) {
             console.log(error);
         }
@@ -70,7 +68,7 @@ import {
         >
           <SafeAreaView style={commonStyles.safeContainer}>
             <Text style={styles.header2}>
-              Please provide your address details
+              Please update your address details
             </Text>
   
             {/* address */}
@@ -81,7 +79,7 @@ import {
                 location='FontAwesome'
                 name="address"
                 rules={{ required: "Address is Required" }}
-                placeholder={"Address"}
+                placeholder={'Address'}
                 control={control}
               />
               {/* city */}
@@ -96,7 +94,7 @@ import {
                      value: /^[a-zA-Z ]+$/,
                      message: 'Only letters are allowed in the city name'
                    }}}
-                placeholder={"City"}
+                placeholder={'City'}
                 control={control}
               />
               {/* zip code */}
@@ -114,7 +112,7 @@ import {
                     message: 'Zip code must be a valid 5 digit code'
                   }
                 }}
-                placeholder={"Zip Code"}
+                placeholder={'Zip Code'}
                 control={control}
               />
             </View>
@@ -124,7 +122,7 @@ import {
                 onPress={handleSubmit(submitForm)}
                 style={styles.button}
               >
-                <Text style={styles.btnText}>Submit</Text>
+                <Text style={styles.btnText}>Change</Text>
               </TouchableOpacity>
             </View>
           </SafeAreaView>
@@ -194,5 +192,5 @@ import {
     }
   });
   
-  export default AddAddress;
+  export default EditAddress;
   

@@ -35,7 +35,7 @@ const UserHome = ({ navigation }) => {
   useEffect(() => {
     //Get user's current jobs
     if(!initialized){
-      dispatch(initializeJobs(userInfo.userID))
+      dispatch(initializeJobs({userID: userInfo.userID}))
     }
     //TESTING
     // setJobList(getManyJobs())

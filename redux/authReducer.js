@@ -79,7 +79,9 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                 address: userData.address,
                 city: userData.city,
                 zipCode: userData.zipCode,
-                phoneNumber: userData.phoneNumber
+                phoneNumber: userData.phoneNumber,
+                biography: userData.biography,
+                backgroundCheck: userData.backgroundCheckStatus
               }
             }
             else{

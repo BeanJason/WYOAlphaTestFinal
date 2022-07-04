@@ -45,7 +45,7 @@ import UserJobHistory from "./screens/user/UserJobHistory"
 //Provider Screens
 import ProviderHome from "./screens/provider/ProviderHome";
 import JobSearch from "./screens/provider/JobSearch";
-import EditProviderAccount from "./screens/provider/providerAccount/EditProviderAccount";
+import EditAccountProvider from "./screens/provider/providerAccount/EditAccountProvider";
 import ProviderJobInfo from "./screens/provider/ProviderJobInfo";
 import ProviderJobHistory from "./screens/provider/ProviderJobHistory";
 import JobSignUp from "./screens/provider/JobSignUp"
@@ -56,6 +56,7 @@ import { config } from "./common/styles";
 import { getProvider, getUser } from "./testData";
 import { resetState, storeNewJobID } from "./redux/jobsReducer";
 import { checkUnverifiedJob } from "./common/functions";
+import EditAddress from "./screens/provider/providerAccount/EditAddress";
 
 
 //CONFIGURE AMPLIFY
@@ -239,7 +240,7 @@ const UserNavigation = () => {
         blur: async (event) => {
           if(route.state){
             if(route.state.routes[1].name == 'JobCreationPayment'){
-              await checkUnverifiedJob(route.state.routes[1].params.jobInfo)
+              await checkUnverifiedJob(route.state.routes[1].params.jobInfo, route.state.routes[1].params.code)
             }
           }
         }
@@ -356,7 +357,8 @@ const ProviderAccountTab = () => {
     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
       <Stack.Screen options={{ headerShown: false }} name="MyAccount" component={MyAccount}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="VerifyAccount" component={VerifyAccount}/>
-      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditProviderAccount" component={EditProviderAccount}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountProvider" component={EditAccountProvider}/>
+      <Stack.Screen options={{ title: 'Edit Address' }} name="EditAddress" component={EditAddress}/>
     </Stack.Navigator>
   )
 }

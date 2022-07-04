@@ -44,7 +44,6 @@ async function deleteItem(id) {
   };
   try {
     await docClient.delete(params).promise();
-    return res;
   } catch (err) {
     return err;
   }
@@ -72,12 +71,12 @@ exports.handler = async (event) => {
   } catch (error) {
     console.log(error);
   }
+  console.log(jobInfo);
   if (jobInfo) {
     let today = new Date();
     let requestDate = new Date(jobInfo.Item.requestDateTime);
     //if cancelled
     if (arguments.isCancel) {
-      if (today.toLocaleDateString() < requestDate.toLocaleDateString()) {
         //refund
         const refund = await stripe.refunds.create({
             payment_intent: jobInfo.Item.paymentID
@@ -91,7 +90,6 @@ exports.handler = async (event) => {
           }
         }
         return false;
-      }
     } else {
       //if not accepted
       if (jobInfo.Item.currentStatus == "REQUESTED") {

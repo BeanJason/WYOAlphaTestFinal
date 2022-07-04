@@ -31,7 +31,8 @@ type Job @model @auth(rules: [{allow: public}]) {
   mainProvider: ID @index(name: "byProvider")
   requestOwner: ID! @index(name: "byUser")
   paymentID: String
-  price: Float
+  price: Int
+  Tip: Int
 }
 
 type Provider @model @auth(rules: [{allow: public}]) {
@@ -65,5 +66,12 @@ type User @model @auth(rules: [{allow: public}]) {
   address: [String!]
   contactMethod: String
   jobs: [Job] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+type Code @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  zipCode: String!
+  city: String!
+  count: Int!
 }
  

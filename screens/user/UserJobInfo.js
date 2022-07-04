@@ -18,12 +18,12 @@ import { Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch } from "react-redux";
 import { addOrRemoveJob } from "../../redux/jobsReducer";
+import { decrementZipCodeCount } from "../../common/functions";
 
 //Login screen
 const UserJobInfo = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { jobInfo } = route.params;
-  const { userInfo } = useSelector((state) => state.auth);
   const [mainProvider, setMainProvider] = useState('')
   const [backupProviders, setBackupProviders] = useState([])
   const [canCancel, setCanCancel] = useState(false)
@@ -87,10 +87,11 @@ const UserJobInfo = ({ route, navigation }) => {
         })
         )
         if(refundStatus){
+          await decrementZipCodeCount({code: {zipCode: jobInfo.zipCode}})
           dispatch(addOrRemoveJob({type: 'REMOVE_ACTIVE_JOB', jobInfo}))
-          createToast('Your job request has been cancelled')
           setTimeout(() => {
             setStartCancel(false)
+            createToast('Your job request has been cancelled')
             navigation.reset({ routes: [{name: 'UserHome'}]})
             navigation.navigate('UserHome', {name: 'UserHome'})
           }, 5000)
@@ -160,7 +161,7 @@ const UserJobInfo = ({ route, navigation }) => {
               <View style={styles.warningModal}>
                 <Text style={styles.modalTitle}>Cancellation</Text>
                 <Text style={styles.modalText}>The cancellation of this job cannot be processed due to company policy.
-                A job can only be cancelled if 24 hours have not passed since the request was made.
+                A job is eligible for cancellation only if 24 hours have not passed since the request was made.
                 </Text>
                 <TouchableOpacity
                     onPress={() => setShowModal(false)}

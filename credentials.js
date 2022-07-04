@@ -72,7 +72,9 @@ const getProviderData = async (attributes) => {
                 address: userData[0].address,
                 city: userData[0].city,
                 zipCode: userData[0].zipCode,
-                phoneNumber: userData[0].phoneNumber
+                phoneNumber: userData[0].phoneNumber,
+                biography: userData[0].biography,
+                backgroundCheck: userData[0].backgroundCheckStatus
            }
         return userInfo
      } catch (error) {

@@ -13,12 +13,13 @@ import {
   import { useDispatch, useSelector } from "react-redux";
   import { useEffect, useState } from "react";
   import { DataStore, API, graphqlOperation } from "aws-amplify";
-  import { Job } from "../../src/models";
+  import { Job, Code} from "../../src/models";
   import {initPaymentSheet, presentPaymentSheet} from "@stripe/stripe-react-native"
   import { createToast } from "../../common/components/Toast";
   import { createPaymentIntent } from "../../src/graphql/mutations";
   import { addOrRemoveJob, storeNewJobID } from "../../redux/jobsReducer";
   import * as queries from "../../src/graphql/queries"
+  import * as mutations from "../../src/graphql/mutations"
   
   //Login screen
   const JobCreationPayment = ({route, navigation }) => {
@@ -93,6 +94,28 @@ import {
           price = 6000;
           break;
       }
+
+      let code = await DataStore.query(Code, c => c.zipCode("eq", data.zipCode))
+      //update count
+      if(code.length != 0){
+        let count = code[0].count;
+        count++;
+        let res = await DataStore.save(Code.copyOf(code[0], updated => {
+          updated.count = count
+        }))
+        route.params.code = res
+      }
+      //create new zip code with count
+      else{
+        let res = await DataStore.save(new Code({
+          zipCode: data.zipCode,
+          city: data.city,
+          count: 1
+        }))
+        route.params.code = res
+      }
+      
+      
 
       try {
          newJob = await DataStore.save(
@@ -206,6 +229,7 @@ import {
 
           <View style={{alignItems: 'center', marginTop: 20, flex: 1}}>
             <Text style={[styles.generalText, {textAlign: 'center'}]}>Please verify all the information for your job request below</Text>
+            <Text style={[styles.generalText, {textAlign: 'center'}]}>Note: Refunds are only eligible within 24 hours of creating the job request</Text>
             <View style={styles.jobContainer}>
               <Text style={styles.generalText}>Job Title: {data.jobTitle}</Text>
               <Text style={styles.generalText}>Address: {data.address} {data.city} {data.zipCode}</Text>

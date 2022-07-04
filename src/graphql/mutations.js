@@ -40,6 +40,7 @@ export const createJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
+      Tip
       createdAt
       updatedAt
       _version
@@ -70,6 +71,7 @@ export const updateJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
+      Tip
       createdAt
       updatedAt
       _version
@@ -100,6 +102,7 @@ export const deleteJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
+      Tip
       createdAt
       updatedAt
       _version
@@ -283,6 +286,60 @@ export const deleteUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const createCode = /* GraphQL */ `
+  mutation CreateCode(
+    $input: CreateCodeInput!
+    $condition: ModelCodeConditionInput
+  ) {
+    createCode(input: $input, condition: $condition) {
+      id
+      zipCode
+      city
+      count
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateCode = /* GraphQL */ `
+  mutation UpdateCode(
+    $input: UpdateCodeInput!
+    $condition: ModelCodeConditionInput
+  ) {
+    updateCode(input: $input, condition: $condition) {
+      id
+      zipCode
+      city
+      count
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteCode = /* GraphQL */ `
+  mutation DeleteCode(
+    $input: DeleteCodeInput!
+    $condition: ModelCodeConditionInput
+  ) {
+    deleteCode(input: $input, condition: $condition) {
+      id
+      zipCode
+      city
+      count
       createdAt
       updatedAt
       _version

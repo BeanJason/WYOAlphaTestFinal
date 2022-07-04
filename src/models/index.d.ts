@@ -25,6 +25,10 @@ type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
+type CodeMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 export declare class Job {
   readonly id: string;
   readonly jobTitle: string;
@@ -42,6 +46,7 @@ export declare class Job {
   readonly requestOwner: string;
   readonly paymentID?: string | null;
   readonly price?: number | null;
+  readonly Tip?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Job, JobMetaData>);
@@ -87,4 +92,15 @@ export declare class User {
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);
   static copyOf(source: User, mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void): User;
+}
+
+export declare class Code {
+  readonly id: string;
+  readonly zipCode: string;
+  readonly city: string;
+  readonly count: number;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  constructor(init: ModelInit<Code, CodeMetaData>);
+  static copyOf(source: Code, mutator: (draft: MutableModel<Code, CodeMetaData>) => MutableModel<Code, CodeMetaData> | void): Code;
 }

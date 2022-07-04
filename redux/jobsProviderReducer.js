@@ -13,7 +13,7 @@ const initialState = {
 
 //ASYNC FUNCTIONS
 export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, thunkAPI) => {
-    const userID = data;
+    const {userID} = data;
     if(userID){
         try {
             let response = await DataStore.query(Job, job =>  job.or(job => job.mainProvider("eq", userID).backupProviders("contains", userID)))

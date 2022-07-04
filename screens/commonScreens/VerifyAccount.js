@@ -30,7 +30,7 @@ import {
      try {
         await Auth.signIn({username: authUser.email, password: data.password})
         if(authUser['custom:type'] == 'Provider'){
-          navigation.navigate('EditProviderAccount',{name: 'EditProviderAccount'})
+          navigation.navigate('EditAccountProvider',{name: 'EditAccountProvider'})
         }
         else{
           navigation.navigate('EditAccountUser',{name: 'EditAccountUser'})

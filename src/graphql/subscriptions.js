@@ -20,6 +20,7 @@ export const onCreateJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
+      Tip
       createdAt
       updatedAt
       _version
@@ -47,6 +48,7 @@ export const onUpdateJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
+      Tip
       createdAt
       updatedAt
       _version
@@ -74,6 +76,7 @@ export const onDeleteJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
+      Tip
       createdAt
       updatedAt
       _version
@@ -239,6 +242,51 @@ export const onDeleteUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onCreateCode = /* GraphQL */ `
+  subscription OnCreateCode {
+    onCreateCode {
+      id
+      zipCode
+      city
+      count
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateCode = /* GraphQL */ `
+  subscription OnUpdateCode {
+    onUpdateCode {
+      id
+      zipCode
+      city
+      count
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteCode = /* GraphQL */ `
+  subscription OnDeleteCode {
+    onDeleteCode {
+      id
+      zipCode
+      city
+      count
       createdAt
       updatedAt
       _version

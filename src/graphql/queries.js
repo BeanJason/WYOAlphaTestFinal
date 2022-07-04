@@ -20,6 +20,7 @@ export const getJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
+      Tip
       createdAt
       updatedAt
       _version
@@ -52,6 +53,7 @@ export const listJobs = /* GraphQL */ `
         requestOwner
         paymentID
         price
+        Tip
         createdAt
         updatedAt
         _version
@@ -93,6 +95,7 @@ export const syncJobs = /* GraphQL */ `
         requestOwner
         paymentID
         price
+        Tip
         createdAt
         updatedAt
         _version
@@ -286,6 +289,73 @@ export const syncUsers = /* GraphQL */ `
         dateOfBirth
         address
         contactMethod
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getCode = /* GraphQL */ `
+  query GetCode($id: ID!) {
+    getCode(id: $id) {
+      id
+      zipCode
+      city
+      count
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listCodes = /* GraphQL */ `
+  query ListCodes(
+    $filter: ModelCodeFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCodes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        zipCode
+        city
+        count
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncCodes = /* GraphQL */ `
+  query SyncCodes(
+    $filter: ModelCodeFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncCodes(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        zipCode
+        city
+        count
         createdAt
         updatedAt
         _version
