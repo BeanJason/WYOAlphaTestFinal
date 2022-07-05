@@ -22,11 +22,10 @@ async function getItem(id) {
     ExpressionAttributeNames: {
       "#Date": "requestDateTime",
       "#PayID": "paymentID",
-      "#Amount": "price",
       "#Status": "currentStatus",
     },
     Select: "SPECIFIC_ATTRIBUTES",
-    ProjectionExpression: "#Date, #PayID, #Amount, #Status",
+    ProjectionExpression: "#Date, #PayID, #Status",
   };
   try {
     return await docClient.get(params).promise();

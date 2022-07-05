@@ -6,6 +6,7 @@ import {
   ImageBackground,
   SafeAreaView,
   TouchableOpacity,
+  TouchableHighlight,
   Modal
 } from "react-native";
 import UserInput from "../../common/components/UserInput";
@@ -49,14 +50,15 @@ const JobCreation1 = ({ navigation }) => {
 
   //price
   const [price, setPrice] = useState()
-  const [tip, setTip] = useState()
+  const [tip, setTip] = useState(0)
   const [priceText, setPriceText] = useState()
   const [tipText, setTipText] = useState()
-  const [total, setTotal] = useState()
+  const [total, setTotal] = useState(0)
+  const [totalText, setTotalText] = useState()
   const [showModal, setShowModal] = useState(false)
   const [otherTip, setOtherTip] = useState()
-  const [otherTipText, setOtherTipText] = useState('$0.00')
-
+  //Used to track if tip button has been pressed and change color if true
+  const [isPress, setIsPress] = useState();
 
   useEffect(() => {
     setPrice(2000)
@@ -92,11 +94,6 @@ const JobCreation1 = ({ navigation }) => {
     setDateError("");
   };
 
-  //cancel date 
-  const canceDate = () => {
-    console.log('cancel');
-  }
-
   //set mode for date/time
   const showMode = (currentMode) => {
     setShow(true);
@@ -120,6 +117,103 @@ const JobCreation1 = ({ navigation }) => {
     }
     return hours + ':' + min + amOrPm
   }
+  
+
+  //Prices
+  //duration change
+  const onDurationChange = (value) => {
+    if(value >= 4 && value <= 8){
+      setDuration(value)
+      switch(value){
+        case 4:
+          setPrice(2000)
+          break;
+        case 5:
+          setPrice(3000)
+          break;
+        case 6:
+          setPrice(4000)
+          break;
+        case 7:
+          setPrice(5000)
+          break;
+        case 8:
+          setPrice(6000)
+          break;
+      }
+    }
+    if(isPress != ''){
+      setIsPress('')
+      setTip(0)
+      setOtherTip(0)
+    }
+  }
+  const onTipChange = (value, priceChange = false) => {
+    let result = price
+    switch (value){
+      default:
+        if(otherTip){
+          setTip(otherTip * 100)
+        }
+        setIsPress('-1')
+        setShowModal(false)
+        break;
+      case 10:
+        if(isPress == '10%' && !priceChange){
+          setTip(0)
+          setIsPress('')
+        }
+        else{
+          result = 0.10 * result
+          setIsPress('10%')
+          setTip(result)
+        }
+        break;
+      case 15:
+        if(isPress == '15%' && !priceChange){
+          setTip(0)
+          setIsPress('')
+        }else{
+          result = 0.15 * result
+          setIsPress('15%')
+          setTip(result)
+        }
+        break;
+      case 20:
+        if(isPress == '20%' && !priceChange){
+          setTip(0)
+          setIsPress('')
+        }else{
+          result = 0.20 * result
+          setIsPress('20%')
+          setTip(result)
+        }
+        break;
+    }
+  }
+  useEffect(() => {
+    convertMoneyToText('price')
+  }, [price])
+  useEffect(() => {
+    convertMoneyToText('tip')
+  }, [tip])
+  const convertMoneyToText = (type) => {
+    if(type == 'tip'){
+      let result = tip / 100
+      setTipText(result.toFixed(2))
+    }
+    else{
+      let result = price / 100
+      setPriceText(result.toFixed(2))
+    }
+  }
+  useEffect(() => {
+    setTotal(price + tip)
+    let result = (price + tip) / 100
+    setTotalText(result.toFixed(2))
+  }, [tip, price])
+
+
 
   //Submit the user input
   const submitForm = async (data) => {
@@ -149,6 +243,9 @@ const JobCreation1 = ({ navigation }) => {
           break;
         }
       }
+      data.price = price
+      data.tip = tip
+      data.total = total
       //Send info to the server
       //Send info to payment screen
       navigation.navigate("JobCreationPayment", { name: "JobCreationPayment" , data: data, userInfo: userInfo});
@@ -156,77 +253,6 @@ const JobCreation1 = ({ navigation }) => {
     
   };
 
-
-  //Prices
-  //duration change
-  const onDurationChange = (value) => {
-    if(value >= 4 && value <= 8){
-      setDuration(value)
-      switch(value){
-        case 4:
-          setPrice(2000)
-          convertMoneyToText('price')
-          break;
-        case 5:
-          setPrice(3000)
-          convertMoneyToText('price')
-          break;
-        case 6:
-          setPrice(4000)
-          convertMoneyToText('price')
-          break;
-        case 7:
-          setPrice(5000)
-          convertMoneyToText('price')
-          break;
-        case 8:
-          setPrice(6000)
-          convertMoneyToText('price')
-          break;
-      }
-    }
-  }
-
-  const onTipChange = (value) => {
-    let result = price
-    switch (value){
-      case -1:
-        console.log(otherTip);
-        setOtherTip()
-        setTip(otherTip)
-      case 10:
-        result = 0.10 * result
-        setTip(result)
-        break;
-      case 15:
-        result = 0.15 * result
-        setTip(result)
-        break;
-      case 20:
-        result = 0.20 * result
-        setTip(result)
-        break;
-    }
-  }
-
-  useEffect(() => {
-    convertMoneyToText('price')
-  }, [price])
-
-  useEffect(() => {
-    convertMoneyToText('tip')
-  }, [tip])
-  
-  const convertMoneyToText = (type) => {
-    if(type == 'tip'){
-      let result = tip / 100
-      setTipText(result.toFixed(2))
-    }
-    else{
-      let result = price / 100
-      setPriceText(result.toFixed(2))
-    }
-  }
 
   return (
     <KeyboardAwareScrollView>
@@ -252,6 +278,7 @@ const JobCreation1 = ({ navigation }) => {
                 value={otherTip}
                 onChangeValue={setOtherTip}
                 prefix='$'
+                separator="."
                 precision={2}
                 style={[styles.tipInput, commonStyles.inputBorder, {alignSelf: 'center'}]}
               />
@@ -342,7 +369,6 @@ const JobCreation1 = ({ navigation }) => {
                       mode={mode}
                       is24Hour={false}
                       minimumDate={dateOfToday}
-                      onTouchEnd={canceDate}
                     />
                   )}
                 </View>
@@ -352,7 +378,7 @@ const JobCreation1 = ({ navigation }) => {
             </View>
 
             {/* duration */}
-            <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 17}}>Duration in hours: 4-8</Text>
+            <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 17, marginTop: 20}}>Duration in hours: 4-8</Text>
             <View style={[styles.field, {flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}]}>
               <View style = {styles.durationStyle}>
                 <NumericInput inputStyle={{backgroundColor: 'white', borderRadius: 5}} rounded value={duration} minValue={4} maxValue={8} type='up-down' onChange={(value) => onDurationChange(value)} />
@@ -367,32 +393,32 @@ const JobCreation1 = ({ navigation }) => {
             <View style = {styles.field}>
               <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 17, textAlign: 'center'}}>Would you like to give a tip?</Text>
               <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-                <TouchableOpacity
+                <TouchableOpacity 
                 onPress={() => onTipChange(10)}
-                style={styles.tipButton}
+                style= {[isPress == '10%' ? styles.btnPressed : styles.tipButton]}
                 >
-                <Text style={styles.tipText}>10%</Text>
+                <Text style={[isPress == '10%' ? styles.tipTextPressed : styles.tipText]}>10%</Text>
                 </TouchableOpacity>
                 
-                <TouchableOpacity
+                <TouchableOpacity 
                 onPress={() => onTipChange(15)}
-                style={styles.tipButton}
+                style={[isPress == '15%' ? styles.btnPressed : styles.tipButton]}
                 >
-                <Text style={styles.tipText}>15%</Text>
+                <Text style={[isPress == '15%' ? styles.tipTextPressed : styles.tipText]}>15%</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                 onPress={() => onTipChange(20)}
-                style={styles.tipButton}
+                style = {[isPress == '20%' ? styles.btnPressed : styles.tipButton]}
                 >
-                <Text style={styles.tipText}>20%</Text>
+                <Text style={[isPress == '20%' ? styles.tipTextPressed : styles.tipText]}>20%</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                onPress={() => setShowModal(true)}
-                style={styles.tipButton}
+                onPress={() => { setShowModal(true)} }
+                style={[isPress == '-1' ? styles.btnPressed : styles.tipButton]}
                 >
-                <Text style={styles.tipText}>Other</Text>
+                <Text style={[isPress == '-1' ? styles.tipTextPressed : styles.tipText]}>Other</Text>
                 </TouchableOpacity>
 
               </View>
@@ -424,14 +450,18 @@ const JobCreation1 = ({ navigation }) => {
                 control={control}
               />
             </View>
+            <View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 10}}>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 24, textAlign: 'right' }}>Total: </Text>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 24, textAlign: 'right' }}>${totalText}</Text>
+            </View>
           </View>
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               onPress={handleSubmit(submitForm)}
-              style={styles.button}
+              style={[styles.button, {width: 200, height: 60}]}
             >
-              <Text style={styles.btnText}>Submit</Text>
+              <Text style={[styles.btnText, {textAlign: 'center'}]}>Proceed to Checkout</Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>
@@ -511,8 +541,24 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     marginRight: 25,
   },
+  btnPressed: {
+     justifyContent: "center",
+     alignItems: "center",
+     width: 80,
+     height: 40,
+     backgroundColor: "yellow",
+     borderRadius: 10,
+     marginVertical: 10,
+     marginLeft: 25,
+     marginRight: 25,
+  },
   tipText: {
     color: "white",
+    fontFamily: "Montserrat-Bold",
+    fontSize: 20,
+  },
+  tipTextPressed: {
+    color: "black",
     fontFamily: "Montserrat-Bold",
     fontSize: 20,
   },

@@ -20,7 +20,7 @@ export const getJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
-      Tip
+      tip
       createdAt
       updatedAt
       _version
@@ -53,7 +53,7 @@ export const listJobs = /* GraphQL */ `
         requestOwner
         paymentID
         price
-        Tip
+        tip
         createdAt
         updatedAt
         _version
@@ -95,7 +95,7 @@ export const syncJobs = /* GraphQL */ `
         requestOwner
         paymentID
         price
-        Tip
+        tip
         createdAt
         updatedAt
         _version

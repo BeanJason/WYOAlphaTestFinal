@@ -87,7 +87,7 @@ const UserJobInfo = ({ route, navigation }) => {
         })
         )
         if(refundStatus){
-          await decrementZipCodeCount({code: {zipCode: jobInfo.zipCode}})
+          await decrementZipCodeCount({zipCode: jobInfo.zipCode})
           dispatch(addOrRemoveJob({type: 'REMOVE_ACTIVE_JOB', jobInfo}))
           setTimeout(() => {
             setStartCancel(false)
@@ -160,8 +160,8 @@ const UserJobInfo = ({ route, navigation }) => {
             ):
               <View style={styles.warningModal}>
                 <Text style={styles.modalTitle}>Cancellation</Text>
-                <Text style={styles.modalText}>The cancellation of this job cannot be processed due to company policy.
-                A job is eligible for cancellation only if 24 hours have not passed since the request was made.
+                <Text style={styles.modalText}>The cancellation of this job cannot be processed due to the refund policy.
+                A job is only eligible for cancellation if 24 hours have not passed since the request was made.
                 </Text>
                 <TouchableOpacity
                     onPress={() => setShowModal(false)}

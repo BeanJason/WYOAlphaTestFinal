@@ -24,7 +24,6 @@ export const getUnacceptedJobs = (activeJobs) => {
 
 //decrement zip code count
 export const decrementZipCodeCount = async(code) => {
-    console.log(code);
     if(code.id){
         let original = await DataStore.query(Code, code.id)
         let count = original.count

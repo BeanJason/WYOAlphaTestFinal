@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: "black",
     borderRadius: 10,
-    marginVertical: 20,
+    marginVertical: 10,
   },
   editText: {
     color: "white",

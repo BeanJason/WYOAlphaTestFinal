@@ -5,8 +5,7 @@
   "main": "index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "aws-sdk": "^2.1162.0",
-    "stripe": "^9.10.0"
+    "aws-sdk": "^2.1162.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.92"

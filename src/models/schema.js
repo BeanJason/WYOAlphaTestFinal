@@ -118,8 +118,8 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "Tip": {
-                    "name": "Tip",
+                "tip": {
+                    "name": "tip",
                     "isArray": false,
                     "type": "Int",
                     "isRequired": false,
@@ -585,5 +585,5 @@ export const schema = {
             }
         }
     },
-    "version": "b2729e0b99f50af6544e3e9c2f7f9e52"
+    "version": "a3434b8e94ee68603dd36c5e2cffe8da"
 };

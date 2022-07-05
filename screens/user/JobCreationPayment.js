@@ -33,6 +33,7 @@ import {
     const dispatch = useDispatch()
     const { authUser } = useSelector((state) => state.auth);
     const { newJobID } = useSelector((state) => state.jobs);
+    const [total, setTotal] = useState()
     const [clientSecret, setclientSecret] = useState('')
     const [loading, setLoading] = useState(false)
     const [paymentStatus, setPaymentStatus] = useState('Queuing your payment, please wait...')
@@ -76,25 +77,6 @@ import {
 
     //setup the payment screen
     const fetchPaymentIntent = async () => {
-      let price = 2000;
-      switch (data.duration) {
-        case 4:
-          price = 2000;
-          break;
-        case 5:
-          price = 3000;
-          break;
-        case 6:
-          price = 4000;
-          break;
-        case 7:
-          price = 5000;
-          break;
-        case 8:
-          price = 6000;
-          break;
-      }
-
       let code = await DataStore.query(Code, c => c.zipCode("eq", data.zipCode))
       //update count
       if(code.length != 0){
@@ -114,8 +96,6 @@ import {
         }))
         route.params.code = res
       }
-      
-      
 
       try {
          newJob = await DataStore.save(
@@ -130,12 +110,13 @@ import {
           "backupProviders": [],
           "currentStatus": "REQUESTED",
           "requestOwner": userInfo.userID,
-          "price": price
+          "price": data.price,
+          "tip": data.tip
         }));
         try {
           const response = await API.graphql(
             graphqlOperation(createPaymentIntent, {
-              amount: price,
+              amount: data.total,
               email: authUser.email,
               jobID: newJob.id
             })
@@ -152,9 +133,13 @@ import {
      
     }
 
+    
+
     //happens on page load
     useEffect(() => {
       fetchPaymentIntent();
+      let result = data.total / 100
+      setTotal(result.toFixed(2))
     },[])
 
     //initialize screen when client secret is available
@@ -236,6 +221,10 @@ import {
               <Text style={styles.generalText}>Job Duration: {data.duration} Hrs.</Text>
               <Text style={styles.generalText}>Job Date & Time: {getDateFormat()}</Text>
               {data.jobDescription ? <Text style={styles.generalText}>Job Description: {data.jobDescription}</Text> : <></> }
+              <View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 10}}>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 24, textAlign: 'right' }}>Total: </Text>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 24, textAlign: 'right' }}>${total}</Text>
+            </View>
             </View>
           {loading ? (
             <View style={{flex: 1}}>
@@ -257,7 +246,7 @@ import {
                   onPress={() => openPaymentScreen()}
                 >
                   <View style={styles.button}>
-                    <Text style={styles.btnText}>Checkout</Text>
+                    <Text style={styles.btnText}>Pay</Text>
                   </View>
                 </TouchableOpacity>
               </View>

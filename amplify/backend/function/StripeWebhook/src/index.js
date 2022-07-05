@@ -19,10 +19,11 @@ async function getItem(id) {
       id: id,
     },
     ExpressionAttributeNames: {
-      "#D": "duration",
+      "#P": "price",
+      "#T": "tip"
     },
     Select: "SPECIFIC_ATTRIBUTES",
-    ProjectionExpression: "#D",
+    ProjectionExpression: "#P, #T", 
   };
 
   try {
@@ -63,7 +64,7 @@ exports.handler = async (event) => {
   switch (body.type) {
     case "payment_intent.succeeded":
       let jobID = body.data.object.metadata.Job;
-      let actualPrice = 2000;
+      let actualPrice = 0;
       let jobData;
 
       try {
@@ -71,24 +72,7 @@ exports.handler = async (event) => {
       } catch (error) {
         console.log(error);
       }
-
-      switch (jobData.Item.duration) {
-        case 4:
-          actualPrice = 2000;
-          break;
-        case 5:
-          actualPrice = 3000;
-          break;
-        case 6:
-          actualPrice = 4000;
-          break;
-        case 7:
-          actualPrice = 5000;
-          break;
-        case 8:
-          actualPrice = 6000;
-          break;
-      }
+      actualPrice = jobData.Item.price + jobData.Item.tip
 
       //correct price paid
       if (actualPrice == body.data.object.amount_received) {

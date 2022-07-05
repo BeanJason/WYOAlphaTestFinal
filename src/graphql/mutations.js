@@ -40,7 +40,7 @@ export const createJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
-      Tip
+      tip
       createdAt
       updatedAt
       _version
@@ -71,7 +71,7 @@ export const updateJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
-      Tip
+      tip
       createdAt
       updatedAt
       _version
@@ -102,7 +102,7 @@ export const deleteJob = /* GraphQL */ `
       requestOwner
       paymentID
       price
-      Tip
+      tip
       createdAt
       updatedAt
       _version
