@@ -10,6 +10,8 @@ export const onCreateJob = /* GraphQL */ `
       address
       city
       zipCode
+      latitude
+      longitude
       duration
       requestDateTime
       backupProviders
@@ -38,6 +40,8 @@ export const onUpdateJob = /* GraphQL */ `
       address
       city
       zipCode
+      latitude
+      longitude
       duration
       requestDateTime
       backupProviders
@@ -66,6 +70,8 @@ export const onDeleteJob = /* GraphQL */ `
       address
       city
       zipCode
+      latitude
+      longitude
       duration
       requestDateTime
       backupProviders
@@ -96,8 +102,6 @@ export const onCreateProvider = /* GraphQL */ `
       phoneNumber
       dateOfBirth
       address
-      city
-      zipCode
       biography
       profilePictureURL
       backgroundCheckStatus
@@ -127,8 +131,6 @@ export const onUpdateProvider = /* GraphQL */ `
       phoneNumber
       dateOfBirth
       address
-      city
-      zipCode
       biography
       profilePictureURL
       backgroundCheckStatus
@@ -158,8 +160,6 @@ export const onDeleteProvider = /* GraphQL */ `
       phoneNumber
       dateOfBirth
       address
-      city
-      zipCode
       biography
       profilePictureURL
       backgroundCheckStatus

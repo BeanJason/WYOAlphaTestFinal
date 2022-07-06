@@ -22,6 +22,7 @@ import { User } from "../../../src/models";
 import { changeUserInfo } from "../../../redux/authReducer";
 import { changeUserStatus } from "../../../redux/authReducer";
 import { RadioButton } from "react-native-paper"
+import {createToast} from "../../../common/components/Toast"
 
 //Login screen
 const EditAccountUser = ({ navigation }) => {
@@ -65,6 +66,7 @@ const EditAccountUser = ({ navigation }) => {
           };
           dispatch(changeUserInfo({ userInfo: newInfo }));
           setphoneNumber(data.phoneNumber);
+          createToast('Phone number has been changed')
         } catch (error) {
           setError('phoneNumber', {
             type: 'validate',
@@ -90,6 +92,7 @@ const EditAccountUser = ({ navigation }) => {
             contactMethod: checkedBtn
           };
           dispatch(changeUserInfo({ userInfo: newInfo }));
+          createToast('Method of contact has been changed')
         } catch (error) {
           setError('phoneNumber', {
             type: 'validate',
@@ -117,6 +120,7 @@ const EditAccountUser = ({ navigation }) => {
           };
           dispatch(changeUserInfo({ userInfo: newInfo }));
           setphoneNumber(data.phoneNumber);
+          createToast('Phone number and method of contact has been changed')
         } catch (error) {
           console.log(error);
         }
@@ -124,15 +128,7 @@ const EditAccountUser = ({ navigation }) => {
     }
   };
 
-  const getUpdatedInfo = async () => {
-    const newData = await checkCredentials();
-    if(newData.authUser != null && newData.userInfo != null){
-      dispatch(changeUserStatus({authUser: newData.authUser, userInfo: newData.userInfo}))
-    }
-  };
-
   useEffect(() => {
-    getUpdatedInfo()
     let list = [];
     for (let next of userInfo.address) {
       list.push(JSON.parse(next));
@@ -172,7 +168,6 @@ const EditAccountUser = ({ navigation }) => {
     list = list.filter(
       (removeAddress) => removeAddress.street !== addressToDelete
     );
-    console.log(list);
     await DataStore.save(
       User.copyOf(original, (updated) => {
         updated.address = updated.address.filter((removeAddress) => {

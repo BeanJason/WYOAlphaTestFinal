@@ -27,6 +27,7 @@ const UserJobInfo = ({ route, navigation }) => {
   const { jobInfo } = route.params;
   const [mainProvider, setMainProvider] = useState('')
   const [providerImage, setProviderImage] = useState()
+  const [mainProviderBio, setMainProviderBio] = useState()
   const [backupProviders, setBackupProviders] = useState([])
   const [canCancel, setCanCancel] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -65,6 +66,7 @@ const UserJobInfo = ({ route, navigation }) => {
     if(jobInfo.mainProvider){
       await DataStore.query(Provider, provider => provider.id("eq", jobInfo.mainProvider)).then((providerFound) => {
         setMainProvider(`${providerFound[0].firstName} ${providerFound[0].lastName}`);
+        setMainProviderBio(providerFound[0].biography)
       });
       let img = await Storage.get(jobInfo.mainProvider + '.png')
       if(img){
@@ -201,18 +203,24 @@ const UserJobInfo = ({ route, navigation }) => {
             <Text style={styles.generalText}>Scheduled for {date}</Text>
             <Text style={[styles.generalText, {marginBottom: 30}]}>{time}</Text>
             {jobInfo.jobDescription ? <Text style={[styles.generalText, {marginBottom: 30}]}>Job Description: {jobInfo.jobDescription}</Text> : <></>}
-            <Text style={[styles.generalText, {marginBottom: 10, borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Main Provider</Text>
+            <Text style={[styles.subtitle, {marginBottom: 10, borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Main Provider</Text>
               {mainProvider ? (
-                <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                  <ProfilePicture imageUrl={providerImage} name={mainProvider} size={50} />
-                  <Text style={[styles.generalText, {marginLeft: 10}]}>{mainProvider}</Text>
+                <View>
+                  <View style={{flexDirection: 'row',alignItems: 'center'}}>
+                    <ProfilePicture imageUrl={providerImage} name={mainProvider} size={50} />
+                    <Text style={[styles.generalText, {marginLeft: 10}]}>{mainProvider}</Text>
+                  </View>
+                  <View>
+                    <Text style={[styles.subtitle, {marginBottom: 10, borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Provider Biography</Text>
+                    <Text style={[styles.generalText, {marginLeft: 10}]}>{mainProviderBio}</Text>
+                  </View>
                 </View>
               ): (
-                  <Text style={styles.generalText}>none</Text>
+                  <Text style={styles.generalText}>None</Text>
               )}            
             {backupProviders.length == 0 ? <></> : (
-              <View>
-                <Text style={[styles.generalText, {borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Backup Providers</Text>
+              <View style={{marginTop: 20}}>
+                <Text style={[styles.subtitle, {borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Backup Providers</Text>
                 <Text style={styles.generalText}>{getBackupProviders()}</Text>
               </View>
             )}
@@ -305,6 +313,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     alignSelf: 'center',
     textAlign: 'center'
+  },
+  subtitle:{
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 18,
   }
 });
 

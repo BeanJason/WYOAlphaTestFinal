@@ -36,6 +36,8 @@ export declare class Job {
   readonly address: string;
   readonly city: string;
   readonly zipCode: string;
+  readonly latitude: string;
+  readonly longitude: string;
   readonly duration: number;
   readonly requestDateTime: string;
   readonly backupProviders?: string[] | null;
@@ -62,8 +64,6 @@ export declare class Provider {
   readonly phoneNumber: string;
   readonly dateOfBirth: string;
   readonly address: string;
-  readonly city: string;
-  readonly zipCode: string;
   readonly biography: string;
   readonly profilePictureURL?: string | null;
   readonly backgroundCheckStatus: boolean;

@@ -10,6 +10,8 @@ export const getJob = /* GraphQL */ `
       address
       city
       zipCode
+      latitude
+      longitude
       duration
       requestDateTime
       backupProviders
@@ -43,6 +45,8 @@ export const listJobs = /* GraphQL */ `
         address
         city
         zipCode
+        latitude
+        longitude
         duration
         requestDateTime
         backupProviders
@@ -85,6 +89,8 @@ export const syncJobs = /* GraphQL */ `
         address
         city
         zipCode
+        latitude
+        longitude
         duration
         requestDateTime
         backupProviders
@@ -118,8 +124,6 @@ export const getProvider = /* GraphQL */ `
       phoneNumber
       dateOfBirth
       address
-      city
-      zipCode
       biography
       profilePictureURL
       backgroundCheckStatus
@@ -154,8 +158,6 @@ export const listProviders = /* GraphQL */ `
         phoneNumber
         dateOfBirth
         address
-        city
-        zipCode
         biography
         profilePictureURL
         backgroundCheckStatus
@@ -195,8 +197,6 @@ export const syncProviders = /* GraphQL */ `
         phoneNumber
         dateOfBirth
         address
-        city
-        zipCode
         biography
         profilePictureURL
         backgroundCheckStatus

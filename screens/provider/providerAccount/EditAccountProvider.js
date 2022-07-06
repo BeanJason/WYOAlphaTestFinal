@@ -19,7 +19,7 @@ import { checkCredentials } from "../../../credentials";
 import { changeUserStatus, changeUserInfo } from "../../../redux/authReducer";
 import { Provider } from "../../../src/models";
 import { createToast } from "../../../common/components/Toast";
-import { DataStore, Storage } from "aws-amplify";
+import { DataStore, JS, Storage } from "aws-amplify";
 import * as ImagePicker from "expo-image-picker"
 import ProfilePicture from "../../../common/components/ProfilePicture";
 
@@ -45,20 +45,11 @@ const EditAccountProvider = ({ navigation }) => {
       reset: reset2
     } = useForm()
 
-    //get updated info
-    const getUpdatedInfo = async () => {
-      const newData = await checkCredentials();
-      if(newData.authUser != null && newData.userInfo != null){
-        dispatch(changeUserStatus({authUser: newData.authUser, userInfo: newData.userInfo}))
-      }
-    };
 
-
-
-    useEffect(() => {
-      getUpdatedInfo()
-    }, []);
-
+    const getAddress = () => {
+      let arr = JSON.parse(userInfo.address)
+      return `${arr.street} ${arr.city} ${arr.zipCode}`
+    }
 
     const submitPhone = async(data) => {
       let original = await DataStore.query(Provider, userInfo.userID);
@@ -74,8 +65,6 @@ const EditAccountProvider = ({ navigation }) => {
             firstName: original.firstName,
             lastName: original.lastName,
             address: original.address,
-            city: original.city,
-            zipCode: original.zipCode,
             phoneNumber: data.phoneNumber,
             biography: original.biography,
             backgroundCheck: original.backgroundCheckStatus,
@@ -106,8 +95,6 @@ const EditAccountProvider = ({ navigation }) => {
             firstName: original.firstName,
             lastName: original.lastName,
             address: original.address,
-            city: original.city,
-            zipCode: original.zipCode,
             phoneNumber: original.phoneNumber,
             biography: data.biography,
             backgroundCheck: original.backgroundCheckStatus,
@@ -178,14 +165,13 @@ const EditAccountProvider = ({ navigation }) => {
           firstName: original.firstName,
           lastName: original.lastName,
           address: original.address,
-          city: original.city,
-          zipCode: original.zipCode,
           phoneNumber: original.phoneNumber,
           biography: original.biography,
           backgroundCheck: original.backgroundCheckStatus,
           profilePicture: newPicture
           }
           dispatch(changeUserInfo({userInfo: newInfo}))
+          setImageUploading(false)
           createToast('Your profile picture has been changed')
         } catch (error) {
           console.log(error);
@@ -286,7 +272,7 @@ const EditAccountProvider = ({ navigation }) => {
           {/* address */}
           <View style={[styles.inputContainer, {marginTop: 15}]}>
             <Text style={[styles.generalText, {textAlign: 'center', borderBottomWidth: 1, alignSelf: 'center'}]}>Current Address</Text>
-            <Text style={styles.generalText}>{userInfo.address} {userInfo.city} {userInfo.zipCode}</Text>
+            <Text style={styles.generalText}>{getAddress()}</Text>
               <TouchableOpacity onPress={() => navigation.navigate("EditAddress", {name: "EditAddress"})} style={styles.editBtn}>
                 <Text style={styles.editText}>Edit Address</Text>
               </TouchableOpacity>

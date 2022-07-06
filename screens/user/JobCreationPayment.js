@@ -104,6 +104,8 @@ import {
           "jobDescription": data.jobDescription,
           "address": data.address,
           "city": data.city,
+          "latitude": data.lat,
+          "longitude": data.lng,
           "zipCode": data.zipCode,
           "duration": data.duration,
           "requestDateTime": data.requestDateTime,
@@ -111,7 +113,7 @@ import {
           "currentStatus": "REQUESTED",
           "requestOwner": userInfo.userID,
           "price": data.price,
-          "tip": data.tip
+          "tip": data.tip,
         }));
         try {
           const response = await API.graphql(

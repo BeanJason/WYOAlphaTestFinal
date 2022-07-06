@@ -6,6 +6,7 @@ import {
   Text,
   SafeAreaView,
   ImageBackground,
+  Modal
 } from "react-native";
 import { TouchableOpacity } from "react-native";
 import UserInput from "../../common/components/UserInput";
@@ -17,6 +18,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useSelector, useDispatch } from "react-redux";
 import { register, resetState } from "../../redux/authReducer";
 import { FontAwesome } from "@expo/vector-icons";
+import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete"
 
 //Provider registration page
 const ProviderRegistration = ({ navigation }) => {
@@ -41,6 +43,16 @@ const ProviderRegistration = ({ navigation }) => {
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [birthDayError, setBirthdayError] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  
+  //address variables
+  const [address, setAddress] = useState()
+  const [street, setStreet] = useState()
+  const [city, setCity] = useState()
+  const [zipCode, setZipCode] = useState()
+  const [lat, setLat] = useState()
+  const [lng, setLng] = useState()
+  const [addressError, setAddressError] = useState()
 
   //Anytime an error appears along with a message, display it on the screen
   useEffect(() => {
@@ -72,21 +84,29 @@ const ProviderRegistration = ({ navigation }) => {
   const submitForm = (data) => {
     //check if birthday is over 18
     if (new Date().getFullYear() - date.getFullYear() >= 18) {
-      data.type = "Provider";
-      data.profilePictureURL = '';
-      data.email = data.email.trim()
-      data.dateOfBirth = date.toISOString().slice(0, 10)
-      data.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1)
-      data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1)
-      data.firstName = data.firstName.trim()
-      data.lastName = data.lastName.trim()
-      data.address = data.address.trim()
-      data.city = data.city.trim()
-      try {
+      if(address && street && city && zipCode && lat && lng){
+        data.type = "Provider";
+        data.email = data.email.trim()
+        data.dateOfBirth = date.toISOString().slice(0, 10)
+        data.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1)
+        data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1)
+        data.firstName = data.firstName.trim()
+        data.lastName = data.lastName.trim()
+
+        let addressArray = {
+          street: `${address} ${street}`,
+          city: city,
+          zipCode: zipCode,
+          lat: lat,
+          lng: lng
+        };
+        data.address = JSON.stringify(addressArray);
         dispatch(register(data))
-      } catch (error) {
-        console.log(error);
+        navigation.navigate("ConfirmEmail", { name: "ConfirmEmail" });
       }
+      else{
+        setAddressError('You must include a valid address')
+       }
     } else {
       setBirthdayError("You must be 18 or older to use this app");
     }
@@ -104,6 +124,54 @@ const ProviderRegistration = ({ navigation }) => {
         source={require("../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
+          <Modal
+              visible={showModal}
+              transparent
+              animationType="slide"
+              hardwareAccelerated
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.warningModal}>
+                  <Text style={styles.modalTitle}>Select Your Address</Text>
+                  <View style={{alignItems: 'center', borderBottomWidth: 1, marginBottom: 10, alignSelf: 'center'}}>
+                    {/* Address */}
+                    <GooglePlacesAutocomplete
+                      placeholder="Address"
+                      fetchDetails={true}
+                      onPress={(data, details = null) => {
+                        setAddress(details.address_components[0].long_name)
+                        setStreet(details.address_components[1].long_name)
+                        setCity(details.address_components[2].long_name)
+                        setZipCode(details.address_components[6].long_name)
+                        setLat(details.geometry.location.lat)
+                        setLng(details.geometry.location.lng)
+                      }}
+                      query={{
+                        key: "AIzaSyAFD8BEuFIvJtQOj31rKE-i0YubHze6LS4",
+                        language: "en",
+                        components: "country:us",
+                        type: "geocode"
+                      }}
+                      minLength={3}
+                      styles={{
+                        container: {width: 320, flex: 0, marginTop: 10},
+                        textInput: {fontSize: 16, height: 50, borderRadius: 10, borderWidth: 1 },
+                        listView: { backgroundColor: "white" },
+                      }}
+                    />
+                  </View>
+                  <View style={{alignItems: 'center'}}>
+                    <TouchableOpacity
+                      onPress={() => setShowModal(false)}
+                      style={styles.modalBtn}
+                    >
+                      <Text style={styles.modalText}>Done</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+
           <Text style={styles.header2}>
             Create a provider account to start working with WYO today!
           </Text>
@@ -195,51 +263,20 @@ const ProviderRegistration = ({ navigation }) => {
               />
             </View>
 
-            {/* address */}
-            <View style={styles.field}>
-              <UserInput
-                style={styles.input}
-                icon="address-card-o"
-                location="FontAwesome"
-                name="address"
-                rules={{ required: "Address is Required" }}
-                placeholder={"Address"}
-                control={control}
-              />
-              {/* city */}
-              <UserInput
-                style={styles.input}
-                icon="location-city"
-                location="MaterialIcons"
-                name="city"
-                rules={{
-                  required: "City is Required",
-                  pattern: {
-                    value: /^[a-zA-Z ]+$/,
-                    message: "Only letters are allowed in the city name",
-                  }}}
-                placeholder={"City"}
-                control={control}
-              />
-              {/* zip code */}
-              <UserInput
-                style={{ fontSize: 16 }}
-                name="zipCode"
-                icon="location-arrow"
-                location="FontAwesome"
-                keyboardType="numeric"
-                maxLength={5}
-                rules={{
-                  required: "Zip Code is Required",
-                  pattern: {
-                    value: /\d{5}/,
-                    message: 'Zip code must be a valid 5 digit code'
-                  }
-                }}
-                placeholder={"Zip Code"}
-                control={control}
-              />
-            </View>
+           {/* Address */}
+           <TouchableOpacity
+              onPress={() => {setAddressError(''); setShowModal(true)}}
+              style={styles.field}
+            >
+              <View style={[commonStyles.inputBorder, {flexDirection: 'row', width: 350, height: 50}]}>
+                  <FontAwesome name="location-arrow" size={25} />
+                <Text style={{alignSelf: 'center', fontSize: 16, padding: 5}}>
+                  {address ? `${address} ${street} ${city} ${zipCode}` : 'Address'}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            {addressError ? <Text style={commonStyles.errorMsg}>{addressError}</Text>: <></>}
+           
 
             {/* password */}
             <View style={styles.field}>
@@ -376,6 +413,46 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Bold",
     fontSize: 25,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#00000090",
+  },
+  warningModal: {
+    width: 350,
+    height: 220,
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 25,
+    borderBottomColor: "black",
+    borderBottomWidth: 2,
+    marginBottom: 10,
+    alignSelf: "center",
+  },
+  modalText: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 17,
+    padding: 5,
+    borderBottomColor: "black",
+    borderBottomWidth: 3,
+    marginBottom: 5,
+    alignSelf: "center",
+    textAlign: "center",
+    color: 'white'
+  },
+  modalBtn: {
+    alignItems: "center",
+    width: 100,
+    height: 35,
+    backgroundColor: "black",
+    borderRadius: 8,
+  }
 });
 
 export default ProviderRegistration;

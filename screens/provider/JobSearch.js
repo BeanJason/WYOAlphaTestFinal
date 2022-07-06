@@ -128,7 +128,7 @@ const JobSearch = ({ navigation }) => {
                 <Text style={styles.helpText}>There are no available jobs currently in the selected area.</Text>
                 :(
                   <View>
-                    <Text style={styles.helpText}>There are {filteredJobList.length} available jobs in the {zipCodeSelected} area.</Text>
+                    <Text style={styles.helpText}>There are {filteredJobList.length} available job(s) in the {zipCodeSelected} area.</Text>
                     <FlatList
                     data={filteredJobList}
                     keyExtractor={(item) => item.id}

@@ -14,40 +14,47 @@ import {
   import { DataStore } from "aws-amplify";
   import { Provider } from "../../../src/models";
   import { changeUserInfo } from "../../../redux/authReducer";
+  import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete"
+  import { useState, useEffect } from "react";
+
   
   //Login screen
   const EditAddress = ({ navigation }) => {
     const { userInfo } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
-    
-    //Set variables for user input
-    const {
-      control,
-      handleSubmit,
-      formState: { errors },
-      setError,
-    } = useForm();
-    
+    const [address, setAddress] = useState()
+    const [city, setCity] = useState()
+    const [zipCode, setZipCode] = useState()
+    const [lat, setLat] = useState()
+    const [lng, setLng] = useState()
+
+
+    const [changed, setChanged] = useState(false)
+    const [addressError, setAddressError] = useState()
   
     //Submit the user input
-    const submitForm = async (data) => {
+    const submit = async () => {
+      if(changed){
         //Success
-        data.address = data.address.trim()
-        data.city = data.city.trim()
         let original = await DataStore.query(Provider, userInfo.userID);
+
+        let addressArray = {
+          street: address,
+          city: city,
+          zipCode: zipCode,
+          lat: lat,
+          lng: lng
+        };
+
         try {
             await DataStore.save(Provider.copyOf(original, updated => {
-                updated.address = data.address,
-                updated.city = data.city,
-                updated.zipCode = data.zipCode
+                updated.address = JSON.stringify(addressArray)
             }))
             let newInfo = {
               userID: original.id,
               firstName: original.firstName,
               lastName: original.lastName,
-              address: data.address,
-              city: data.city,
-              zipCode: data.zipCode,
+              address: JSON.stringify(addressArray),
               phoneNumber: original.phoneNumber,
               biography: original.biography,
               backgroundCheck: original.backgroundCheckStatus,
@@ -56,71 +63,57 @@ import {
           dispatch(changeUserInfo({userInfo: newInfo}))
           navigation.reset({ routes: [{name: 'EditAccountProvider'}]})
           navigation.navigate('EditAccountProvider', {name: 'EditAccountProvider'})
-        } catch (error) {
-            console.log(error);
-        }
+          } catch (error) {
+              console.log(error);
+          }
+      }
+      else{
+        setAddressError('No new address was selected')
+      } 
     };
   
     return (
-      <KeyboardAwareScrollView>
         <ImageBackground
           style={commonStyles.background}
           source={require("../../../assets/wyo_background.png")}
         >
           <SafeAreaView style={commonStyles.safeContainer}>
             <Text style={styles.header2}>
-              Please update your address details
+              Select your new address
             </Text>
   
             {/* address */}
-            <View style={styles.field}>
-              <UserInput
-                style={styles.input}
-                icon='address-card-o'
-                location='FontAwesome'
-                name="address"
-                rules={{ required: "Address is Required" }}
-                placeholder={'Address'}
-                control={control}
-              />
-              {/* city */}
-              <UserInput
-                style={styles.input}
-                icon='location-city'
-                location='MaterialIcons'
-                name="city"
-                rules={{
-                   required: "City is Required",
-                   pattern: {
-                     value: /^[a-zA-Z ]+$/,
-                     message: 'Only letters are allowed in the city name'
-                   }}}
-                placeholder={'City'}
-                control={control}
-              />
-              {/* zip code */}
-              <UserInput
-                style={{ fontSize: 16 }}
-                name="zipCode"
-                icon='location-arrow'
-                keyboardType="numeric"
-                location='FontAwesome'
-                maxLength={5}
-                rules={{ 
-                  required: "Zip Code is Required",
-                  pattern: {
-                    value: /\d{5}/,
-                    message: 'Zip code must be a valid 5 digit code'
-                  }
-                }}
-                placeholder={'Zip Code'}
-                control={control}
-              />
+            <View style={[styles.field, {alignItems: 'center', alignSelf: 'center'}]}>
+            <GooglePlacesAutocomplete
+                      placeholder="Address"
+                      fetchDetails={true}
+                      onPress={(data, details = null) => {
+                        setAddress(`${details.address_components[0].long_name} ${details.address_components[1].long_name}`)
+                        setCity(details.address_components[2].long_name)
+                        setZipCode(details.address_components[6].long_name)
+                        setLat(details.geometry.location.lat)
+                        setLng(details.geometry.location.lng)
+                        setChanged(true)
+                      }}
+                      query={{
+                        key: "AIzaSyAFD8BEuFIvJtQOj31rKE-i0YubHze6LS4",
+                        language: "en",
+                        components: "country:us",
+                        type: "geocode"
+                      }}
+                      minLength={3}
+                      styles={{
+                        container: {width: 320, flex: 0, marginTop: 10},
+                        textInput: {fontSize: 16, height: 50, borderRadius: 10, borderWidth: 1 },
+                        listView: { backgroundColor: "white" },
+                      }}
+                    />
             </View>
+            {addressError ? <Text style={[commonStyles.errorMsg, {alignSelf:'center'}]}>{addressError}</Text>: <></>}
   
             <View style={styles.buttonContainer}>
               <TouchableOpacity
-                onPress={handleSubmit(submitForm)}
+                onPress={() => submit()}
                 style={styles.button}
               >
                 <Text style={styles.btnText}>Change</Text>
@@ -128,7 +121,6 @@ import {
             </View>
           </SafeAreaView>
         </ImageBackground>
-      </KeyboardAwareScrollView>
     );
   };
   

@@ -45,6 +45,20 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "latitude": {
+                    "name": "latitude",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "longitude": {
+                    "name": "longitude",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "duration": {
                     "name": "duration",
                     "isArray": false,
@@ -239,20 +253,6 @@ export const schema = {
                 },
                 "address": {
                     "name": "address",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "city": {
-                    "name": "city",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "zipCode": {
-                    "name": "zipCode",
                     "isArray": false,
                     "type": "String",
                     "isRequired": true,
@@ -585,5 +585,5 @@ export const schema = {
             }
         }
     },
-    "version": "5cef01a7ffc4a775d96e5f9c5c94754c"
+    "version": "5a7d11cbf01f6150b41dcf7873676468"
 };

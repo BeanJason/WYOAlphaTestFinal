@@ -74,7 +74,12 @@ const JobCard = ({ jobInfo, type = '' }) => {
         </Text>
         <Text style={styles.generalText}>Request Owner: {ownerName}</Text>
         <Text style={styles.generalText}>Duration: {jobInfo.duration} Hrs</Text>
-        <Text style={styles.generalText}>{`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}</Text>
+        {type == 'signUp' ? 
+          <Text style={styles.generalText}>Distance: </Text>
+        :
+          <Text style={styles.generalText}>{`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}</Text>
+        }
+        
         <Text style={styles.generalText}>Date: {date}</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text style={styles.generalText}>Time: {time}</Text>

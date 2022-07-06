@@ -33,6 +33,7 @@
     "react-native": "0.68.2",
     "react-native-currency-input": "^1.0.1",
     "react-native-dropdown-picker": "^5.4.2",
+    "react-native-google-places-autocomplete": "^2.4.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-numeric-input": "^1.9.1",
     "react-native-paper": "^4.12.2",

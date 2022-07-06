@@ -72,7 +72,7 @@ const JobCreation1 = ({ navigation }) => {
       addr = JSON.parse(next)
       items.push({
         label: `${addr.street} ${addr.city} ${addr.zipCode}`,
-        value: addr.street
+        value: `${addr.street} ${addr.city} ${addr.zipCode}`
       })
     }
     items.push({
@@ -236,10 +236,12 @@ const JobCreation1 = ({ navigation }) => {
       let addr
       for(let next of userInfo.address){
         addr = JSON.parse(next)
-        if(addr.street == address){
+        if(`${addr.street} ${addr.city} ${addr.zipCode}` == address){
           data.address = addr.street
           data.city = addr.city
           data.zipCode = addr.zipCode
+          data.lat = addr.lat.toString(),
+          data.lng = addr.lng.toString()
           break;
         }
       }

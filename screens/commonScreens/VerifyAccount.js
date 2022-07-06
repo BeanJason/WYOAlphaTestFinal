@@ -12,7 +12,9 @@ import {
   import { useForm } from "react-hook-form";
   import { useDispatch, useSelector } from "react-redux";
   import { Auth } from "aws-amplify";
-  
+  import { changeUserStatus } from "../../redux/authReducer";
+  import { checkCredentials } from "../../credentials";
+
   //Login screen
   const VerifyAccount = ({ navigation }) => {
     //Set variables for user input
@@ -24,11 +26,16 @@ import {
     } = useForm();
 
     const { authUser } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
     
     //Submit the user input
     const submitForm = async (data) => {
      try {
         await Auth.signIn({username: authUser.email, password: data.password})
+        const newData = await checkCredentials();
+        if(newData.authUser != null && newData.userInfo != null){
+          dispatch(changeUserStatus({authUser: newData.authUser, userInfo: newData.userInfo}))
+        }
         if(authUser['custom:type'] == 'Provider'){
           navigation.navigate('EditAccountProvider',{name: 'EditAccountProvider'})
         }
