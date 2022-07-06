@@ -12,19 +12,21 @@ import Spinner from "../../common/components/Spinner";
 import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useEffect, useState } from "react";
-import { API, DataStore, graphqlOperation } from "aws-amplify";
+import { API, DataStore, graphqlOperation, Storage } from "aws-amplify";
 import { refundPayment } from "../../src/graphql/mutations";
 import { Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch } from "react-redux";
 import { addOrRemoveJob } from "../../redux/jobsReducer";
 import { decrementZipCodeCount } from "../../common/functions";
+import ProfilePicture from "../../common/components/ProfilePicture";
 
 //Login screen
 const UserJobInfo = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { jobInfo } = route.params;
   const [mainProvider, setMainProvider] = useState('')
+  const [providerImage, setProviderImage] = useState()
   const [backupProviders, setBackupProviders] = useState([])
   const [canCancel, setCanCancel] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -64,6 +66,10 @@ const UserJobInfo = ({ route, navigation }) => {
       await DataStore.query(Provider, provider => provider.id("eq", jobInfo.mainProvider)).then((providerFound) => {
         setMainProvider(`${providerFound[0].firstName} ${providerFound[0].lastName}`);
       });
+      let img = await Storage.get(jobInfo.mainProvider + '.png')
+      if(img){
+        setProviderImage(img)
+      }
     }
     //set backup providers if available
     if(jobInfo.backupProviders && jobInfo.backupProviders.length != 0){
@@ -195,7 +201,15 @@ const UserJobInfo = ({ route, navigation }) => {
             <Text style={styles.generalText}>Scheduled for {date}</Text>
             <Text style={[styles.generalText, {marginBottom: 30}]}>{time}</Text>
             {jobInfo.jobDescription ? <Text style={[styles.generalText, {marginBottom: 30}]}>Job Description: {jobInfo.jobDescription}</Text> : <></>}
-            <Text style={[styles.generalText, {marginBottom: 10}]}>Main Provider: {mainProvider ? mainProvider : 'None'}</Text>
+            <Text style={[styles.generalText, {marginBottom: 10, borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Main Provider</Text>
+              {mainProvider ? (
+                <View style={{flexDirection: 'row',alignItems: 'center'}}>
+                  <ProfilePicture imageUrl={providerImage} name={mainProvider} size={50} />
+                  <Text style={[styles.generalText, {marginLeft: 10}]}>{mainProvider}</Text>
+                </View>
+              ): (
+                  <Text style={styles.generalText}>none</Text>
+              )}            
             {backupProviders.length == 0 ? <></> : (
               <View>
                 <Text style={[styles.generalText, {borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Backup Providers</Text>

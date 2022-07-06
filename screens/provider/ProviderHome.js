@@ -17,6 +17,7 @@ import { initializeJobs } from "../../redux/jobsProviderReducer";
 import { TouchableOpacity } from "react-native-web";
 import { Ionicons } from '@expo/vector-icons'; 
 import {RadioButton} from "react-native-paper"
+import ProfilePicture from "../../common/components/ProfilePicture";
 
 
 
@@ -69,9 +70,10 @@ const ProviderHome = ({ navigation }) => {
       source={require("../../assets/wyo_background.png")}
     >
       <SafeAreaView style={commonStyles.safeContainer}>
-        <View style={styles.head}>
-          <Text style={styles.name}>Welcome Provider {userInfo.firstName}</Text>
-        </View>
+          <View style={[styles.head, {flexDirection: 'row', alignItems:'center'}]}>
+            <ProfilePicture imageUrl={userInfo.profilePicture} name={`${userInfo.firstName}  ${userInfo.lastName}`} size={50}/>
+            <Text style={styles.name}>Welcome Provider {userInfo.firstName}</Text>
+          </View>
         <View>
           <Text style={[styles.headerText, {textAlign: 'center'}]}>Active jobs</Text>
         </View>

@@ -50,7 +50,8 @@ import {
               zipCode: data.zipCode,
               phoneNumber: original.phoneNumber,
               biography: original.biography,
-              backgroundCheck: original.backgroundCheckStatus
+              backgroundCheck: original.backgroundCheckStatus,
+              profilePicture: original.profilePictureURL
           }
           dispatch(changeUserInfo({userInfo: newInfo}))
           navigation.reset({ routes: [{name: 'EditAccountProvider'}]})

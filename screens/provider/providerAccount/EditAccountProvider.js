@@ -5,6 +5,7 @@ import {
   View,
   ImageBackground,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import { TouchableOpacity } from "react-native";
 import UserInput from "../../../common/components/UserInput";
@@ -12,20 +13,22 @@ import { commonStyles } from "../../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { checkCredentials } from "../../../credentials";
 import { changeUserStatus, changeUserInfo } from "../../../redux/authReducer";
 import { Provider } from "../../../src/models";
 import { createToast } from "../../../common/components/Toast";
-import { DataStore } from "aws-amplify";
+import { DataStore, Storage } from "aws-amplify";
+import * as ImagePicker from "expo-image-picker"
+import ProfilePicture from "../../../common/components/ProfilePicture";
 
 
 
-//Login screen
 const EditAccountProvider = ({ navigation }) => {
     const dispatch = useDispatch();
     const { userInfo } = useSelector((state) => state.auth);
+    const [imageUploading, setImageUploading] = useState(false)
 
     const {
       control,
@@ -51,6 +54,7 @@ const EditAccountProvider = ({ navigation }) => {
     };
 
 
+
     useEffect(() => {
       getUpdatedInfo()
     }, []);
@@ -74,7 +78,8 @@ const EditAccountProvider = ({ navigation }) => {
             zipCode: original.zipCode,
             phoneNumber: data.phoneNumber,
             biography: original.biography,
-            backgroundCheck: original.backgroundCheckStatus
+            backgroundCheck: original.backgroundCheckStatus,
+            profilePicture: original.profilePictureURL
         }
         dispatch(changeUserInfo({userInfo: newInfo}))
         createToast('Your phone number has been changed!')
@@ -105,7 +110,8 @@ const EditAccountProvider = ({ navigation }) => {
             zipCode: original.zipCode,
             phoneNumber: original.phoneNumber,
             biography: data.biography,
-            backgroundCheck: original.backgroundCheckStatus
+            backgroundCheck: original.backgroundCheckStatus,
+            profilePicture: original.profilePictureURL
         }
         dispatch(changeUserInfo({userInfo: newInfo}))
         createToast('Your biography has been changed!')
@@ -118,20 +124,121 @@ const EditAccountProvider = ({ navigation }) => {
       } 
     }
 
+
+    // Profile picture functions
+    //get camera permissions
+    const getPermissions = async() => {
+      if(Platform.OS == 'ios' || Platform.OS == 'android'){
+        const libraryResponse = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const photoResponse = await ImagePicker.requestCameraPermissionsAsync();
+
+        if(libraryResponse.status !== 'granted' || photoResponse.status !== 'granted'){
+          return false
+        }
+        return true
+      }
+    }
+    //allow user to pick an image from gallery
+    const pickImage = async() => {
+      if(await getPermissions()){
+        setImageUploading(true)
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: "Images",
+          aspect: [4, 3],
+          quality: 1,
+        });
+        await handleImagePicked(result)
+      }
+      else{
+        createToast("Sorry, we need camera permissions to make this work!");
+      }
+    }
+
+    //create blob from image uri
+    const fetchImageFromUri = async (uri) => {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      return blob;
+    };
+
+    const uploadImage = async (name, image) => {
+      console.log('attempting to upload image to s3');
+      const pictureUrl = await Storage.put(name +'.png', image, {
+        contentType: "image/jpeg"
+      })
+      if(pictureUrl){
+        let original = await DataStore.query(Provider, userInfo.userID);
+        try {
+          await DataStore.save(Provider.copyOf(original, updated => {
+            updated.profilePictureURL = pictureUrl.key
+        }))
+        let newPicture = await Storage.get(pictureUrl.key)
+        let newInfo = {
+          userID: original.id,
+          firstName: original.firstName,
+          lastName: original.lastName,
+          address: original.address,
+          city: original.city,
+          zipCode: original.zipCode,
+          phoneNumber: original.phoneNumber,
+          biography: original.biography,
+          backgroundCheck: original.backgroundCheckStatus,
+          profilePicture: newPicture
+          }
+          dispatch(changeUserInfo({userInfo: newInfo}))
+          createToast('Your profile picture has been changed')
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+    }
+
+    //handle image once chosen
+    const handleImagePicked = async(pickerResult) => {
+      try {
+        if (pickerResult.cancelled) {
+          createToast("Upload cancelled");
+          setImageUploading(false)
+          return;
+        } else {
+          const img = await fetchImageFromUri(pickerResult.uri);
+          await uploadImage(userInfo.userID, img);
+        }
+      } catch (e) {
+        console.log(e);
+        createToast("Upload failed");
+        setImageUploading(false)
+      }
+    }
+
   return (
     <KeyboardAwareScrollView>
       <ImageBackground
-        style={commonStyles.background}
+        style={[commonStyles.background, {height: 1000}]}
         source={require("../../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
-          <Text style={styles.header1}>Edit account information</Text>
-          <View style = {styles.inputContainer}>
-          <View style={[styles.field ,{flexDirection: 'row', marginBottom: 20}]}>
-            <Text style={[styles.generalText, {marginRight: 20}]}>Background Check Status:</Text>
-            {userInfo.backgroundCheck ? <FontAwesome style={{color: 'green'}} name={'check-circle'} size={25} /> 
-            : <FontAwesome style={{color: 'red'}} name={'times-circle'} size={25} />}
+          <Text style={styles.header1}>Account Information</Text>
+          {/* Profile Picture */}
+          <View style={[{flexDirection: 'row', marginBottom: 20, justifyContent: 'center'}]}>
+          
+            <TouchableOpacity onPress={pickImage} disabled={imageUploading}>
+              <ProfilePicture imageUrl={userInfo.profilePicture} loading={imageUploading} name={`${userInfo.firstName}  ${userInfo.lastName}`} size={150}/>
+            </TouchableOpacity>
+
+            <View style={{justifyContent: 'center', padding: 10}}>
+              <Text style={{fontSize: 26, fontFamily: 'Montserrat-Bold'}}>{userInfo.firstName} {userInfo.lastName}</Text>
+              <View style={{flexDirection: 'row', marginTop: 15}}>
+                <Text style={[styles.generalText, {marginRight: 5}]}>Background Check:</Text>
+                {userInfo.backgroundCheck ? <FontAwesome style={{color: 'green'}} name={'check-circle'} size={25} /> 
+                : <FontAwesome style={{color: 'red'}} name={'times-circle'} size={25} />}
+              </View>
+            </View>
           </View>
+
+          {/* Information */}
+          <View style = {styles.inputContainer}>
             <Text style={styles.generalText}>Edit your phone number</Text>
             <View style={styles.field}>
               {/* Phone number */}

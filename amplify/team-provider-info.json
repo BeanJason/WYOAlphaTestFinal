@@ -22,11 +22,15 @@
         },
         "StripeWebhook": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/StripeWebhook-73756c6c656e6f446533-build.zip"
+          "s3Key": "amplify-builds/StripeWebhook-74795955694d4957346c-build.zip"
         },
         "RefundPayment": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/RefundPayment-4b386f447a4a66564c4b-build.zip"
+          "s3Key": "amplify-builds/RefundPayment-36584a56335741724856-build.zip"
+        },
+        "ResizeFunction": {
+          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
+          "s3Key": "amplify-builds/ResizeFunction-6f33744964374f633276-build.zip"
         }
       }
     }

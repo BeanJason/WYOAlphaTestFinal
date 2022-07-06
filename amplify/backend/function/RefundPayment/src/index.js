@@ -92,24 +92,19 @@ exports.handler = async (event) => {
     } else {
       //if not accepted
       if (jobInfo.Item.currentStatus == "REQUESTED") {
-        if(today.toLocaleDateString() >= requestDate.toLocaleDateString()){
-            //check if two hours or less
-            if((today.getHours() - requestDate.getHours()) <= 2){
-                //refund
-                const refund = await stripe.refunds.create({
-                    payment_intent: jobInfo.Item.paymentID
-                })
-                if(refund.status == 'succeeded'){
-                  try {
-                    await deleteItem(arguments.jobID);
-                    return true;
-                  } catch (error) {
-                    console.log(error);
-                  }
-                }
-                return false;
+          //refund
+          const refund = await stripe.refunds.create({
+              payment_intent: jobInfo.Item.paymentID
+          })
+          if(refund.status == 'succeeded'){
+            try {
+              await deleteItem(arguments.jobID);
+              return true;
+            } catch (error) {
+              console.log(error);
             }
-        }
+          }
+          return false;
       }
     }
   }

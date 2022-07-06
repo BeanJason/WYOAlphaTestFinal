@@ -268,7 +268,7 @@ export const schema = {
                 "profilePictureURL": {
                     "name": "profilePictureURL",
                     "isArray": false,
-                    "type": "AWSURL",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -585,5 +585,5 @@ export const schema = {
             }
         }
     },
-    "version": "a3434b8e94ee68603dd36c5e2cffe8da"
+    "version": "5cef01a7ffc4a775d96e5f9c5c94754c"
 };

@@ -1,4 +1,4 @@
-import { DataStore, Auth } from "aws-amplify"
+import { DataStore, Auth, Storage } from "aws-amplify"
 import {User, Provider} from "./src/models"
 
 export async function checkCredentials(){
@@ -64,18 +64,23 @@ const getProviderData = async (attributes) => {
         const userData = await DataStore.query(Provider, user => user.subID("eq", attributes.sub))
         if(userData[0] == null || userData[0] == undefined){
             return null
-           }
-           const userInfo = {
-                userID: userData[0].id,
-                firstName: userData[0].firstName,
-                lastName: userData[0].lastName,
-                address: userData[0].address,
-                city: userData[0].city,
-                zipCode: userData[0].zipCode,
-                phoneNumber: userData[0].phoneNumber,
-                biography: userData[0].biography,
-                backgroundCheck: userData[0].backgroundCheckStatus
-           }
+        }
+        let pictureUrl
+        if(userData[0].profilePictureURL != null && userData[0].profilePictureURL != ''){
+            pictureUrl = await Storage.get(userData[0].id + '.png')
+        }
+        const userInfo = {
+            userID: userData[0].id,
+            firstName: userData[0].firstName,
+            lastName: userData[0].lastName,
+            address: userData[0].address,
+            city: userData[0].city,
+            zipCode: userData[0].zipCode,
+            phoneNumber: userData[0].phoneNumber,
+            biography: userData[0].biography,
+            backgroundCheck: userData[0].backgroundCheckStatus,
+            profilePicture: pictureUrl ? pictureUrl : ''
+        }
         return userInfo
      } catch (error) {
          console.log(error);
