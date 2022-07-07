@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Dimensions, Pressable } from "react-native";
 import { useSelector } from "react-redux";
 import { User } from "../../src/models";
+import haversine from "haversine"
 
 
 const JobCard = ({ jobInfo, type = '' }) => {
@@ -74,17 +75,13 @@ const JobCard = ({ jobInfo, type = '' }) => {
         </Text>
         <Text style={styles.generalText}>Request Owner: {ownerName}</Text>
         <Text style={styles.generalText}>Duration: {jobInfo.duration} Hrs</Text>
-        {type == 'signUp' ? 
-          <Text style={styles.generalText}>Distance: </Text>
-        :
-          <Text style={styles.generalText}>{`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}</Text>
-        }
-        
+        {type != 'signUp' ? <Text style={styles.generalText}>Address: {`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}</Text>: <></> }
         <Text style={styles.generalText}>Date: {date}</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text style={styles.generalText}>Time: {time}</Text>
           <Text style={styles.generalText}>Num {numOfProvider}</Text>
         </View>
+        {type == 'signUp' ? <Text style={[styles.generalText, {marginTop: 20}]}>~Distance: {jobInfo.distance} mi.</Text> : <></>}
       </View>
       </Pressable>
   );

@@ -27,7 +27,7 @@ const moment = extendMoment(Moment);
 const JobSignUp = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { activeJobs } = useSelector((state) => state.providerJobs);
-  const { jobInfo } = route.params;
+  const { jobInfo, distance } = route.params;
   const [mainProvider, setMainProvider] = useState("");
   const [backupProviders, setBackupProviders] = useState([]);
   const [canSignUp, setCanSignUp] = useState(true);
@@ -265,9 +265,9 @@ const JobSignUp = ({ route, navigation }) => {
               </TouchableOpacity>
             </View>
             <Text style={styles.title}>{jobInfo.jobTitle}</Text>
-            <Text style={styles.generalText}>Request Owner: {ownerName}</Text>
-            <Text style={styles.generalText}>Duration: {jobInfo.duration}</Text>
-            <Text style={styles.generalText}>City: {jobInfo.city} {jobInfo.zipCode}</Text>
+              <Text style={styles.generalText}>Request Owner: {ownerName}</Text>
+              <Text style={styles.generalText}>Duration: {jobInfo.duration}</Text>
+            <Text style={styles.generalText}>Location: {jobInfo.city} {jobInfo.zipCode}</Text>
             <Text style={styles.generalText}>Scheduled for {date}</Text>
             <Text style={[styles.generalText, {marginBottom: 30}]}>{time}</Text>
             {jobInfo.jobDescription ? (

@@ -20,6 +20,7 @@ import { initializeJobs } from "../../redux/jobsReducer";
 import { API, DataStore, graphqlOperation } from "aws-amplify";
 import { Global, Job } from "../../src/models";
 import * as queries from "../../src/graphql/queries"
+import haversine from "haversine"
 
 
 
@@ -29,6 +30,7 @@ const JobSearch = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [filteredJobList, setFilteredJobList] = useState([]);
   const [sortDirection, setSortDirection] = useState('ascend')
+  const [startingLocation, setStartingLocation] = useState()
 
 
   //search vars
@@ -38,6 +40,15 @@ const JobSearch = ({ navigation }) => {
 
 
   //initial setup
+  const initLocation = () => {
+    let addr = JSON.parse(userInfo.address)
+    let start = {
+      latitude: parseFloat(addr.lat),
+      longitude: parseFloat(addr.lng)
+    }
+    setStartingLocation(start)
+  }
+
   const setup = async () => {
     let filter = {
        count: {ne: 0}
@@ -57,9 +68,20 @@ const JobSearch = ({ navigation }) => {
   }
   
   useEffect(() => {
+    initLocation()
     setup()
     setLoading(false)
   }, []);
+
+  const getDistanceToJob = (jobList) => {
+    let endLocation = {}
+    for(let next of jobList){
+      endLocation.latitude = parseFloat(next.latitude)
+      endLocation.longitude = parseFloat(next.longitude)
+      next.distance = haversine(startingLocation, endLocation, {unit: 'mile'}).toFixed(2)
+    }
+    return jobList
+  }
 
   useEffect(() => {
     if(zipCodeSelected){
@@ -81,7 +103,9 @@ const JobSearch = ({ navigation }) => {
             ]
           }
           const response = await API.graphql({query: queries.listJobs, variables: {filter: filter}})
-          const all = response.data.listJobs.items
+          let all = response.data.listJobs.items
+          all = getDistanceToJob(all)
+          all.sort((a, b) => a.distance - b.distance)
           setFilteredJobList(all)
       }
       setup()
@@ -132,7 +156,7 @@ const JobSearch = ({ navigation }) => {
                     <FlatList
                     data={filteredJobList}
                     keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => <JobCard jobInfo={item} type={'signUp'} />}
+                    renderItem={({ item }) => <JobCard jobInfo={item} type={'signUp'} startLocation={startingLocation}/>}
                   />
                   </View>
                 )}
