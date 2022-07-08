@@ -52,11 +52,7 @@ async function deleteItem(id) {
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 exports.handler = async (event) => {
-  const { typeName, arguments } = event;
-  if (typeName != "Mutation") {
-    throw new Error("Request is not a mutation");
-  }
-
+  const { arguments } = event;
   if (arguments?.isCancel == null) {
     throw new Error("Cancellation check is required");
   }
@@ -72,8 +68,6 @@ exports.handler = async (event) => {
   }
   console.log(jobInfo);
   if (jobInfo) {
-    let today = new Date();
-    let requestDate = new Date(jobInfo.Item.requestDateTime);
     //if cancelled
     if (arguments.isCancel) {
         //refund

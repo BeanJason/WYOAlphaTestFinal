@@ -24,6 +24,7 @@ const AddAddress = ({ navigation }) => {
   const [address, setAddress] = useState()
   const [city, setCity] = useState()
   const [zipCode, setZipCode] = useState()
+  const [state, setState] = useState()
   const [lat, setLat] = useState()
   const [lng, setLng] = useState()
 
@@ -34,35 +35,40 @@ const AddAddress = ({ navigation }) => {
   const submit = async () => {
     //Success
     if(changed){
-      let original = await DataStore.query(User, userInfo.userID);
-      let newAddr = {
-        street: address,
-        city: city,
-        zipCode: zipCode,
-        lat: lat,
-        lng: lng
-      };
-      let list = Array.from(original.address);
-      list.push(JSON.stringify(newAddr));
-      try {
-        await DataStore.save(
-          User.copyOf(original, (updated) => {
-            updated.address.push(JSON.stringify(newAddr));
-          })
-        );
-        let newInfo = {
-          userID: original.id,
-          firstName: original.firstName,
-          lastName: original.lastName,
-          address: list,
-          phoneNumber: original.phoneNumber,
-          contactMethod: original.contactMethod,
+      if(state != 'Michigan'){
+        setAddressError('Your address must be in the state of Michigan')
+      }
+      else{
+        let original = await DataStore.query(User, userInfo.userID);
+        let newAddr = {
+          street: address,
+          city: city,
+          zipCode: zipCode,
+          lat: lat,
+          lng: lng
         };
-        dispatch(changeUserInfo({ userInfo: newInfo }));
-        navigation.reset({ routes: [{ name: "EditAccountUser" }] });
-        navigation.navigate("EditAccountUser", { name: "EditAccountUser" });
-      } catch (error) {
-        console.log(error);
+        let list = Array.from(original.address);
+        list.push(JSON.stringify(newAddr));
+        try {
+          await DataStore.save(
+            User.copyOf(original, (updated) => {
+              updated.address.push(JSON.stringify(newAddr));
+            })
+          );
+          let newInfo = {
+            userID: original.id,
+            firstName: original.firstName,
+            lastName: original.lastName,
+            address: list,
+            phoneNumber: original.phoneNumber,
+            contactMethod: original.contactMethod,
+          };
+          dispatch(changeUserInfo({ userInfo: newInfo }));
+          navigation.reset({ routes: [{ name: "EditAccountUser" }] });
+          navigation.navigate("EditAccountUser", { name: "EditAccountUser" });
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
     else{
@@ -96,6 +102,7 @@ const AddAddress = ({ navigation }) => {
                 );
                 setCity(details.address_components[2].long_name);
                 setZipCode(details.address_components[6].long_name);
+                setState(details.address_components[4].long_name)
                 setLat(details.geometry.location.lat);
                 setLng(details.geometry.location.lng);
                 setChanged(true);

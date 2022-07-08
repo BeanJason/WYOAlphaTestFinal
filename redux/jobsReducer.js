@@ -18,25 +18,26 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
     const {userID} = data;
     try {
         let response = await DataStore.query(Job, job => job.requestOwner("eq", userID))
-        let filteredArray = getUnacceptedJobs(response.filter((job) => job.currentStatus == "REQUESTED"))
-        if(filteredArray.length != 0){
-            let refundStatus
-            for(let job of filteredArray){
-                //refund any unaccepted jobs
-                try {
-                    refundStatus = await API.graphql( graphqlOperation(refundPayment, {
-                          isCancel: false,
-                          jobID: job.id
-                        })
-                    )
-                    if(refundStatus){
-                       response = response.filter((j) => j.id != job.id)
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-        }
+        //REMOVE: NOT NEEDED BECAUSE THERE IS AUTO REFUNDS
+        // let filteredArray = getUnacceptedJobs(response.filter((job) => job.currentStatus == "REQUESTED"))
+        // if(filteredArray.length != 0){
+        //     let refundStatus
+        //     for(let job of filteredArray){
+        //         //refund any unaccepted jobs
+        //         try {
+        //             refundStatus = await API.graphql( graphqlOperation(refundPayment, {
+        //                   isCancel: false,
+        //                   jobID: job.id
+        //                 })
+        //             )
+        //             if(refundStatus){
+        //                response = response.filter((j) => j.id != job.id)
+        //             }
+        //         } catch (error) {
+        //             console.log(error);
+        //         }
+        //     }
+        // }
         return {allJobs: response}
     } catch (error) {
         return thunkAPI.rejectWithValue('Error getting job list ' + error.message)

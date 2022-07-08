@@ -12,16 +12,18 @@ import Spinner from "../../common/components/Spinner";
 import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useEffect, useState } from "react";
-import { API, DataStore, graphqlOperation } from "aws-amplify";
-import { Job, Provider, User } from "../../src/models";
+import { DataStore} from "aws-amplify";
+import { Job, Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
+import MapView, {Marker}  from "react-native-maps"
+import Geocoder from "react-native-geocoding";
 
 //Login screen
 const ServiceView = ({ route, navigation }) => {
   const dispatch = useDispatch();
-  const { jobInfo, owner } = route.params;
+  let { jobInfo, owner } = route.params;
   const { userInfo } = useSelector((state) => state.auth);
 
   const [mainProvider, setMainProvider] = useState('')
@@ -32,6 +34,10 @@ const ServiceView = ({ route, navigation }) => {
   const [startCancel, setStartCancel] = useState(false)
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
+  const [lat, setLat] = useState()
+  const [lng, setLng] = useState()
+  const [allowCheckIn, setAllowCheckIn] = useState(false)
+  const [allowCheckOut, setAllowCheckOut] = useState(false)
 
   const getDateFormat = () => {
     let formatDate = new Date(jobInfo.requestDateTime)
@@ -48,6 +54,18 @@ const ServiceView = ({ route, navigation }) => {
     }
     setDate(formatDate.toLocaleDateString())
     setTime(`from ${hours}:${min}${amOrPm}-${durationHour}:${min}${durationAmOrPm}`)
+
+    //check in btn?
+    let today = new Date()
+    today.setDate(today.getDate() + 8) //testing line
+    if(today.toLocaleDateString() == formatDate.toLocaleDateString()){
+      if(jobInfo.checkInTime){
+        setAllowCheckOut(true)
+      }
+      else{
+        setAllowCheckIn(true)
+      }
+    }
   }
 
   const getBackupProviders = () => {
@@ -83,11 +101,27 @@ const ServiceView = ({ route, navigation }) => {
   }
 
   const checkIn = async () => {
-    console.log('check in');
+    const original = await DataStore.query(Job, jobInfo.id)
+    let today = new Date()
+    await DataStore.save(Job.copyOf(original, updated => {
+      updated.checkInTime = today.toString()
+    }))
+    createToast('You have checked in. Please do not forget to check out after the job is complete')
+    jobInfo.checkInTime = today.toString()
+    setAllowCheckIn(false)
+    setAllowCheckOut(true)
   }
 
   const checkOut = async () => {
-    console.log('check out');
+    const original = await DataStore.query(Job, jobInfo.id)
+    let today = new Date()
+    await DataStore.save(Job.copyOf(original, updated => {
+      updated.checkOutTime = today.toString()
+    }))
+    createToast('You have successfully checked out of the job')
+    jobInfo.checkOutTime = today.toString()
+    setAllowCheckIn(false)
+    setAllowCheckOut(false)
   }
 
   const cancelJob = async () => {
@@ -150,12 +184,28 @@ const ServiceView = ({ route, navigation }) => {
     
   }
 
-  
+  //get coordinates by address
+  const setCoordinatesForMap = async () => {
+    console.log('geocoder');
+    Geocoder.init('AIzaSyAFD8BEuFIvJtQOj31rKE-i0YubHze6LS4', {language: 'en'})
+    if(Geocoder.isInit){
+      const response = await Geocoder.from(`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`)
+      console.log(response.results[0].geometry.location);
+      let newLat = response.results[0].geometry.location.lat
+      let newLng = response.results[0].geometry.location.lng
+      setLat(newLat)
+      setLng(newLng)
+      setLoading(false)
+    }
+  }
   
   useEffect(() => {
     getDateFormat()
     getProviders()
     setCanCancel(true)
+    setAllowCheckOut(jobInfo.checkInTime)
+    //Testing
+    // setCoordinatesForMap()
     setLoading(false)
   },[])
 
@@ -168,7 +218,7 @@ const ServiceView = ({ route, navigation }) => {
   return (
     <KeyboardAwareScrollView>
       <ImageBackground
-        style={commonStyles.background}
+        style={[commonStyles.background, {height: 1100}]}
         source={require("../../assets/wyo_background.png")}>
         <SafeAreaView style={commonStyles.safeContainer}>
           {/* MODAL */}
@@ -253,18 +303,49 @@ const ServiceView = ({ route, navigation }) => {
             )}
           </View>
           <View style={styles.jobContainer}>
-            <Text style={[styles.title, {textAlign: 'center', alignSelf: 'center'}]}>Map</Text>
-          </View>
-          <View style={{alignItems: 'center'}}>
             {/* Buttons */}
-            <TouchableOpacity
+            <View style={{alignItems: 'flex-end'}}>
+            {allowCheckIn ? (
+              <TouchableOpacity
               onPress={() => checkIn()}
               style={styles.button}
               >
               <Text style={styles.btnText}>Check In</Text> 
-            </TouchableOpacity>
+              </TouchableOpacity>
+            ): <></>}
+            {allowCheckOut ? (
+              <TouchableOpacity
+              onPress={() => checkOut()}
+              style={styles.button}
+              >
+              <Text style={styles.btnText}>Check Out</Text> 
+              </TouchableOpacity>
+            ): <></>}
           </View>
 
+          {/* Map */}
+            <Text style={[styles.title, {textAlign: 'center', alignSelf: 'center'}]}>Map</Text>
+            <Text style={[styles.generalText, {marginBottom: 10, textAlign: 'center'}]}>Click the marker on the map to open up directions on your maps application</Text>
+            <MapView
+              style={{width: '100%', height: 300}}
+              region={{
+                latitude: parseFloat(jobInfo?.latitude),
+                longitude: parseFloat(jobInfo?.longitude),
+                latitudeDelta: 0.0822,
+                longitudeDelta: 0.0421,
+              }}
+            >
+              <Marker
+                title="Destination"
+                coordinate={{
+                  latitude: parseFloat(jobInfo?.latitude),
+                  longitude: parseFloat(jobInfo?.longitude
+                  )
+                }}
+              />
+
+            </MapView>
+          </View>
         </SafeAreaView>
       </ImageBackground>
     </KeyboardAwareScrollView>

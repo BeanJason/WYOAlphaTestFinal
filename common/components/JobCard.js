@@ -3,7 +3,7 @@ import { DataStore } from "aws-amplify";
 import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Dimensions, Pressable } from "react-native";
 import { useSelector } from "react-redux";
-import { User } from "../../src/models";
+import { Job, User } from "../../src/models";
 import haversine from "haversine"
 
 
@@ -22,7 +22,8 @@ const JobCard = ({ jobInfo, type = '' }) => {
       }
       else if(type == 'service'){
         const owner = await DataStore.query(User, jobInfo.requestOwner)
-        navigation.navigate('ServiceView', {name: 'ServiceView', jobInfo, owner})
+        const updatedJob = await DataStore.query(Job, jobInfo.id)
+        navigation.navigate('ServiceView', {name: 'ServiceView', jobInfo: updatedJob, owner})
       }
       else{
         navigation.navigate('ProviderJobInfo', {name: 'ProviderJobInfo', jobInfo})

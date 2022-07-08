@@ -106,6 +106,27 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "AutomaticRefunds": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "RefundPayment",
+          "attributes": [
+            "Name"
+          ]
+        },
+        {
+          "category": "api",
+          "resourceName": "WhileYoureOut",
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ]
+        }
+      ]
     }
   },
   "storage": {

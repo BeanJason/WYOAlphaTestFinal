@@ -25,6 +25,7 @@ import {
     const [address, setAddress] = useState()
     const [city, setCity] = useState()
     const [zipCode, setZipCode] = useState()
+    const [state, setState] = useState()
     const [lat, setLat] = useState()
     const [lng, setLng] = useState()
 
@@ -35,37 +36,42 @@ import {
     //Submit the user input
     const submit = async () => {
       if(changed){
-        //Success
-        let original = await DataStore.query(Provider, userInfo.userID);
-
-        let addressArray = {
-          street: address,
-          city: city,
-          zipCode: zipCode,
-          lat: lat,
-          lng: lng
-        };
-
-        try {
-            await DataStore.save(Provider.copyOf(original, updated => {
-                updated.address = JSON.stringify(addressArray)
-            }))
-            let newInfo = {
-              userID: original.id,
-              firstName: original.firstName,
-              lastName: original.lastName,
-              address: JSON.stringify(addressArray),
-              phoneNumber: original.phoneNumber,
-              biography: original.biography,
-              backgroundCheck: original.backgroundCheckStatus,
-              profilePicture: original.profilePictureURL
-          }
-          dispatch(changeUserInfo({userInfo: newInfo}))
-          navigation.reset({ routes: [{name: 'EditAccountProvider'}]})
-          navigation.navigate('EditAccountProvider', {name: 'EditAccountProvider'})
-          } catch (error) {
-              console.log(error);
-          }
+        if(state != 'Michigan'){
+          setAddressError('Your address must be in the state of Michigan')
+        }
+        else{
+          //Success
+          let original = await DataStore.query(Provider, userInfo.userID);
+  
+          let addressArray = {
+            street: address,
+            city: city,
+            zipCode: zipCode,
+            lat: lat,
+            lng: lng
+          };
+  
+          try {
+              await DataStore.save(Provider.copyOf(original, updated => {
+                  updated.address = JSON.stringify(addressArray)
+              }))
+              let newInfo = {
+                userID: original.id,
+                firstName: original.firstName,
+                lastName: original.lastName,
+                address: JSON.stringify(addressArray),
+                phoneNumber: original.phoneNumber,
+                biography: original.biography,
+                backgroundCheck: original.backgroundCheckStatus,
+                profilePicture: original.profilePictureURL
+            }
+            dispatch(changeUserInfo({userInfo: newInfo}))
+            navigation.reset({ routes: [{name: 'EditAccountProvider'}]})
+            navigation.navigate('EditAccountProvider', {name: 'EditAccountProvider'})
+            } catch (error) {
+                console.log(error);
+            }
+        }
       }
       else{
         setAddressError('No new address was selected')
@@ -91,6 +97,7 @@ import {
                         setAddress(`${details.address_components[0].long_name} ${details.address_components[1].long_name}`)
                         setCity(details.address_components[2].long_name)
                         setZipCode(details.address_components[6].long_name)
+                        setState(details.address_components[4].long_name)
                         setLat(details.geometry.location.lat)
                         setLng(details.geometry.location.lng)
                         setChanged(true)

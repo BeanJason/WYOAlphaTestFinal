@@ -50,6 +50,7 @@ const ProviderRegistration = ({ navigation }) => {
   const [street, setStreet] = useState()
   const [city, setCity] = useState()
   const [zipCode, setZipCode] = useState()
+  const [state, setState] = useState()
   const [lat, setLat] = useState()
   const [lng, setLng] = useState()
   const [addressError, setAddressError] = useState()
@@ -85,24 +86,29 @@ const ProviderRegistration = ({ navigation }) => {
     //check if birthday is over 18
     if (new Date().getFullYear() - date.getFullYear() >= 18) {
       if(address && street && city && zipCode && lat && lng){
-        data.type = "Provider";
-        data.email = data.email.trim()
-        data.dateOfBirth = date.toISOString().slice(0, 10)
-        data.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1)
-        data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1)
-        data.firstName = data.firstName.trim()
-        data.lastName = data.lastName.trim()
-
-        let addressArray = {
-          street: `${address} ${street}`,
-          city: city,
-          zipCode: zipCode,
-          lat: lat,
-          lng: lng
-        };
-        data.address = JSON.stringify(addressArray);
-        dispatch(register(data))
-        navigation.navigate("ConfirmEmail", { name: "ConfirmEmail" });
+        if(state != 'Michigan'){
+          setAddressError('Your address must be in the state of Michigan')
+        }
+        else{
+          data.type = "Provider";
+          data.email = data.email.trim()
+          data.dateOfBirth = date.toISOString().slice(0, 10)
+          data.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1)
+          data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1)
+          data.firstName = data.firstName.trim()
+          data.lastName = data.lastName.trim()
+  
+          let addressArray = {
+            street: `${address} ${street}`,
+            city: city,
+            zipCode: zipCode,
+            lat: lat,
+            lng: lng
+          };
+          data.address = JSON.stringify(addressArray);
+          dispatch(register(data))
+          navigation.navigate("ConfirmEmail", { name: "ConfirmEmail" });
+        }
       }
       else{
         setAddressError('You must include a valid address')
@@ -143,6 +149,7 @@ const ProviderRegistration = ({ navigation }) => {
                         setStreet(details.address_components[1].long_name)
                         setCity(details.address_components[2].long_name)
                         setZipCode(details.address_components[6].long_name)
+                        setState(details.address_components[4].long_name)
                         setLat(details.geometry.location.lat)
                         setLng(details.geometry.location.lng)
                       }}

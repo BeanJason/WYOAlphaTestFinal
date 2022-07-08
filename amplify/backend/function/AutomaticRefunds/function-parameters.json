@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "function": {
+      "RefundPayment": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    },
+    "storage": {
+      "Job:@model(appsync)": [
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
