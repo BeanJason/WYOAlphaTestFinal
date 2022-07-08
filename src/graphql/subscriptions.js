@@ -96,6 +96,7 @@ export const onCreateProvider = /* GraphQL */ `
     onCreateProvider {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -125,6 +126,7 @@ export const onUpdateProvider = /* GraphQL */ `
     onUpdateProvider {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -154,6 +156,7 @@ export const onDeleteProvider = /* GraphQL */ `
     onDeleteProvider {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -183,6 +186,7 @@ export const onCreateUser = /* GraphQL */ `
     onCreateUser {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -207,6 +211,7 @@ export const onUpdateUser = /* GraphQL */ `
     onUpdateUser {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -231,6 +236,7 @@ export const onDeleteUser = /* GraphQL */ `
     onDeleteUser {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -287,6 +293,60 @@ export const onDeleteCode = /* GraphQL */ `
       zipCode
       city
       count
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onCreateManager = /* GraphQL */ `
+  subscription OnCreateManager {
+    onCreateManager {
+      id
+      subID
+      expoToken
+      firstName
+      lastName
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateManager = /* GraphQL */ `
+  subscription OnUpdateManager {
+    onUpdateManager {
+      id
+      subID
+      expoToken
+      firstName
+      lastName
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteManager = /* GraphQL */ `
+  subscription OnDeleteManager {
+    onDeleteManager {
+      id
+      subID
+      expoToken
+      firstName
+      lastName
+      email
+      phoneNumber
       createdAt
       updatedAt
       _version

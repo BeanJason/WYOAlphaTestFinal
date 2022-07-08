@@ -19,6 +19,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { register, resetState } from "../../redux/authReducer";
 import { FontAwesome } from "@expo/vector-icons";
 import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete"
+import { registerForNotifications } from "../../common/functions";
 
 //Provider registration page
 const ProviderRegistration = ({ navigation }) => {
@@ -82,7 +83,7 @@ const ProviderRegistration = ({ navigation }) => {
   };
 
   //Submit the user input
-  const submitForm = (data) => {
+  const submitForm = async (data) => {
     //check if birthday is over 18
     if (new Date().getFullYear() - date.getFullYear() >= 18) {
       if(address && street && city && zipCode && lat && lng){
@@ -97,6 +98,15 @@ const ProviderRegistration = ({ navigation }) => {
           data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1)
           data.firstName = data.firstName.trim()
           data.lastName = data.lastName.trim()
+          //get token used for notifications
+          let token = await registerForNotifications();
+          if(token == null){
+            token = "";
+          }
+          data.expoToken = token
+          if(token != ""){
+            dispatch(registerExpoToken(token))
+          }
   
           let addressArray = {
             street: `${address} ${street}`,

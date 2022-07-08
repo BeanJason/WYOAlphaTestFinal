@@ -40,6 +40,7 @@ type Job @model @auth(rules: [{allow: public}]) {
 type Provider @model @auth(rules: [{allow: public}]) {
   id: ID!
   subID: String!
+  expoToken: String
   firstName: String!
   lastName: String!
   email: AWSEmail!
@@ -58,6 +59,7 @@ type Provider @model @auth(rules: [{allow: public}]) {
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   subID: String!
+  expoToken: String
   firstName: String!
   lastName: String!
   email: AWSEmail!
@@ -73,5 +75,15 @@ type Code @model @auth(rules: [{allow: public}]) {
   zipCode: String!
   city: String!
   count: Int!
+}
+
+type Manager @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  subID: String!
+  expoToken: String
+  firstName: String!
+  lastName: String!
+  email: AWSEmail!
+  phoneNumber: AWSPhone!
 }
  

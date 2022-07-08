@@ -14,6 +14,9 @@ import JobCard from "../../common/components/JobCard";
 import Spinner from "../../common/components/Spinner";
 import { get1Job, getManyJobs } from "../../testData";
 import { initializeJobs } from "../../redux/jobsReducer";
+import * as Notifications from "expo-notifications"
+import { registerForNotifications, updateExpoToken } from "../../common/functions";
+import { changeExpoToken } from "../../redux/authReducer";
 
 const UserHome = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -22,6 +25,32 @@ const UserHome = ({ navigation }) => {
   const [jobList, setJobList] = useState(activeJobs);
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = React.useState(false);
+
+  //listen to token changes
+  useEffect(() => {
+    const subscription = Notifications.addPushTokenListener(async() => {
+      let token = await registerForNotifications()
+      await updateExpoToken('User', userInfo.userID, token)
+      dispatch(changeExpoToken(token))
+    })
+    return () => subscription.remove()
+  }, [])
+  
+
+  const trigger = () => {
+    Notifications.scheduleNotificationAsync({
+      content:{
+        title: 'test notification',
+        body: 'this is a test notification message'
+      },
+      
+      trigger:{
+        seconds: 10
+      }
+    })
+  }
+
+  
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
@@ -37,6 +66,7 @@ const UserHome = ({ navigation }) => {
     if(!initialized){
       dispatch(initializeJobs({userID: userInfo.userID}))
     }
+    trigger()
     //TESTING
     // setJobList(getManyJobs())
     setLoading(false)

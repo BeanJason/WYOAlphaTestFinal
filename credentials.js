@@ -1,4 +1,5 @@
 import { DataStore, Auth, Storage } from "aws-amplify"
+import { registerForNotifications } from "./common/functions";
 import {User, Provider} from "./src/models"
 
 export async function checkCredentials(){

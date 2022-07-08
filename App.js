@@ -11,7 +11,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch, Provider } from "react-redux";
 import {Amplify, Auth, DataStore, Hub, nav} from "aws-amplify"
 import { checkCredentials, stripeKey } from "./credentials";
-import { changeUserStatus, logout } from "./redux/authReducer";
+import { changeUserStatus, logout, changeExpoToken } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from "expo-asset"
@@ -55,7 +55,7 @@ import ServiceView from "./screens/provider/ServiceView"
 import { config } from "./common/styles";
 import { getProvider, getUser } from "./testData";
 import { resetState, storeNewJobID } from "./redux/jobsReducer";
-import { checkUnverifiedJob } from "./common/functions";
+import { checkUnverifiedJob, registerForNotifications, updateExpoToken } from "./common/functions";
 import EditAddress from "./screens/provider/providerAccount/EditAddress";
 
 
@@ -105,7 +105,7 @@ export default function App() {
   }
 
   let loadAllResources = async () => {
-    await DataStore.clear()
+    await DataStore.stop()
     await loadAssetsAsync()
     setImagesLoaded(true)
     loadDataStore()
@@ -138,6 +138,7 @@ const RootNavigation = () => {
  
 
   const checkLoggedIn = async () => {
+    
     const {authUser, userInfo} = await checkCredentials();
     
     //TESTING
@@ -147,6 +148,8 @@ const RootNavigation = () => {
     if(authUser && userInfo){
       dispatch(resetState())
       dispatch(changeUserStatus({authUser, userInfo}))
+      let token = await registerForNotifications();
+      dispatch(changeExpoToken(token))
     }
     setLoading(false)
   }
@@ -362,3 +365,35 @@ const ProviderAccountTab = () => {
     </Stack.Navigator>
   )
 }
+
+
+
+
+
+
+import * as Notifications from "expo-notifications"
+//handler settings
+Notifications.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldShowAlert: true,
+    };
+  },
+});
+
+//when the user clicks on the notification
+const foreground = Notifications.addNotificationResponseReceivedListener(
+  (response) => {
+    console.log("foreground");
+    console.log(response);
+  }
+);
+
+//when the app is open
+const background = Notifications.addNotificationReceivedListener(
+  (notification) => {
+    console.log("background");
+    console.log(notification);
+  }
+);
+

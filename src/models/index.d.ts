@@ -29,6 +29,10 @@ type CodeMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
+type ManagerMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 export declare class Job {
   readonly id: string;
   readonly jobTitle: string;
@@ -58,6 +62,7 @@ export declare class Job {
 export declare class Provider {
   readonly id: string;
   readonly subID: string;
+  readonly expoToken?: string | null;
   readonly firstName: string;
   readonly lastName: string;
   readonly email: string;
@@ -80,6 +85,7 @@ export declare class Provider {
 export declare class User {
   readonly id: string;
   readonly subID: string;
+  readonly expoToken?: string | null;
   readonly firstName: string;
   readonly lastName: string;
   readonly email: string;
@@ -103,4 +109,18 @@ export declare class Code {
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Code, CodeMetaData>);
   static copyOf(source: Code, mutator: (draft: MutableModel<Code, CodeMetaData>) => MutableModel<Code, CodeMetaData> | void): Code;
+}
+
+export declare class Manager {
+  readonly id: string;
+  readonly subID: string;
+  readonly expoToken?: string | null;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly email: string;
+  readonly phoneNumber: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  constructor(init: ModelInit<Manager, ManagerMetaData>);
+  static copyOf(source: Manager, mutator: (draft: MutableModel<Manager, ManagerMetaData>) => MutableModel<Manager, ManagerMetaData> | void): Manager;
 }

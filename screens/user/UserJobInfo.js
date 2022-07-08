@@ -115,7 +115,7 @@ const UserJobInfo = ({ route, navigation }) => {
     let date = new Date(jobInfo.createdAt)
     date.setHours(date.getHours() + 24)
     let today = new Date()
-    if(date.toLocaleDateString() > today.toLocaleDateString() || (date.toLocaleDateString() == today.toLocaleDateString() && date.toLocaleTimeString() > today.toLocaleTimeString())){
+    if(date > today){
       setCanCancel(true)
     }
     setLoading(false)

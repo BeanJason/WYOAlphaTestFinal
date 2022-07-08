@@ -32,6 +32,16 @@ const ProviderHome = ({ navigation }) => {
   const [checkedBtn, setCheckedBtn] = useState('allJobs')
   const [refreshing, setRefreshing] = React.useState(false);
 
+  //listen to token changes
+  useEffect(() => {
+    const subscription = Notifications.addPushTokenListener(async() => {
+      let token = await registerForNotifications()
+      await updateExpoToken('Provider', userInfo.userID, token)
+      dispatch(changeExpoToken(token))
+    })
+    return () => subscription.remove()
+  }, [])
+
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
       dispatch(initializeJobs({userID: userInfo.userID}))

@@ -9,13 +9,14 @@ const Jobstatus = {
   "COMPLETED": "COMPLETED"
 };
 
-const { Job, Provider, User, Code, PaymentIntent } = initSchema(schema);
+const { Job, Provider, User, Code, Manager, PaymentIntent } = initSchema(schema);
 
 export {
   Job,
   Provider,
   User,
   Code,
+  Manager,
   Jobstatus,
   PaymentIntent
 };

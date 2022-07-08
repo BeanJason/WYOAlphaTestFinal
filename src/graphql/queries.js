@@ -118,6 +118,7 @@ export const getProvider = /* GraphQL */ `
     getProvider(id: $id) {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -152,6 +153,7 @@ export const listProviders = /* GraphQL */ `
       items {
         id
         subID
+        expoToken
         firstName
         lastName
         email
@@ -191,6 +193,7 @@ export const syncProviders = /* GraphQL */ `
       items {
         id
         subID
+        expoToken
         firstName
         lastName
         email
@@ -219,6 +222,7 @@ export const getUser = /* GraphQL */ `
     getUser(id: $id) {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -248,6 +252,7 @@ export const listUsers = /* GraphQL */ `
       items {
         id
         subID
+        expoToken
         firstName
         lastName
         email
@@ -282,6 +287,7 @@ export const syncUsers = /* GraphQL */ `
       items {
         id
         subID
+        expoToken
         firstName
         lastName
         email
@@ -356,6 +362,82 @@ export const syncCodes = /* GraphQL */ `
         zipCode
         city
         count
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getManager = /* GraphQL */ `
+  query GetManager($id: ID!) {
+    getManager(id: $id) {
+      id
+      subID
+      expoToken
+      firstName
+      lastName
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listManagers = /* GraphQL */ `
+  query ListManagers(
+    $filter: ModelManagerFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listManagers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        subID
+        expoToken
+        firstName
+        lastName
+        email
+        phoneNumber
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncManagers = /* GraphQL */ `
+  query SyncManagers(
+    $filter: ModelManagerFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncManagers(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        subID
+        expoToken
+        firstName
+        lastName
+        email
+        phoneNumber
         createdAt
         updatedAt
         _version

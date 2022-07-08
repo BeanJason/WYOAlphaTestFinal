@@ -16,9 +16,10 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useForm } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useSelector, useDispatch } from "react-redux";
-import { register, resetState } from "../../redux/authReducer";
+import { register, changeExpoToken, resetState } from "../../redux/authReducer";
 import { FontAwesome } from "@expo/vector-icons";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { registerForNotifications } from "../../common/functions";
 
 //User registration page
 const UserRegistration = ({ navigation }) => {
@@ -87,7 +88,7 @@ const UserRegistration = ({ navigation }) => {
   };
 
   //Submit the user input
-  const submitForm = (data) => {
+  const submitForm = async (data) => {
     //check if birthday is over 18
     if (new Date().getFullYear() - date.getFullYear() >= 18) {
       //check address
@@ -103,6 +104,15 @@ const UserRegistration = ({ navigation }) => {
         data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1);
         data.firstName = data.firstName.trim();
         data.lastName = data.lastName.trim();
+        //get token for notifications
+        let token = await registerForNotifications();
+        if(token == null){
+          token = ""
+        }
+        data.expoToken = token
+        if(token != ""){
+          dispatch(changeExpoToken(token))
+        }
         
  
         let addressArray = {

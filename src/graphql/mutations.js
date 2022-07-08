@@ -125,6 +125,7 @@ export const createProvider = /* GraphQL */ `
     createProvider(input: $input, condition: $condition) {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -157,6 +158,7 @@ export const updateProvider = /* GraphQL */ `
     updateProvider(input: $input, condition: $condition) {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -189,6 +191,7 @@ export const deleteProvider = /* GraphQL */ `
     deleteProvider(input: $input, condition: $condition) {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -221,6 +224,7 @@ export const createUser = /* GraphQL */ `
     createUser(input: $input, condition: $condition) {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -248,6 +252,7 @@ export const updateUser = /* GraphQL */ `
     updateUser(input: $input, condition: $condition) {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -275,6 +280,7 @@ export const deleteUser = /* GraphQL */ `
     deleteUser(input: $input, condition: $condition) {
       id
       subID
+      expoToken
       firstName
       lastName
       email
@@ -340,6 +346,69 @@ export const deleteCode = /* GraphQL */ `
       zipCode
       city
       count
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const createManager = /* GraphQL */ `
+  mutation CreateManager(
+    $input: CreateManagerInput!
+    $condition: ModelManagerConditionInput
+  ) {
+    createManager(input: $input, condition: $condition) {
+      id
+      subID
+      expoToken
+      firstName
+      lastName
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateManager = /* GraphQL */ `
+  mutation UpdateManager(
+    $input: UpdateManagerInput!
+    $condition: ModelManagerConditionInput
+  ) {
+    updateManager(input: $input, condition: $condition) {
+      id
+      subID
+      expoToken
+      firstName
+      lastName
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteManager = /* GraphQL */ `
+  mutation DeleteManager(
+    $input: DeleteManagerInput!
+    $condition: ModelManagerConditionInput
+  ) {
+    deleteManager(input: $input, condition: $condition) {
+      id
+      subID
+      expoToken
+      firstName
+      lastName
+      email
+      phoneNumber
       createdAt
       updatedAt
       _version

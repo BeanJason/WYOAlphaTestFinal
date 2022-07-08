@@ -1,11 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Auth } from "aws-amplify";
 import { DataStore } from "aws-amplify";
+import { registerForNotifications } from "../common/functions";
 import { checkCredentials } from "../credentials";
 import {User, Provider} from "../src/models"
 
 //Initial values
 const initialState = {
+  expoToken: "",
   loggedIn: false,
   isError: false,
   isSuccess: false,
@@ -37,6 +39,7 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
             userData = await DataStore.save(
                 new User({
                 "subID": authUser?.userSub,
+                "expoToken": data.expoToken,
                 "firstName": data.firstName,
                 "lastName": data.lastName,
                 "email": email,
@@ -53,6 +56,7 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
             userData = await DataStore.save(
               new Provider({
                   "subID": authUser?.userSub,
+                  "expoToken": data.expoToken,
                   "firstName": data.firstName,
                   "lastName": data.lastName,
                   "email": email,
@@ -135,7 +139,8 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
       return thunkAPI.rejectWithValue(message);
     }
     else if(dataCheck.authUser != null && dataCheck.userInfo != null){
-      return {authUser: dataCheck.authUser, userInfo: dataCheck.userInfo}
+      let token = await registerForNotifications();
+      return {authUser: dataCheck.authUser, userInfo: dataCheck.userInfo, expoToken: token}
     }
 }
 );
@@ -172,6 +177,9 @@ export const authReducer = createSlice({
     },
     changeUserInfo: (state, action) => {
       state.userInfo = action.payload.userInfo
+    },
+    changeExpoToken: (state, action) => {
+      state.expoToken = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -210,6 +218,7 @@ export const authReducer = createSlice({
         state.loggedIn = true;
         state.authUser = action.payload.authUser;
         state.userInfo = action.payload.userInfo;
+        state.expoToken = action.payload.expoToken;
       })
       //Failed login
       .addCase(login.rejected, (state, action) => {
@@ -227,9 +236,10 @@ export const authReducer = createSlice({
         state.authUser = null;
         state.userInfo = null;
         state.loggedIn = false;
+        state.expoToken = "";
       });
   },
 });
 
-export const { changeUserStatus, resetState, changeUserInfo } = authReducer.actions;
+export const { changeUserStatus, resetState, changeUserInfo, changeExpoToken: registerExpoToken } = authReducer.actions;
 export default authReducer.reducer;
