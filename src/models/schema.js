@@ -139,6 +139,22 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "userNotificationID": {
+                    "name": "userNotificationID",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "providerNotificationID": {
+                    "name": "providerNotificationID",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -693,5 +709,5 @@ export const schema = {
             }
         }
     },
-    "version": "11f7703ec8530af4d6e52d8449265efe"
+    "version": "5aa7c4bcfce6be88485aa724a57be7c6"
 };

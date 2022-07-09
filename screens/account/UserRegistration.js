@@ -16,10 +16,10 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useForm } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useSelector, useDispatch } from "react-redux";
-import { register, changeExpoToken, resetState } from "../../redux/authReducer";
+import { register, resetState } from "../../redux/authReducer";
 import { FontAwesome } from "@expo/vector-icons";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { registerForNotifications } from "../../common/functions";
+import { getNotificationToken } from "../../notifications";
 
 //User registration page
 const UserRegistration = ({ navigation }) => {
@@ -104,15 +104,12 @@ const UserRegistration = ({ navigation }) => {
         data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1);
         data.firstName = data.firstName.trim();
         data.lastName = data.lastName.trim();
-        //get token for notifications
-        let token = await registerForNotifications();
+        //get token used for notifications
+        let token = await getNotificationToken()
         if(token == null){
-          token = ""
+          token = "";
         }
         data.expoToken = token
-        if(token != ""){
-          dispatch(changeExpoToken(token))
-        }
         
  
         let addressArray = {

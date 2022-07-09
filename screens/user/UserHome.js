@@ -6,7 +6,8 @@ import {
   Text,
   SafeAreaView,
   FlatList,
-  RefreshControl
+  RefreshControl,
+  TouchableOpacity
 } from "react-native";
 import { commonStyles } from "../../common/styles";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,8 +16,7 @@ import Spinner from "../../common/components/Spinner";
 import { get1Job, getManyJobs } from "../../testData";
 import { initializeJobs } from "../../redux/jobsReducer";
 import * as Notifications from "expo-notifications"
-import { registerForNotifications, updateExpoToken } from "../../common/functions";
-import { changeExpoToken } from "../../redux/authReducer";
+import { createUserReminder } from "../../notifications";
 
 const UserHome = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -26,28 +26,14 @@ const UserHome = ({ navigation }) => {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = React.useState(false);
 
-  //listen to token changes
-  useEffect(() => {
-    const subscription = Notifications.addPushTokenListener(async() => {
-      let token = await registerForNotifications()
-      await updateExpoToken('User', userInfo.userID, token)
-      dispatch(changeExpoToken(token))
-    })
-    return () => subscription.remove()
-  }, [])
   
+  const getNotifications = async() => {
+    let n = await Notifications.getAllScheduledNotificationsAsync()
+    console.log(n);
+  }
 
-  const trigger = () => {
-    Notifications.scheduleNotificationAsync({
-      content:{
-        title: 'test notification',
-        body: 'this is a test notification message'
-      },
-      
-      trigger:{
-        seconds: 10
-      }
-    })
+  const cancelNotifications = async ()=> {
+    await Notifications.cancelAllScheduledNotificationsAsync()
   }
 
   
@@ -66,7 +52,6 @@ const UserHome = ({ navigation }) => {
     if(!initialized){
       dispatch(initializeJobs({userID: userInfo.userID}))
     }
-    trigger()
     //TESTING
     // setJobList(getManyJobs())
     setLoading(false)
@@ -86,6 +71,12 @@ const UserHome = ({ navigation }) => {
           <Text style={styles.name}>Welcome {userInfo.firstName}</Text>
         </View>
         <View>
+        <TouchableOpacity onPress={() => getNotifications()}>
+          <Text>Get Notifications</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => cancelNotifications()}>
+          <Text>cancel Notifications</Text>
+        </TouchableOpacity>
           <Text style={[styles.headerText, {textAlign: 'center'}]}>Active Jobs</Text>
         </View>
         {loading ? <Spinner color={'blue'}/> : (

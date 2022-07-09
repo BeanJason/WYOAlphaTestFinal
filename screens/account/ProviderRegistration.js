@@ -19,7 +19,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { register, resetState } from "../../redux/authReducer";
 import { FontAwesome } from "@expo/vector-icons";
 import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete"
-import { registerForNotifications } from "../../common/functions";
+import { getNotificationToken } from "../../notifications";
 
 //Provider registration page
 const ProviderRegistration = ({ navigation }) => {
@@ -99,14 +99,11 @@ const ProviderRegistration = ({ navigation }) => {
           data.firstName = data.firstName.trim()
           data.lastName = data.lastName.trim()
           //get token used for notifications
-          let token = await registerForNotifications();
+          let token = await getNotificationToken()
           if(token == null){
             token = "";
           }
           data.expoToken = token
-          if(token != ""){
-            dispatch(registerExpoToken(token))
-          }
   
           let addressArray = {
             street: `${address} ${street}`,

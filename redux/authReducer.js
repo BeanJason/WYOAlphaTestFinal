@@ -1,13 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Auth } from "aws-amplify";
 import { DataStore } from "aws-amplify";
-import { registerForNotifications } from "../common/functions";
 import { checkCredentials } from "../credentials";
 import {User, Provider} from "../src/models"
 
 //Initial values
 const initialState = {
-  expoToken: "",
   loggedIn: false,
   isError: false,
   isSuccess: false,
@@ -82,7 +80,8 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                 phoneNumber: userData.phoneNumber,
                 biography: userData.biography,
                 backgroundCheck: userData.backgroundCheckStatus,
-                profilePicture: userData.profilePictureURL
+                profilePicture: userData.profilePictureURL,
+                expoToken: data.expoToken
               }
             }
             else{
@@ -92,12 +91,13 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                 lastName: userData.lastName,
                 address: userData.address,
                 phoneNumber: userData.phoneNumber,
-                contactMethod: userData.contactMethod
+                contactMethod: userData.contactMethod,
+                expoToken: data.expoToken
               }
             }
             let attr = {
               sub: authUser.userSub,
-              'custom:type': data.type
+              'custom:type': data.type,
             }
             return {authUser: attr , userInfo}
           }
@@ -139,8 +139,7 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
       return thunkAPI.rejectWithValue(message);
     }
     else if(dataCheck.authUser != null && dataCheck.userInfo != null){
-      let token = await registerForNotifications();
-      return {authUser: dataCheck.authUser, userInfo: dataCheck.userInfo, expoToken: token}
+      return {authUser: dataCheck.authUser, userInfo: dataCheck.userInfo}
     }
 }
 );
@@ -178,9 +177,6 @@ export const authReducer = createSlice({
     changeUserInfo: (state, action) => {
       state.userInfo = action.payload.userInfo
     },
-    changeExpoToken: (state, action) => {
-      state.expoToken = action.payload
-    }
   },
   extraReducers: (builder) => {
     builder
@@ -218,7 +214,6 @@ export const authReducer = createSlice({
         state.loggedIn = true;
         state.authUser = action.payload.authUser;
         state.userInfo = action.payload.userInfo;
-        state.expoToken = action.payload.expoToken;
       })
       //Failed login
       .addCase(login.rejected, (state, action) => {
@@ -236,10 +231,9 @@ export const authReducer = createSlice({
         state.authUser = null;
         state.userInfo = null;
         state.loggedIn = false;
-        state.expoToken = "";
       });
   },
 });
 
-export const { changeUserStatus, resetState, changeUserInfo, changeExpoToken: registerExpoToken } = authReducer.actions;
+export const { changeUserStatus, resetState, changeUserInfo } = authReducer.actions;
 export default authReducer.reducer;

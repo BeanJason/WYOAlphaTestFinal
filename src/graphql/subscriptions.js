@@ -23,6 +23,8 @@ export const onCreateJob = /* GraphQL */ `
       paymentID
       price
       tip
+      userNotificationID
+      providerNotificationID
       createdAt
       updatedAt
       _version
@@ -53,6 +55,8 @@ export const onUpdateJob = /* GraphQL */ `
       paymentID
       price
       tip
+      userNotificationID
+      providerNotificationID
       createdAt
       updatedAt
       _version
@@ -83,6 +87,8 @@ export const onDeleteJob = /* GraphQL */ `
       paymentID
       price
       tip
+      userNotificationID
+      providerNotificationID
       createdAt
       updatedAt
       _version

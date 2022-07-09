@@ -23,6 +23,8 @@ export const getJob = /* GraphQL */ `
       paymentID
       price
       tip
+      userNotificationID
+      providerNotificationID
       createdAt
       updatedAt
       _version
@@ -58,6 +60,8 @@ export const listJobs = /* GraphQL */ `
         paymentID
         price
         tip
+        userNotificationID
+        providerNotificationID
         createdAt
         updatedAt
         _version
@@ -102,6 +106,8 @@ export const syncJobs = /* GraphQL */ `
         paymentID
         price
         tip
+        userNotificationID
+        providerNotificationID
         createdAt
         updatedAt
         _version

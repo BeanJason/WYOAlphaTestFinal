@@ -25,63 +25,9 @@ export const getUnacceptedJobs = (activeJobs) => {
     return jobsToReturn
 }
 
-//check if token is unchanged
-export const updateExpoToken = async (type, id, token) => {
-    if(token == "" || token == null){
-        return ""
-    }
-    if(type == 'Provider'){
-       let original = await DataStore.query(Provider, id)
-       if(original.expoToken == token){
-        return token
-       }
-       await DataStore.save(Provider.copyOf(original, updated => {
-        updated.expoToken = token
-       }))
-       return token
 
-    } else if (type == 'User'){
-        let original = await DataStore.query(User, id)
-        if(original.expoToken == token){
-            return token
-        }
-        await DataStore.save(User.copyOf(original, updated => {
-            updated.expoToken = token
-        }))
-        return token
-    }
-}
 
-//get the token for notifications
-export const registerForNotifications = async () => {
-    if(!Device.isDevice){
-        console.log('Physical device is not used so notifications will not work');
-        return null;
-    }
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    console.log(existingStatus);
-    if(existingStatus !== "granted"){
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-        console.log('permissions not given');
-        return null;
-      }
-    try {
-        const token = (await Notifications.getExpoPushTokenAsync()).data;
-        if(Platform.OS === "android"){
-            Notifications.setNotificationChannelAsync("default", {
-                name: "default",
-                importance: Notifications.AndroidImportance.MAX
-            })
-        }
-        return token
-    } catch (error) {
-        console.log(error);
-    }
-}
+
 
 //decrement zip code count
 export const decrementZipCodeCount = async(code) => {

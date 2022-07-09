@@ -53,6 +53,8 @@ export declare class Job {
   readonly paymentID?: string | null;
   readonly price?: number | null;
   readonly tip?: number | null;
+  readonly userNotificationID?: string[] | null;
+  readonly providerNotificationID?: string[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Job, JobMetaData>);

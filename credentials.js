@@ -1,5 +1,5 @@
 import { DataStore, Auth, Storage } from "aws-amplify"
-import { registerForNotifications } from "./common/functions";
+import { getNotificationToken } from "./notifications";
 import {User, Provider} from "./src/models"
 
 export async function checkCredentials(){
@@ -50,7 +50,8 @@ const getUserData = async (attributes) => {
             lastName: userData[0].lastName,
             address: userData[0].address,
             phoneNumber: userData[0].phoneNumber,
-            contactMethod: userData[0].contactMethod
+            contactMethod: userData[0].contactMethod,
+            expoToken: userData[0].expoToken
        }
        return userInfo
     } catch (error) {
@@ -78,7 +79,8 @@ const getProviderData = async (attributes) => {
             phoneNumber: userData[0].phoneNumber,
             biography: userData[0].biography,
             backgroundCheck: userData[0].backgroundCheckStatus,
-            profilePicture: pictureUrl ? pictureUrl : ''
+            profilePicture: pictureUrl ? pictureUrl : '',
+            expoToken: userData[0].expoToken
         }
         return userInfo
      } catch (error) {

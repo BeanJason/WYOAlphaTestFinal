@@ -13,13 +13,14 @@ import {
   import { useDispatch, useSelector } from "react-redux";
   import { useEffect, useState } from "react";
   import { DataStore, API, graphqlOperation } from "aws-amplify";
-  import { Job, Code} from "../../src/models";
+  import { Code, Job} from "../../src/models";
   import {initPaymentSheet, presentPaymentSheet} from "@stripe/stripe-react-native"
   import { createToast } from "../../common/components/Toast";
   import { createPaymentIntent } from "../../src/graphql/mutations";
   import { addOrRemoveJob, storeNewJobID } from "../../redux/jobsReducer";
   import * as queries from "../../src/graphql/queries"
   import * as mutations from "../../src/graphql/mutations"
+import { createUserReminder } from "../../notifications";
   
   //Login screen
   const JobCreationPayment = ({route, navigation }) => {
@@ -63,8 +64,20 @@ import {
           paidJob = await API.graphql(graphqlOperation(queries.getJob, {id: newJobID}));
           if(paidJob.data.getJob.paymentID != "" && paidJob.data.getJob.paymentID != null){
             clearInterval(timer)
+            let ids = await createUserReminder(route.params.jobInfo.requestDateTime)
+            console.log(ids);
+            const original = await DataStore.query(Job, newJobID)
+            console.log(original);
+            await DataStore.save(
+              Job.copyOf(original, (updated) => {
+                updated.userNotificationID.push(ids[0].toString())
+                updated.userNotificationID.push(ids[1].toString())
+              })
+            );
+            paidJob.data.getJob.userNotificationID = ids
             dispatch(addOrRemoveJob({type: 'ADD_ACTIVE_JOB', jobInfo: paidJob.data.getJob}))
             dispatch(storeNewJobID({jobID: ""}))
+            paidJob.data.getJob.requestDateTime
             setTimeout(() => {
               route.params.jobInfo = paidJob.data.getJob
               setPaymentStatus('Payment was successful!')

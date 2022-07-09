@@ -34,7 +34,9 @@ type Job @model @auth(rules: [{allow: public}]) {
   requestOwner: ID! @index(name: "byUser")
   paymentID: String
   price: Int
-  tip: Int
+  tip: Int,
+  userNotificationID: [String!],
+  providerNotificationID: [String!]
 }
 
 type Provider @model @auth(rules: [{allow: public}]) {
