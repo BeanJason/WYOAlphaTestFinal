@@ -5,6 +5,7 @@ import { Text, View, StyleSheet, Dimensions, Pressable } from "react-native";
 import { useSelector } from "react-redux";
 import { Job, User } from "../../src/models";
 import haversine from "haversine"
+import { Fontisto } from '@expo/vector-icons'; 
 
 
 const JobCard = ({ jobInfo, type = '' }) => {
@@ -80,7 +81,8 @@ const JobCard = ({ jobInfo, type = '' }) => {
         <Text style={styles.generalText}>Date: {date}</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text style={styles.generalText}>Time: {time}</Text>
-          <Text style={styles.generalText}>Num {numOfProvider}</Text>
+            
+          <Text style={styles.generalText}><Fontisto name="person" size={24} color="black" />{numOfProvider}</Text>
         </View>
         {type == 'signUp' ? <Text style={[styles.generalText, {marginTop: 20}]}>~Distance: {jobInfo.distance} mi.</Text> : <></>}
       </View>
@@ -113,6 +115,7 @@ const styles = StyleSheet.create({
   generalText: {
     fontFamily: "Montserrat-Bold",
     fontSize: 18,
+    marginRight: 5,
   },
 });
 
