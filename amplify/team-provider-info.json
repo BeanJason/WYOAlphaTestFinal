@@ -35,6 +35,10 @@
         "AutomaticRefunds": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
           "s3Key": "amplify-builds/AutomaticRefunds-2b65694b6335304d4b6c-build.zip"
+        },
+        "SendNotification": {
+          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
+          "s3Key": "amplify-builds/SendNotification-627155674f4d385a6f78-build.zip"
         }
       }
     }

@@ -64,20 +64,17 @@ import { createUserReminder } from "../../notifications";
           paidJob = await API.graphql(graphqlOperation(queries.getJob, {id: newJobID}));
           if(paidJob.data.getJob.paymentID != "" && paidJob.data.getJob.paymentID != null){
             clearInterval(timer)
-            let ids = await createUserReminder(route.params.jobInfo.requestDateTime)
-            console.log(ids);
+            let ids = await createUserReminder(route.params.jobInfo)
             const original = await DataStore.query(Job, newJobID)
-            console.log(original);
             await DataStore.save(
               Job.copyOf(original, (updated) => {
-                updated.userNotificationID.push(ids[0].toString())
-                updated.userNotificationID.push(ids[1].toString())
+                updated.userNotificationID.push(ids[0])
+                updated.userNotificationID.push(ids[1])
               })
             );
             paidJob.data.getJob.userNotificationID = ids
             dispatch(addOrRemoveJob({type: 'ADD_ACTIVE_JOB', jobInfo: paidJob.data.getJob}))
             dispatch(storeNewJobID({jobID: ""}))
-            paidJob.data.getJob.requestDateTime
             setTimeout(() => {
               route.params.jobInfo = paidJob.data.getJob
               setPaymentStatus('Payment was successful!')
@@ -127,6 +124,8 @@ import { createUserReminder } from "../../notifications";
           "requestOwner": userInfo.userID,
           "price": data.price,
           "tip": data.tip,
+          "userNotificationID": [],
+          "providerNotificationID": []
         }));
         try {
           const response = await API.graphql(

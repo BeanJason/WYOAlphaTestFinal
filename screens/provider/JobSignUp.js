@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
 import Moment from "moment";
 import { extendMoment } from "moment-range";
+import { createProviderReminder, sendNotificationToUser } from "../../notifications";
 
 const moment = extendMoment(Moment);
 
@@ -106,13 +107,24 @@ const JobSignUp = ({ route, navigation }) => {
     //sign up as main
     const original = await DataStore.query(Job, jobInfo.id);
     if (role == "Main Provider") {
+      jobInfo.mainProvider = userInfo.userID
+      let ids = await createProviderReminder(jobInfo)
       try {
         await DataStore.save(
           Job.copyOf(original, (updated) => {
             updated.mainProvider = userInfo.userID;
+            updated.providerNotificationID?.push(ids[0])
+            updated.providerNotificationID?.push(ids[1])
           })
         );
         //if success
+        jobInfo.providerNotificationID = ids
+        //send push notification to the user
+        let messageInfo = {
+          title: 'Job Request Accepted',
+          message: `${userInfo.firstName} has accepted your job request as a main provider`
+        }
+        await sendNotificationToUser(original.requestOwner, messageInfo)
         dispatch(addOrRemoveJob({ type: "ADD_ACTIVE_JOB", jobInfo }));
         setTimeout(() => {
           createToast(

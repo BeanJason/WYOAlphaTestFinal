@@ -1,5 +1,5 @@
 import { DataStore, Auth, Storage } from "aws-amplify"
-import { getNotificationToken } from "./notifications";
+import { getNotificationToken, updateExpoToken } from "./notifications";
 import {User, Provider} from "./src/models"
 
 export async function checkCredentials(){
@@ -53,6 +53,12 @@ const getUserData = async (attributes) => {
             contactMethod: userData[0].contactMethod,
             expoToken: userData[0].expoToken
        }
+       if(userInfo.expoToken == "" || userInfo.expoToken == null){
+        let token = await getNotificationToken();
+        if(token != "" && token != null){
+            updateExpoToken('User', userInfo.userID, token)
+        }
+       }
        return userInfo
     } catch (error) {
         console.log(error);
@@ -81,6 +87,12 @@ const getProviderData = async (attributes) => {
             backgroundCheck: userData[0].backgroundCheckStatus,
             profilePicture: pictureUrl ? pictureUrl : '',
             expoToken: userData[0].expoToken
+        }
+        if(userInfo.expoToken == "" || userInfo.expoToken == null){
+            let token = await getNotificationToken();
+            if(token != "" && token != null){
+                updateExpoToken('User', userInfo.userID, token)
+            }
         }
         return userInfo
      } catch (error) {

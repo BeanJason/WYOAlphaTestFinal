@@ -3,6 +3,7 @@ import * as Device from "expo-device"
 import { Code, Job, Provider, User } from "../src/models"
 import * as Notifications from "expo-notifications"
 import { Platform } from "react-native"
+import { cancelNotificationByID } from "../notifications"
 
 export const getUnacceptedJobs = (activeJobs) => {
     //get requested jobs
@@ -52,6 +53,10 @@ export const decrementZipCodeCount = async(code) => {
 //delete job if user changes tab or payment ID is not found
 export const checkUnverifiedJob = async (job, code) => {
     if(job.paymentID == null){
+        //remove reminders
+        for(let next of job.userNotificationID){
+            await cancelNotificationByID(next)
+        }
         await DataStore.delete(Job, job.id)
         //decrement zipcode job
         await decrementZipCodeCount(code)
@@ -59,9 +64,14 @@ export const checkUnverifiedJob = async (job, code) => {
     else{
         console.log(job.paymentID);
         if(job.paymentID == '' || job.paymentID == undefined || job.paymentID == null){
+            //remove reminders
+            for(let next of job.userNotificationID){
+                await cancelNotificationByID(next)
+            }
             await DataStore.delete(Job, job.id)
             //decrement zipcode job
             await decrementZipCodeCount(code)
+            //remove reminders
         }
     }
 }

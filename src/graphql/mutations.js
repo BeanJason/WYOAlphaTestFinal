@@ -18,6 +18,15 @@ export const refundPayment = /* GraphQL */ `
     refundPayment(isCancel: $isCancel, jobID: $jobID)
   }
 `;
+export const sendNotification = /* GraphQL */ `
+  mutation SendNotification(
+    $token: String!
+    $title: String!
+    $message: String!
+  ) {
+    sendNotification(token: $token, title: $title, message: $message)
+  }
+`;
 export const createJob = /* GraphQL */ `
   mutation CreateJob(
     $input: CreateJobInput!

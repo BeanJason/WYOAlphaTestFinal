@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
 import MapView, {Marker}  from "react-native-maps"
 import Geocoder from "react-native-geocoding";
+import { cancelNotificationByID } from "../../notifications";
 
 //Login screen
 const ServiceView = ({ route, navigation }) => {
@@ -140,23 +141,38 @@ const ServiceView = ({ route, navigation }) => {
       if(original.mainProvider == userInfo.userID){
         if(original.backupProviders){
           let newMain = original.backupProviders[0]
+          //cancel notifications
+          if(original.providerNotificationID){
+            await cancelNotificationByID(original.providerNotificationID[0])
+            await cancelNotificationByID(original.providerNotificationID[1])
+          }
           try {
             await DataStore.save(Job.copyOf(original, updated => {
                 updated.mainProvider = newMain
                 updated.backupProviders = updated.backupProviders.filter(id => id != newMain)
+                updated.providerNotificationID = []
             }))
             success = true
+            //send notification to new main provider
+            //send notification to user about new provider
           } catch (error) {
               console.log(error);
           }
         }
         //if no backups remove main provider only
         else{
+          //cancel notifications
+          if(original.providerNotificationID){
+            await cancelNotificationByID(original.providerNotificationID[0])
+            await cancelNotificationByID(original.providerNotificationID[1])
+          }
           try {
             await DataStore.save(Job.copyOf(original, updated => {
                 updated.mainProvider = null
+                updated.providerNotificationID = []
             }))
             success = true
+            //send notification to user about provider cancellation
           } catch (error) {
               console.log(error);
           }
