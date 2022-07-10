@@ -57,6 +57,7 @@ const getUserData = async (attributes) => {
         let token = await getNotificationToken();
         if(token != "" && token != null){
             updateExpoToken('User', userInfo.userID, token)
+            userInfo.expoToken = token
         }
        }
        return userInfo
@@ -92,6 +93,7 @@ const getProviderData = async (attributes) => {
             let token = await getNotificationToken();
             if(token != "" && token != null){
                 updateExpoToken('User', userInfo.userID, token)
+                userInfo.expoToken = token
             }
         }
         return userInfo
