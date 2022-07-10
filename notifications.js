@@ -1,8 +1,8 @@
 import { API, DataStore, graphqlOperation } from "aws-amplify";
 import * as Notifications from "expo-notifications";
 import { sendNotification } from "./src/graphql/mutations";
-import { User } from "./src/models";
-import Device from "expo-device"
+import { User, Provider } from "./src/models";
+import * as Device from "expo-device"
 
 //handler settings
 Notifications.setNotificationHandler({
