@@ -23,8 +23,14 @@ export const sendNotification = /* GraphQL */ `
     $token: String!
     $title: String!
     $message: String!
+    $data: String
   ) {
-    sendNotification(token: $token, title: $title, message: $message)
+    sendNotification(
+      token: $token
+      title: $title
+      message: $message
+      data: $data
+    )
   }
 `;
 export const createJob = /* GraphQL */ `

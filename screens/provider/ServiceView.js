@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
 import MapView, {Marker}  from "react-native-maps"
 import Geocoder from "react-native-geocoding";
-import { cancelNotificationByID } from "../../notifications";
+import { cancelNotificationByID, sendNotificationToUser } from "../../notifications";
 
 //Login screen
 const ServiceView = ({ route, navigation }) => {
@@ -154,7 +154,25 @@ const ServiceView = ({ route, navigation }) => {
             }))
             success = true
             //send notification to new main provider
+            let request = new Date(original.requestDateTime);
+            let hour = request.getHours() % 12 || 12;
+            let min = (request.getMinutes() < 10 ? "0" : "") + request.getMinutes();
+            let amOrPm = "AM";
+            if (request.getHours() >= 12) {
+              amOrPm = "PM";
+  }
+            let messageInfo = {
+              title: 'New Provider',
+              message: `You have been appointed to be the new main provider of the ${original.jobTitle} job on ${request.toLocaleDateString()} at ${hour}:${min}${amOrPm}`,
+              data: {jobID: original.id}
+            }
+            await sendNotificationToUser(userInfo.userID, messageInfo)
             //send notification to user about new provider
+            let messageInfo2 = {
+              title: 'Provider Switch',
+              message: `${userInfo.firstName} is now the main provider for your job request`
+            }
+            await sendNotificationToUser(original.requestOwner, messageInfo2)
           } catch (error) {
               console.log(error);
           }
@@ -173,6 +191,11 @@ const ServiceView = ({ route, navigation }) => {
             }))
             success = true
             //send notification to user about provider cancellation
+            let messageInfo = {
+              title: 'Job Cancelled',
+              message: 'The main provider has cancelled your job request'
+            }
+            await sendNotificationToUser(original.requestOwner, messageInfo)
           } catch (error) {
               console.log(error);
           }

@@ -76,7 +76,7 @@ const getProviderData = async (attributes) => {
         }
         let pictureUrl
         if(userData[0].profilePictureURL != null && userData[0].profilePictureURL != ''){
-            pictureUrl = await Storage.get(userData[0].id + '.png')
+            pictureUrl = await Storage.get(userData[0].profilePictureURL)
         }
         const userInfo = {
             userID: userData[0].id,

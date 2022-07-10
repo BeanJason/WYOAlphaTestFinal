@@ -6,7 +6,8 @@ import {
   Text,
   SafeAreaView,
   FlatList,
-  RefreshControl
+  RefreshControl,
+  TouchableOpacity
 } from "react-native";
 import { commonStyles } from "../../common/styles";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,10 +15,10 @@ import JobCard from "../../common/components/JobCard";
 import Spinner from "../../common/components/Spinner";
 import { get1Job, getManyJobs } from "../../testData";
 import { initializeJobs } from "../../redux/jobsProviderReducer";
-import { TouchableOpacity } from "react-native-web";
 import { Ionicons } from '@expo/vector-icons'; 
 import {RadioButton} from "react-native-paper"
 import ProfilePicture from "../../common/components/ProfilePicture";
+import * as Notifications from "expo-notifications"
 
 
 
@@ -31,6 +32,16 @@ const ProviderHome = ({ navigation }) => {
   const [loading, setLoading] = useState(true)
   const [checkedBtn, setCheckedBtn] = useState('allJobs')
   const [refreshing, setRefreshing] = React.useState(false);
+
+
+  const getNotifications = async() => {
+    let n = await Notifications.getAllScheduledNotificationsAsync()
+    console.log(n);
+  }
+
+  const cancelNotifications = async ()=> {
+    await Notifications.cancelAllScheduledNotificationsAsync()
+  }
 
 
   const onRefresh = React.useCallback(async () => {
@@ -75,6 +86,12 @@ const ProviderHome = ({ navigation }) => {
             <ProfilePicture imageUrl={userInfo.profilePicture} name={`${userInfo.firstName}  ${userInfo.lastName}`} size={50}/>
             <Text style={styles.name}>Welcome Provider {userInfo.firstName}</Text>
           </View>
+          <TouchableOpacity onPress={() => getNotifications()}>
+          <Text>Get Notifications</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => cancelNotifications()}>
+          <Text>cancel Notifications</Text>
+        </TouchableOpacity>
         <View>
           <Text style={[styles.headerText, {textAlign: 'center'}]}>Active jobs</Text>
         </View>

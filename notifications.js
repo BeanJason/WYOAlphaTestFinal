@@ -195,14 +195,15 @@ export const createProviderReminder = async (jobInfo) => {
   return ids;
 };
 
-export const sendNotificationToUser = async(userID, messageInfo) => {
+export const sendNotificationToUser = async(userID, messageInfo, data = {}) => {
   let user = await DataStore.query(User, userID)
   let token = user.expoToken
   try {
     await API.graphql(graphqlOperation(sendNotification, {
       token: token,
       title: messageInfo.title,
-      message: messageInfo.message
+      message: messageInfo.message,
+      data: data
     }))
   } catch (error) {
     console.log(error);
