@@ -78,8 +78,6 @@ const getProviderData = async (attributes) => {
         if(userData[0].profilePictureURL != null && userData[0].profilePictureURL != ''){
             pictureUrl = await Storage.get(userData[0].profilePictureURL, {
                 level: 'public',
-                bucket: 'whileyoureoutefe3288037b942c28ee294bea96320e025126-staging',
-                region: 'us-east-2'
             })
         }
         const userInfo = {

@@ -36,7 +36,6 @@ import UserHome from "./screens/user/UserHome";
 import MyAccount from "./screens/commonScreens/MyAccount"
 import EditAccountUser from "./screens/user/userAccount/EditAccountUser"
 import AddAddress from "./screens/user/userAccount/AddAddress"
-import VerifyAccount from "./screens/commonScreens/VerifyAccount"
 import JobCreation1 from "./screens/user/JobCreation1"
 import JobCreationPayment from "./screens/user/JobCreationPayment"
 import UserJobInfo from "./screens/user/UserJobInfo"
@@ -48,8 +47,12 @@ import JobSearch from "./screens/provider/JobSearch";
 import EditAccountProvider from "./screens/provider/providerAccount/EditAccountProvider";
 import ProviderJobInfo from "./screens/provider/ProviderJobInfo";
 import ProviderJobHistory from "./screens/provider/ProviderJobHistory";
-import JobSignUp from "./screens/provider/JobSignUp"
-import ServiceView from "./screens/provider/ServiceView"
+import JobSignUp from "./screens/provider/JobSignUp";
+import ServiceView from "./screens/provider/ServiceView";
+
+//Common screens
+import ChangePassword from "./screens/commonScreens/ChangePassword";
+import VerifyAccount from "./screens/commonScreens/VerifyAccount";
 
 
 import { config } from "./common/styles";
@@ -60,6 +63,7 @@ import EditAddress from "./screens/provider/providerAccount/EditAddress";
 import notifications from "./notifications"
 import * as TaskManager from "expo-task-manager"
 import * as Notifications from "expo-notifications"
+
 
 const NEW_PROVIDER_TASK = "background-provider-task"
 //when the app is in the background and you receieve a notification
@@ -317,6 +321,7 @@ const UserAccountTab = () => {
       <Stack.Screen options={{ headerShown: false }} name="MyAccount" component={MyAccount}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="VerifyAccount" component={VerifyAccount}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser" component={EditAccountUser}/>
+      <Stack.Screen options={{ title: 'Change Password' }} name="ChangePassword" component={ChangePassword}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="AddAddress" component={AddAddress}/>
     </Stack.Navigator>
   )
@@ -389,6 +394,7 @@ const ProviderAccountTab = () => {
     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
       <Stack.Screen options={{ headerShown: false }} name="MyAccount" component={MyAccount}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="VerifyAccount" component={VerifyAccount}/>
+      <Stack.Screen options={{ title: 'Change Password' }} name="ChangePassword" component={ChangePassword}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountProvider" component={EditAccountProvider}/>
       <Stack.Screen options={{ title: 'Edit Address' }} name="EditAddress" component={EditAddress}/>
     </Stack.Navigator>

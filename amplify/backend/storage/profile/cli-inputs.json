@@ -1,7 +1,7 @@
 {
-  "resourceName": "profilePictures",
-  "policyUUID": "1ef5237e",
-  "bucketName": "whileyoureoutefe3288037b942c28ee294bea96320e0",
+  "resourceName": "profile",
+  "policyUUID": "14e2f10b",
+  "bucketName": "whileyoureoutcf8196ea864d45d0aeb0d4c92e3499a8",
   "storageAccess": "auth",
   "guestAccess": [],
   "authAccess": [

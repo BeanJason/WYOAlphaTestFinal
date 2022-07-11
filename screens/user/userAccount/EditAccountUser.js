@@ -247,6 +247,13 @@ const EditAccountUser = ({ navigation }) => {
         </Modal>
 
         <View style={styles.inputContainer}>
+            <Text style={styles.nameText}>{userInfo.firstName} {userInfo.lastName}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("ChangePassword", {name: "ChangePassword"})} style={[styles.passwordBtn, {marginTop: 20, alignSelf: 'flex-start'}]}>
+                <Text style={styles.editText}>Change Password</Text>
+            </TouchableOpacity>
+        </View>
+
+        <View style={[styles.inputContainer, {marginTop: 10}]}>
           {/* phone number */}
           <Text style={styles.generalText}>Edit your phone number below</Text>
           <UserInput
@@ -397,6 +404,27 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     alignSelf: "center",
     textAlign: "center",
+  },
+  nameText: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 25,
+    alignSelf: 'flex-start'
+  },
+  passwordBtn: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 140,
+    height: 35,
+    backgroundColor: "black",
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  editText: {
+    color: "white",
+    fontFamily: "Montserrat-Bold",
+    fontSize: 15,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

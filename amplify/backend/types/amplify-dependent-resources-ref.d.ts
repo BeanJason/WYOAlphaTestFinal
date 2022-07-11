@@ -62,7 +62,7 @@ export type AmplifyDependentResourcesAttributes = {
         }
     },
     "storage": {
-        "profilePictures": {
+        "profile": {
             "BucketName": "string",
             "Region": "string"
         }

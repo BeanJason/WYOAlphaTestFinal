@@ -15,11 +15,7 @@
         ],
         "passwordProtectionSettings": {
           "passwordPolicyMinLength": 8,
-          "passwordPolicyCharacters": [
-            "REQUIRES_LOWERCASE",
-            "REQUIRES_NUMBERS",
-            "REQUIRES_UPPERCASE"
-          ]
+          "passwordPolicyCharacters": []
         },
         "mfaConfiguration": "OFF",
         "mfaTypes": [
@@ -135,7 +131,7 @@
     }
   },
   "storage": {
-    "profilePictures": {
+    "profile": {
       "service": "S3",
       "providerPlugin": "awscloudformation",
       "dependsOn": [
