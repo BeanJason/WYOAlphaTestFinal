@@ -151,7 +151,9 @@ const EditAccountProvider = ({ navigation }) => {
     const uploadImage = async (name, image) => {
       console.log('attempting to upload image to s3');
       const pictureUrl = await Storage.put(name +'.png', image, {
-        contentType: "image/jpeg"
+        contentType: "image/jpeg",
+        bucket: 'whileyoureoutefe3288037b942c28ee294bea96320e025126-staging',
+        level: 'public'
       })
       if(pictureUrl){
         let original = await DataStore.query(Provider, userInfo.userID);
