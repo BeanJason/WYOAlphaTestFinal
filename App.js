@@ -64,16 +64,27 @@ import * as Notifications from "expo-notifications"
 const NEW_PROVIDER_TASK = "background-provider-task"
 //when the app is in the background and you receieve a notification
 console.log('setting task');
-TaskManager.defineTask(NEW_PROVIDER_TASK, ({data, error}) => myTask(data, error))
-
-function myTask(data, error) {
+TaskManager.defineTask(NEW_PROVIDER_TASK, async ({data, error}) => {
+  console.log('background notification');
   if(error){
     console.log(error);
     return;
   }
-  console.log('notification from background');
   console.log(data);
-}
+  if(data.request.content.title == 'New Provider'){
+    let data = data.request.content.data
+    try {
+      let original = await DataStore.query(Job, data.jobID)
+      let ids = await createProviderReminder(original)
+      await DataStore.save(Job.copyOf(original, (updated) => {
+        updated.providerNotificationID.push(ids[0])
+        updated.providerNotificationID.push(ids[1])
+      }))
+    } catch (error) {
+      console.log(error);
+    }
+  }
+})
 
 
 

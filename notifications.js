@@ -15,11 +15,32 @@ Notifications.setNotificationHandler({
   },
 });
 
-// //when the user clicks on the notification
-// Notifications.addNotificationResponseReceivedListener((response) => {
-//   console.log("foreground");
-//   console.log(response);
-// });
+//when the user clicks on the notification
+Notifications.addNotificationResponseReceivedListener(async (response) => {
+  if(response.notification.request.content.title == 'New Provider'){
+    let data = response.notification.request.content.data
+    let original = await DataStore.query(Job, data.jobID)
+    let allNotifications = await Notifications.getAllScheduledNotificationsAsync()
+    let check = false;
+    for(let next of allNotifications){
+      if(original.providerNotificationID.includes(next.identifier)){
+        check = true;
+        break;
+      }
+    }
+    if(!check){
+      try {
+      let ids = await createProviderReminder(original)
+      await DataStore.save(Job.copyOf(original, (updated) => {
+        updated.providerNotificationID.push(ids[0])
+        updated.providerNotificationID.push(ids[1])
+      }))
+    } catch (error) {
+      console.log(error);
+    }
+    }
+  }
+});
 
 //when the app is open and you receieve a notification
 Notifications.addNotificationReceivedListener(async (notification) => {
@@ -36,7 +57,7 @@ Notifications.addNotificationReceivedListener(async (notification) => {
       console.log(error);
     }
   }
-  console.log(notification.request.content.title);
+  
 });
 
 

@@ -33,7 +33,6 @@ const ProviderHome = ({ navigation }) => {
   const [checkedBtn, setCheckedBtn] = useState('allJobs')
   const [refreshing, setRefreshing] = React.useState(false);
 
-
   const getNotifications = async() => {
     let n = await Notifications.getAllScheduledNotificationsAsync()
     console.log(n);

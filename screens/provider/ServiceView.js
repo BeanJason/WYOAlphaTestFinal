@@ -129,7 +129,6 @@ const ServiceView = ({ route, navigation }) => {
     setStartCancel(true)
     //cancel services
     let original
-    let success = false;
     try {
       original = await DataStore.query(Job, jobInfo.id)
     } catch (error) {
@@ -378,10 +377,12 @@ const ServiceView = ({ route, navigation }) => {
               <Marker
                 title="Destination"
                 coordinate={{
+                  
                   latitude: parseFloat(jobInfo?.latitude),
                   longitude: parseFloat(jobInfo?.longitude
                   )
                 }}
+                description={`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}
               />
 
             </MapView>
