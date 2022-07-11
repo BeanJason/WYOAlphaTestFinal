@@ -96,10 +96,10 @@ const ProviderHome = ({ navigation }) => {
     >
       <SafeAreaView style={commonStyles.safeContainer}>
           <View style={[styles.head, {flexDirection: 'row', alignItems:'center'}]}>
-            <ProfilePicture imageUrl={userInfo.profilePicture} name={`${userInfo.firstName}  ${userInfo.lastName}`} size={50}/>
+            <ProfilePicture imageUrl={userInfo.profilePicture} name={`${userInfo.firstName} ${userInfo.lastName}`} size={50}/>
             <Text style={styles.name}>Welcome Provider {userInfo.firstName}</Text>
           </View>
-          <TouchableOpacity onPress={() => testNotifications()}>
+          <TouchableOpacity onPress={() => getNotifications()}>
           <Text>Get Notifications</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => cancelNotifications()}>

@@ -8,7 +8,6 @@ const ProfilePicture = ({imageUrl, name, size, loading = false}) => {
   const [initials, setInitials] = useState()
 
   useEffect(() => {
-    setImage(imageUrl)
     let arr = name.split(' ')
     setInitials(arr[0].slice(0,1) + arr[1].slice(0,1))
   }, [imageUrl])

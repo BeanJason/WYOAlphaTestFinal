@@ -15,6 +15,7 @@ const JobCard = ({ jobInfo, type = '' }) => {
   const [numOfProvider, setNumOfProviders] = useState("");
   const navigation = useNavigation();
   const {authUser} = useSelector((state) => state.auth);
+  const [active, setActive] = useState(false)
 
   const onPress = async () => {
     if(authUser['custom:type'] == 'Provider'){
@@ -67,11 +68,16 @@ const JobCard = ({ jobInfo, type = '' }) => {
     }
     setNumOfProviders(count);
     getRequestOwnerName();
+    //check if active for today
+    let today = new Date()
+    if(formatDate.toLocaleDateString() == today.toLocaleDateString()){
+      setActive(true)
+    }
   }, [jobInfo]);
 
   return (
       <Pressable onPress={onPress}>
-      <View style={styles.jobContainer}>
+      <View style={active ? styles.jobContainerActive: styles.jobContainer}>
         <Text style={[styles.generalText, styles.title]}>
           {jobInfo.jobTitle}
         </Text>
@@ -97,6 +103,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     //backgroundColor: "rgba(0,221,255,0.9)",
     backgroundColor: "rgba(241,190,72,0.9)",
+    borderRadius: 10,
+    padding: 10,
+    width: Dimensions.get("window").width,
+    marginVertical: 10,
+    elevation: 10,
+    // height: '50%'
+  },
+  jobContainerActive: {
+    //borderColor: "rgba(0,221,255,0.9)",
+    borderColor: "green",
+    borderWidth: 3,
+    //backgroundColor: "rgba(0,221,255,0.9)",
+    backgroundColor: "rgba(134, 254, 172, 0.8)",
     borderRadius: 10,
     padding: 10,
     width: Dimensions.get("window").width,
