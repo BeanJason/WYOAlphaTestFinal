@@ -122,7 +122,7 @@ const JobSignUp = ({ route, navigation }) => {
         //send push notification to the user
         let messageInfo = {
           title: 'Job Request Accepted',
-          message: `${userInfo.firstName} has accepted your job request as a main provider`
+          message: `${userInfo.firstName} has accepted your job request as a main provider for your ${jobInfo.jobTitle} job`
         }
         await sendNotificationToUser(original.requestOwner, messageInfo)
         dispatch(addOrRemoveJob({ type: "ADD_ACTIVE_JOB", jobInfo }));

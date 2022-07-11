@@ -43,6 +43,20 @@ const ProviderHome = ({ navigation }) => {
     await Notifications.cancelAllScheduledNotificationsAsync()
   }
 
+  const testNotifications = async () => {
+    await Notifications.scheduleNotificationAsync({
+      content:{
+        title: 'test',
+        body: 'fake msg',
+        data: {
+          jobID: '12312312312'
+        }
+      },
+      trigger:{
+        seconds: 10
+      }
+    })
+  }
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
@@ -86,7 +100,7 @@ const ProviderHome = ({ navigation }) => {
             <ProfilePicture imageUrl={userInfo.profilePicture} name={`${userInfo.firstName}  ${userInfo.lastName}`} size={50}/>
             <Text style={styles.name}>Welcome Provider {userInfo.firstName}</Text>
           </View>
-          <TouchableOpacity onPress={() => getNotifications()}>
+          <TouchableOpacity onPress={() => testNotifications()}>
           <Text>Get Notifications</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => cancelNotifications()}>

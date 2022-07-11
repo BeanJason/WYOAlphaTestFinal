@@ -58,6 +58,25 @@ import { resetState, storeNewJobID } from "./redux/jobsReducer";
 import { checkUnverifiedJob } from "./common/functions";
 import EditAddress from "./screens/provider/providerAccount/EditAddress";
 import notifications from "./notifications"
+import * as TaskManager from "expo-task-manager"
+import * as Notifications from "expo-notifications"
+
+const NEW_PROVIDER_TASK = "background-provider-task"
+//when the app is in the background and you receieve a notification
+console.log('setting task');
+TaskManager.defineTask(NEW_PROVIDER_TASK, ({data, error}) => myTask(data, error))
+
+function myTask(data, error) {
+  if(error){
+    console.log(error);
+    return;
+  }
+  console.log('notification from background');
+  console.log(data);
+}
+
+
+
 
 //CONFIGURE AMPLIFY
 Amplify.configure(awsconfig);
@@ -108,6 +127,7 @@ export default function App() {
     await DataStore.clear()
     await loadAssetsAsync()
     setImagesLoaded(true)
+    await Notifications.registerTaskAsync(NEW_PROVIDER_TASK)
     loadDataStore()
   }
 

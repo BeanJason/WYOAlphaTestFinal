@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
 import MapView, {Marker}  from "react-native-maps"
 import Geocoder from "react-native-geocoding";
-import { cancelNotificationByID, sendNotificationToUser } from "../../notifications";
+import { cancelNotificationByID, sendNotificationToProvider, sendNotificationToUser } from "../../notifications";
 
 //Login screen
 const ServiceView = ({ route, navigation }) => {
@@ -139,7 +139,7 @@ const ServiceView = ({ route, navigation }) => {
     if(original){
       //if provider was the main get the next backup and set as main if available
       if(original.mainProvider == userInfo.userID){
-        if(original.backupProviders){
+        if(original.backupProviders.length != 0){
           let newMain = original.backupProviders[0]
           //cancel notifications
           if(original.providerNotificationID){
@@ -160,13 +160,13 @@ const ServiceView = ({ route, navigation }) => {
             let amOrPm = "AM";
             if (request.getHours() >= 12) {
               amOrPm = "PM";
-  }
+            }
             let messageInfo = {
               title: 'New Provider',
               message: `You have been appointed to be the new main provider of the ${original.jobTitle} job on ${request.toLocaleDateString()} at ${hour}:${min}${amOrPm}`,
               data: {jobID: original.id}
             }
-            await sendNotificationToUser(userInfo.userID, messageInfo)
+            await sendNotificationToProvider(newMain, messageInfo)
             //send notification to user about new provider
             let messageInfo2 = {
               title: 'Provider Switch',
@@ -179,6 +179,7 @@ const ServiceView = ({ route, navigation }) => {
         }
         //if no backups remove main provider only
         else{
+          console.log('No backups available');
           //cancel notifications
           if(original.providerNotificationID){
             await cancelNotificationByID(original.providerNotificationID[0])

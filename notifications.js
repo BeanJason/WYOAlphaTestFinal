@@ -1,8 +1,10 @@
 import { API, DataStore, graphqlOperation } from "aws-amplify";
 import * as Notifications from "expo-notifications";
 import { sendNotification } from "./src/graphql/mutations";
-import { User, Provider } from "./src/models";
+import { User, Provider, Job } from "./src/models";
 import * as Device from "expo-device"
+
+
 
 //handler settings
 Notifications.setNotificationHandler({
@@ -19,11 +21,26 @@ Notifications.setNotificationHandler({
 //   console.log(response);
 // });
 
-// //when the app is open
-// Notifications.addNotificationReceivedListener((notification) => {
-//   console.log("background");
-//   console.log(notification);
-// });
+//when the app is open and you receieve a notification
+Notifications.addNotificationReceivedListener(async (notification) => {
+  if(notification.request.content.title == 'New Provider'){
+    let data = notification.request.content.data
+    try {
+      let original = await DataStore.query(Job, data.jobID)
+      let ids = await createProviderReminder(original)
+      await DataStore.save(Job.copyOf(original, (updated) => {
+        updated.providerNotificationID.push(ids[0])
+        updated.providerNotificationID.push(ids[1])
+      }))
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  console.log(notification.request.content.title);
+});
+
+
+
 
 //get all notifications
 export const getAllNotifications = async () => {
@@ -38,7 +55,13 @@ export const cancelNotifications = async () => {
 
 //cancel one notification by id
 export const cancelNotificationByID = async (id) => {
-  await Notifications.cancelScheduledNotificationAsync(id)
+  if(id){
+    try {
+      await Notifications.cancelScheduledNotificationAsync(id)
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 //check if token is unchanged
@@ -197,6 +220,21 @@ export const createProviderReminder = async (jobInfo) => {
 
 export const sendNotificationToUser = async(userID, messageInfo, data = {}) => {
   let user = await DataStore.query(User, userID)
+  let token = user.expoToken
+  try {
+    await API.graphql(graphqlOperation(sendNotification, {
+      token: token,
+      title: messageInfo.title,
+      message: messageInfo.message,
+      data: data
+    }))
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const sendNotificationToProvider = async(userID, messageInfo, data = {}) => {
+  let user = await DataStore.query(Provider, userID)
   let token = user.expoToken
   try {
     await API.graphql(graphqlOperation(sendNotification, {
