@@ -68,7 +68,9 @@ const EditAccountProvider = ({ navigation }) => {
             phoneNumber: data.phoneNumber,
             biography: original.biography,
             backgroundCheck: original.backgroundCheckStatus,
-            profilePicture: original.profilePictureURL
+            profilePicture: original.profilePictureURL,
+            isBan: original.isBan,
+            employeeID: original.employeeID
         }
         dispatch(changeUserInfo({userInfo: newInfo}))
         createToast('Your phone number has been changed!')
@@ -98,7 +100,9 @@ const EditAccountProvider = ({ navigation }) => {
             phoneNumber: original.phoneNumber,
             biography: data.biography,
             backgroundCheck: original.backgroundCheckStatus,
-            profilePicture: original.profilePictureURL
+            profilePicture: original.profilePictureURL,
+            isBan: original.isBan,
+            employeeID: original.employeeID
         }
         dispatch(changeUserInfo({userInfo: newInfo}))
         createToast('Your biography has been changed!')
@@ -175,7 +179,9 @@ const EditAccountProvider = ({ navigation }) => {
           phoneNumber: original.phoneNumber,
           biography: original.biography,
           backgroundCheck: original.backgroundCheckStatus,
-          profilePicture: newPicture
+          profilePicture: newPicture,
+          isBan: original.isBan,
+          employeeID: original.employeeID
           }
           dispatch(changeUserInfo({userInfo: newInfo}))
           setImageUploading(false)

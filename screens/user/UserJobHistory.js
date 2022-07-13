@@ -39,12 +39,11 @@ import {
       //TESTING
       // setJobList(getJobHistory())
       // setFilteredJobList(getJobHistory())
-
+      setJobList(jobHistory)
       setLoading(false)
     }, []);
 
     useEffect(() => {
-      setJobList(jobHistory)
       setFilteredJobList(jobHistory)
     },[jobHistory])
 

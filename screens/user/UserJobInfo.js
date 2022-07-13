@@ -68,7 +68,7 @@ const UserJobInfo = ({ route, navigation }) => {
         setMainProvider(`${providerFound[0].firstName} ${providerFound[0].lastName}`);
         setMainProviderBio(providerFound[0].biography)
       });
-      let img = await Storage.get(jobInfo.mainProvider + '.png')
+      let img = await Storage.get(jobInfo.mainProvider)
       if(img){
         setProviderImage(img)
       }

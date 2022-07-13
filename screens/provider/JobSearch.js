@@ -21,6 +21,7 @@ import { API, DataStore, graphqlOperation } from "aws-amplify";
 import { Global, Job } from "../../src/models";
 import * as queries from "../../src/graphql/queries"
 import haversine from "haversine"
+import { createToast } from "../../common/components/Toast";
 
 
 
@@ -60,7 +61,7 @@ const JobSearch = ({ navigation }) => {
     let items = []
     for(const area of list){
       items.push({
-        label: `${area.zipCode} - ${area.city}` ,
+        label: `${area.zipCode} - ${area.city}`,
         value: `${area.zipCode} - ${area.city}`
       })
     }
@@ -68,9 +69,15 @@ const JobSearch = ({ navigation }) => {
   }
   
   useEffect(() => {
-    initLocation()
-    setup()
-    setLoading(false)
+    if(userInfo.isBan){
+      createToast('You cannot search for a job because your account is suspended')
+      navigation.navigate('Home')
+    }
+    else{
+      initLocation()
+      setup()
+      setLoading(false)
+    }
   }, []);
 
   const getDistanceToJob = (jobList) => {
@@ -113,6 +120,24 @@ const JobSearch = ({ navigation }) => {
     }
   },[zipCodeSelected])
 
+
+  if(userInfo.employeeID == "-1"){
+    return(
+      <ImageBackground
+      style={[commonStyles.background, {flex: 1}]}
+      source={require("../../assets/wyo_background.png")}
+    >
+      <SafeAreaView style={commonStyles.safeContainer}>
+       <Text style={[styles.name, {textAlign: 'center', marginTop: 100}]}>You have not been approved yet as a provider. Please wait until you are approved before searching for jobs</Text>
+       <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <View style={[styles.button, {alignSelf: 'center', marginTop: 30}]}>
+              <Text style={styles.btnText}>Back</Text>
+          </View>
+       </TouchableOpacity>
+      </SafeAreaView>
+    </ImageBackground>
+    )
+  }
 
   return (
     <ImageBackground
@@ -205,6 +230,19 @@ const styles = StyleSheet.create({
   warningModal: {
     textAlign: 'center',
     margin: 10
+  },
+  button: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 125,
+    height: 40,
+    backgroundColor: "black",
+    borderRadius: 10,
+  },
+  btnText: {
+    color: "white",
+    fontFamily: "Montserrat-Bold",
+    fontSize: 18,
   },
 });
 

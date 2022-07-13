@@ -39,19 +39,18 @@ import {
       //TESTING
       // setJobList(getJobHistory())
       // setFilteredJobList(getJobHistory())
-
+      setJobList(jobHistory)
       setLoading(false)
     }, []);
 
     useEffect(() => {
-      setJobList(jobHistory)
       setFilteredJobList(jobHistory)
     },[jobHistory])
 
     //Search
     const searchFilter = (text) => {
       if(text){
-        const newData = filteredJobList.filter((item) => {
+          const newData = filteredJobList.filter((item) => {
           return item.jobTitle.toLowerCase().includes(text.toLowerCase())
         });
         setFilteredJobList(newData)

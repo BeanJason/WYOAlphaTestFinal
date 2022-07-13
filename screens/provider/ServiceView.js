@@ -151,7 +151,6 @@ const ServiceView = ({ route, navigation }) => {
                 updated.backupProviders = updated.backupProviders.filter(id => id != newMain)
                 updated.providerNotificationID = []
             }))
-            success = true
             //send notification to new main provider
             let request = new Date(original.requestDateTime);
             let hour = request.getHours() % 12 || 12;
@@ -186,10 +185,10 @@ const ServiceView = ({ route, navigation }) => {
           }
           try {
             await DataStore.save(Job.copyOf(original, updated => {
+                updated.currentStatus = 'REQUESTED'
                 updated.mainProvider = null
                 updated.providerNotificationID = []
             }))
-            success = true
             //send notification to user about provider cancellation
             let messageInfo = {
               title: 'Job Cancelled',
@@ -207,7 +206,6 @@ const ServiceView = ({ route, navigation }) => {
           await DataStore.save(Job.copyOf(original, updated => {
             updated.backupProviders = updated.backupProviders.filter(id => id != userInfo.userID)
           }))
-          success = true
         } catch (error) {
             console.log(error);
         }

@@ -1,6 +1,6 @@
 import { DataStore, Auth, Storage } from "aws-amplify"
 import { getNotificationToken, updateExpoToken } from "./notifications";
-import {User, Provider} from "./src/models"
+import {User, Provider, Manager} from "./src/models"
 
 export async function checkCredentials(){
     let authUser = await getAuthData();
@@ -14,6 +14,9 @@ export async function checkCredentials(){
     }
     else if (authUser['custom:type'] == 'Provider'){
         userInfo = await getProviderData(authUser);
+    }
+    else if (authUser['custom:type'] == 'Manager'){
+        userInfo = await getManagerData(authUser)
     }
     console.log('User Info: ' + userInfo);
     if(userInfo == null){
@@ -89,7 +92,9 @@ const getProviderData = async (attributes) => {
             biography: userData[0].biography,
             backgroundCheck: userData[0].backgroundCheckStatus,
             profilePicture: pictureUrl ? pictureUrl : '',
-            expoToken: userData[0].expoToken
+            expoToken: userData[0].expoToken,
+            isBan: userData[0].isBan,
+            employeeID: userData[0].employeeID
         }
         if(userInfo.expoToken == "" || userInfo.expoToken == null){
             let token = await getNotificationToken();
@@ -97,6 +102,33 @@ const getProviderData = async (attributes) => {
                 updateExpoToken('Provider', userInfo.userID, token)
                 userInfo.expoToken = token
             }
+        }
+        return userInfo
+     } catch (error) {
+         console.log(error);
+         return null
+     }
+}
+
+const getManagerData = async(attributes) => {
+    try {
+        const userData = await DataStore.query(Manager, user => user.subID("eq", attributes.sub))
+        if(userData[0] == null || userData[0] == undefined){
+         return null
+        }
+        console.log('found user');
+        const userInfo = {
+             userID: userData[0].id,
+             firstName: userData[0].firstName,
+             lastName: userData[0].lastName,
+             expoToken: userData[0].expoToken
+        }
+        if(userInfo.expoToken == "" || userInfo.expoToken == null){
+         let token = await getNotificationToken();
+         if(token != "" && token != null){
+             updateExpoToken('Manager', userInfo.userID, token)
+             userInfo.expoToken = token
+         }
         }
         return userInfo
      } catch (error) {

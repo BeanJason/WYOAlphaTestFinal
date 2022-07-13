@@ -63,7 +63,9 @@ import {
                 phoneNumber: original.phoneNumber,
                 biography: original.biography,
                 backgroundCheck: original.backgroundCheckStatus,
-                profilePicture: original.profilePictureURL
+                profilePicture: original.profilePictureURL,
+                isBan: original.isBan,
+                employeeID: original.employeeID
             }
             dispatch(changeUserInfo({userInfo: newInfo}))
             navigation.reset({ routes: [{name: 'EditAccountProvider'}]})

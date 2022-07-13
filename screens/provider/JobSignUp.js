@@ -113,6 +113,7 @@ const JobSignUp = ({ route, navigation }) => {
         await DataStore.save(
           Job.copyOf(original, (updated) => {
             updated.mainProvider = userInfo.userID;
+            updated.currentStatus = 'ACCEPTED'
             updated.providerNotificationID?.push(ids[0])
             updated.providerNotificationID?.push(ids[1])
           })

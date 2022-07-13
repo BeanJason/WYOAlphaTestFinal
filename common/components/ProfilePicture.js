@@ -4,12 +4,13 @@ import { StyleSheet, View, Text, ActivityIndicator, ImageBackground } from "reac
 
 //Show a spinner loading on a screen
 const ProfilePicture = ({imageUrl, name, size, loading = false}) => {
-  const [image, setImage] = useState(imageUrl)
+  const [image, setImage] = useState()
   const [initials, setInitials] = useState()
 
   useEffect(() => {
     let arr = name.split(' ')
     setInitials(arr[0].slice(0,1) + arr[1].slice(0,1))
+    setImage(imageUrl)
   }, [imageUrl])
   
   return (

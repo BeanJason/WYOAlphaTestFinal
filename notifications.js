@@ -1,7 +1,7 @@
 import { API, DataStore, graphqlOperation } from "aws-amplify";
 import * as Notifications from "expo-notifications";
 import { sendNotification } from "./src/graphql/mutations";
-import { User, Provider, Job } from "./src/models";
+import { User, Provider, Job, Manager } from "./src/models";
 import * as Device from "expo-device"
 
 
@@ -103,6 +103,17 @@ export const updateExpoToken = async (type, id, token) => {
     return token;
   } else if (type == "User") {
     let original = await DataStore.query(User, id);
+    if (original.expoToken == token) {
+      return token;
+    }
+    await DataStore.save(
+      User.copyOf(original, (updated) => {
+        updated.expoToken = token;
+      })
+    );
+    return token;
+  } else if (type == "Manager") {
+    let original = await DataStore.query(Manager, id);
     if (original.expoToken == token) {
       return token;
     }

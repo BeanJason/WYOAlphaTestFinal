@@ -196,3 +196,71 @@ export const getJobHistory = () => {
 ]
     return jobs
 }
+
+
+export const getManyProviders = () => {
+    let date = new Date()
+    date.setDate(date.getDate() + 3)
+    date.setHours(10)
+    date.setMinutes(0)
+    let d = date.toString()
+
+    let employees = [{
+        id: '1',
+        firstName: 'Harry',
+        lastName: 'Potter',
+        createdAt: date,
+        biography: 'My name is harry potter',
+        email: 'harryPotter@yahoo.com',
+        phone: '111-222-3333',
+        offenses: 0,
+        overallRating: 4.5,
+    },
+    {
+        id: '2',
+        firstName: 'Ron',
+        lastName: 'Weasley',
+        createdAt: date,
+        biography: 'My name is harry potter',
+        email: 'harryPotter@yahoo.com',
+        phone: '111-222-3333',
+        offenses: 3,
+        overallRating: 4.1,
+    },
+    {
+        id: '3',
+        firstName: 'Hermione',
+        lastName: 'Granger',
+        createdAt: date,
+        biography: 'My name is harry potter',
+        email: 'harryPotter@yahoo.com',
+        phone: '111-222-3333',
+        offenses: 5,
+        overallRating: 3.1,
+    },
+    {
+        id: '4',
+        firstName: 'Albus',
+        lastName: 'Dumbledore',
+        createdAt: date,
+        biography: 'My name is harry potter',
+        email: 'harryPotter@yahoo.com',
+        phone: '111-222-3333',
+        offenses: 0,
+        overallRating: 5,
+    },
+    {
+        id: '5',
+        firstName: 'Severus',
+        lastName: 'Snape',
+        createdAt: date,
+        biography: 'My name is harry potter',
+        email: 'harryPotter@yahoo.com',
+        phone: '111-222-3333',
+        offenses: 1,
+        overallRating: 3.8,
+    }
+]
+
+    return employees
+}
