@@ -18,7 +18,8 @@ const AboutUs = ({ navigation }) => {
         <Text style={styles.header1}>Company Information</Text>
         <Text style={styles.header2}>About the Company</Text>
 
-        <Text style={styles.header3}></Text>
+        <Text style={styles.header3}>Why oh is a service based company that offers members of your community the chance to earn income helping you While You’re Out.
+schedule a trusted WYO who lives in your community today.</Text>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -38,6 +39,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: -15,
+  },
+  header3: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: -15,
+    marginTop: 35,
   },
 });
 

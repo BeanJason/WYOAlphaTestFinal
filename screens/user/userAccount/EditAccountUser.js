@@ -248,7 +248,7 @@ const EditAccountUser = ({ navigation }) => {
 
         <View style={styles.inputContainer}>
             <Text style={styles.nameText}>{userInfo.firstName} {userInfo.lastName}</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("ChangePassword", {name: "ChangePassword"})} style={[styles.passwordBtn, {marginTop: 20, alignSelf: 'flex-start'}]}>
+            <TouchableOpacity onPress={() => navigation.navigate("ChangePassword", {name: "ChangePassword"})} style={[styles.passwordBtn, {marginTop: 20}]}>
                 <Text style={styles.editText}>Change Password</Text>
             </TouchableOpacity>
         </View>
@@ -408,12 +408,13 @@ const styles = StyleSheet.create({
   nameText: {
     fontFamily: "Montserrat-Bold",
     fontSize: 25,
-    alignSelf: 'flex-start'
+    justifyContent: "center",
+    alignItems: "center",
   },
   passwordBtn: {
     justifyContent: "center",
     alignItems: "center",
-    width: 140,
+    width: 150,
     height: 35,
     backgroundColor: "black",
     borderRadius: 10,

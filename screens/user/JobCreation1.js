@@ -461,7 +461,7 @@ const JobCreation1 = ({ navigation }) => {
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               onPress={handleSubmit(submitForm)}
-              style={[styles.button, {width: 200, height: 60}]}
+              style={[styles.button, {width: 310, height: 60}]}
             >
               <Text style={[styles.btnText, {textAlign: 'center'}]}>Proceed to Checkout</Text>
             </TouchableOpacity>
