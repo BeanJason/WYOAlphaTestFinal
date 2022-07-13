@@ -16,6 +16,7 @@ import { User } from "../../../src/models";
 import { changeUserInfo } from "../../../redux/authReducer";
 import { useState } from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import {GOOGLE_API} from "@env"
 
 //Login screen
 const AddAddress = ({ navigation }) => {
@@ -108,7 +109,7 @@ const AddAddress = ({ navigation }) => {
                 setChanged(true);
               }}
               query={{
-                key: "AIzaSyAFD8BEuFIvJtQOj31rKE-i0YubHze6LS4",
+                key: GOOGLE_API,
                 language: "en",
                 components: "country:us",
                 type: "geocode",

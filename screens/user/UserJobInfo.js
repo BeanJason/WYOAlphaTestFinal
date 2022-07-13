@@ -64,25 +64,26 @@ const UserJobInfo = ({ route, navigation }) => {
   const getProviders = async () => {
     //set main provider if available
     if(jobInfo.mainProvider){
-      await DataStore.query(Provider, provider => provider.id("eq", jobInfo.mainProvider)).then((providerFound) => {
-        setMainProvider(`${providerFound[0].firstName} ${providerFound[0].lastName}`);
-        setMainProviderBio(providerFound[0].biography)
+      await DataStore.query(Provider, jobInfo.mainProvider).then(async (providerFound) => {
+        setMainProvider(`${providerFound.firstName} ${providerFound.lastName}`);
+        setMainProviderBio(providerFound.biography)
+        if(providerFound.profilePictureURL){
+          let img = await Storage.get(providerFound.profilePictureURL)
+          setProviderImage(img)
+        }
       });
-      let img = await Storage.get(jobInfo.mainProvider)
-      if(img){
-        setProviderImage(img)
-      }
     }
     //set backup providers if available
     if(jobInfo.backupProviders && jobInfo.backupProviders.length != 0){
       let listOfBackups = []
       for(let next of jobInfo.backupProviders){
-        await DataStore.query(Provider, provider => provider.id("eq", next)).then((providerFound) => {
-          listOfBackups.push(`${providerFound[0].firstName} ${providerFound[0].lastName}`)
+        await DataStore.query(Provider, next).then((providerFound) => {
+          listOfBackups.push(`${providerFound.firstName} ${providerFound.lastName}`)
         });
       }
       setBackupProviders(listOfBackups)
     }
+    setLoading(false)
   }
 
   const cancelJob = async () => {
@@ -118,7 +119,6 @@ const UserJobInfo = ({ route, navigation }) => {
     if(date > today){
       setCanCancel(true)
     }
-    setLoading(false)
   },[])
 
   if(loading){
@@ -144,8 +144,8 @@ const UserJobInfo = ({ route, navigation }) => {
             {canCancel ? (
               <View style={styles.warningModal}>
                 <Text style={styles.modalTitle}>Warning</Text>
-                <Text style={styles.modalText}>After cancellation of this job you will be 
-                refunded through your original payment method. Are you sure you want to cancel this job?
+                <Text style={styles.modalText}> Cancellation Policy: From time of booking you have 24 hours to cancel service for a full refund minus the service fee.
+                After cancellation of this job you will be refunded through your original payment method. Are you sure you want to cancel this job?
                 </Text>
                 {startCancel ?  <Spinner color={'black'}/> : (
                   //Buttons
@@ -169,7 +169,7 @@ const UserJobInfo = ({ route, navigation }) => {
               <View style={styles.warningModal}>
                 <Text style={styles.modalTitle}>Cancellation</Text>
                 <Text style={styles.modalText}>The cancellation of this job cannot be processed due to the refund policy.
-                A job is only eligible for cancellation if 24 hours have not passed since the request was made.
+                Cancellation Policy: From time of booking you have 24 hours to cancel service for a full refund minus the service fee. Thank you.
                 </Text>
                 <TouchableOpacity
                     onPress={() => setShowModal(false)}
@@ -207,8 +207,8 @@ const UserJobInfo = ({ route, navigation }) => {
               {mainProvider ? (
                 <View>
                   <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                    <ProfilePicture imageUrl={providerImage} name={mainProvider} size={50} />
-                    <Text style={[styles.generalText, {marginLeft: 10}]}>{mainProvider}</Text>
+                    <ProfilePicture imageUrl={providerImage} name={mainProvider} size={80} />
+                    <Text style={[styles.subtitle, {marginLeft: 10}]}>{mainProvider}</Text>
                   </View>
                   <View>
                     <Text style={[styles.subtitle, {marginBottom: 10, borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Provider Biography</Text>

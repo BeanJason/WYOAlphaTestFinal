@@ -128,7 +128,7 @@ const JobSearch = ({ navigation }) => {
       source={require("../../assets/wyo_background.png")}
     >
       <SafeAreaView style={commonStyles.safeContainer}>
-       <Text style={[styles.name, {textAlign: 'center', marginTop: 100}]}>You have not been approved yet as a provider. Please wait until you are approved before searching for jobs</Text>
+       <Text style={[styles.name, {textAlign: 'center', marginTop: 100}]}>You have not been approved yet as a provider. Please wait until approval before searching for jobs</Text>
        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={[styles.button, {alignSelf: 'center', marginTop: 30}]}>
               <Text style={styles.btnText}>Back</Text>

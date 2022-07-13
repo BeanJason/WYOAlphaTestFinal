@@ -25,7 +25,7 @@ const EmployeeJobs = ({ navigation, route }) => {
   const {employeeInfo} = route.params
   const [jobList, setJobList] = useState([])
   const [filteredJobList, setFilteredJobList] = useState([])
-  const [checkedBtn, setCheckedBtn] = useState('completedJobs')
+  const [checkedBtn, setCheckedBtn] = useState('activeJobs')
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
 
@@ -66,6 +66,9 @@ const EmployeeJobs = ({ navigation, route }) => {
 
   useEffect(() => {
     if(checkedBtn == 'ongoingJobs'){
+      setFilteredJobList(jobList.filter(job => job.currentStatus == 'IN_SERVICE'))
+    }
+    else if(checkedBtn == 'activeJobs'){
       setFilteredJobList(jobList.filter(job => job.currentStatus != 'COMPLETED'))
     }
     else {
@@ -84,7 +87,7 @@ const EmployeeJobs = ({ navigation, route }) => {
         {loading ? <Spinner color={'white'}/> : (
           <View style = {styles.body}> 
             {/* Radio Buttons */}
-            <View style={{flexDirection: "row", alignItems: 'center', justifyContent:'center'}}>
+            <View style={{flexDirection: "row", alignItems: 'center', justifyContent:'space-around'}}>
                   <RadioButton
                     value="completedJobs"
                     status={checkedBtn === 'completedJobs' ? 'checked': 'unchecked'}
@@ -93,6 +96,13 @@ const EmployeeJobs = ({ navigation, route }) => {
                   />
                   <Text style={{fontFamily: 'Montserrat-Bold', margin: 5}}>Completed Jobs</Text>
                   <RadioButton
+                    value="activeJobs"
+                    status={checkedBtn === 'activeJobs' ? 'checked': 'unchecked'}
+                    onPress={() => setCheckedBtn('activeJobs')}
+                    color='black'
+                  />
+                  <Text style={{fontFamily: 'Montserrat-Bold', margin: 10}}>Active Jobs</Text>
+                  <RadioButton
                     value="ongoingJobs"
                     status={checkedBtn === 'ongoingJobs' ? 'checked': 'unchecked'}
                     onPress={() => setCheckedBtn('ongoingJobs')}
@@ -100,6 +110,7 @@ const EmployeeJobs = ({ navigation, route }) => {
                   />
                   <Text style={{fontFamily: 'Montserrat-Bold', margin: 10}}>Ongoing Jobs</Text>
             </View>
+            <Text style={[styles.subTitle, {marginTop: 15}]}>{checkedBtn == 'activeJobs' ? 'Active Jobs' : checkedBtn == 'ongoingJobs' ? 'Currently In Service' : 'Completed Jobs'}</Text>
             {filteredJobList.length == 0 ? <Text style={{fontFamily: 'Montserrat-Italic', flex: 1, margin: 20}}>There are no current jobs in this category</Text> : (
               <View style={{flex: 1}}>
                 <Text style={styles.helpText}>Click on any of the following jobs for more details</Text>
@@ -137,7 +148,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: 'center',
     marginBottom: 15,
-  }
+  },
+  subTitle:{
+    fontSize: 25,
+    marginBottom: 20,
+    alignSelf: 'center',
+    fontFamily: 'Montserrat-Bold',
+    textAlign: 'center',
+    alignSelf: 'center',
+    borderBottomWidth: 1
+  },
 });
 
 export default EmployeeJobs;

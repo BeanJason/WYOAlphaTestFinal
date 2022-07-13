@@ -62,17 +62,17 @@ const ManagerJobInfo = ({ route, navigation }) => {
   const getProviders = async () => {
     //set main provider if available
     if(jobInfo.mainProvider){
-      await DataStore.query(Provider, provider => provider.id("eq", jobInfo.mainProvider)).then((providerFound) => {
-        setMainProvider(`${providerFound[0].firstName} ${providerFound[0].lastName}`);
-      });
+      await DataStore.query(Provider, jobInfo.mainProvider).then((providerFound) => {
+        setMainProvider(`${providerFound.firstName} ${providerFound.lastName}`);
+      })
     }
     //set backup providers if available
     if(jobInfo.backupProviders && jobInfo.backupProviders.length != 0){
       let listOfBackups = []
       for(let next of jobInfo.backupProviders){
-        await DataStore.query(Provider, provider => provider.id("eq", next)).then((providerFound) => {
-          listOfBackups.push(`${providerFound[0].firstName} ${providerFound[0].lastName}`)
-        });
+        await DataStore.query(Provider, next).then((providerFound) => {
+          listOfBackups.push(`${providerFound.firstName} ${providerFound.lastName}`)
+        })
       }
       setBackupProviders(listOfBackups)
     }

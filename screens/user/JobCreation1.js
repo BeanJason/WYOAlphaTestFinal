@@ -6,7 +6,6 @@ import {
   ImageBackground,
   SafeAreaView,
   TouchableOpacity,
-  TouchableHighlight,
   Modal
 } from "react-native";
 import UserInput from "../../common/components/UserInput";
@@ -61,7 +60,7 @@ const JobCreation1 = ({ navigation }) => {
   const [isPress, setIsPress] = useState();
 
   useEffect(() => {
-    setPrice(2000)
+    setPrice(5000)
     let nextDay = new Date()
     nextDay.setDate(nextDay.getDate() + 2)
     setDateOfToday(nextDay)
@@ -126,19 +125,19 @@ const JobCreation1 = ({ navigation }) => {
       setDuration(value)
       switch(value){
         case 4:
-          setPrice(2000)
-          break;
-        case 5:
-          setPrice(3000)
-          break;
-        case 6:
-          setPrice(4000)
-          break;
-        case 7:
           setPrice(5000)
           break;
+        case 5:
+          setPrice(6250)
+          break;
+        case 6:
+          setPrice(7500)
+          break;
+        case 7:
+          setPrice(8750)
+          break;
         case 8:
-          setPrice(6000)
+          setPrice(10000)
           break;
       }
     }
@@ -208,8 +207,8 @@ const JobCreation1 = ({ navigation }) => {
     }
   }
   useEffect(() => {
-    setTotal(price + tip)
-    let result = (price + tip) / 100
+    setTotal(price + tip + 250)
+    let result = (price + tip + 250) / 100
     setTotalText(result.toFixed(2))
   }, [tip, price])
 
@@ -224,7 +223,7 @@ const JobCreation1 = ({ navigation }) => {
       setAddressError('Address is required')
     }
     //Success
-    if(addressError == '' && dateError == ''){
+    if(address != null && dateSelected != false){
       data.currentStatus = "REQUESTED";
       let finalDate = date.toString()
       data.requestDateTime = finalDate
@@ -259,7 +258,7 @@ const JobCreation1 = ({ navigation }) => {
   return (
     <KeyboardAwareScrollView>
       <ImageBackground
-        style={[commonStyles.background, {height: 1000}]}
+        style={[commonStyles.background, {height: 1100}]}
         source={require("../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
@@ -393,7 +392,7 @@ const JobCreation1 = ({ navigation }) => {
 
             {/* Tips */}
             <View style = {styles.field}>
-              <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 17, textAlign: 'center'}}>Would you like to give a tip?</Text>
+              <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 17, textAlign: 'center'}}>Would you like to give a tip to your provider?</Text>
               <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
                 <TouchableOpacity 
                 onPress={() => onTipChange(10)}
@@ -452,7 +451,11 @@ const JobCreation1 = ({ navigation }) => {
                 control={control}
               />
             </View>
-            <View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 10}}>
+            <View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 5}}>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 20, textAlign: 'right' }}>Service Fee: </Text>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 20, textAlign: 'right' }}>$2.50</Text>
+            </View>
+            <View style={{flexDirection: 'row', alignSelf: 'flex-end'}}>
                 <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 24, textAlign: 'right' }}>Total: </Text>
                 <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 24, textAlign: 'right' }}>${totalText}</Text>
             </View>

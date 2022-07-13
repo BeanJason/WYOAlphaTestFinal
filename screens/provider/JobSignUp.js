@@ -72,25 +72,16 @@ const JobSignUp = ({ route, navigation }) => {
       if (jobInfo.mainProvider == userInfo.userID) {
         setMainProvider(`${userInfo.firstName} ${userInfo.lastName}`);
       } else {
-        await DataStore.query(Provider, (provider) =>
-          provider.id("eq", jobInfo.mainProvider)
-        ).then((providerFound) => {
-          setMainProvider(
-            `${providerFound[0].firstName} ${providerFound[0].lastName}`
-          );
+        await DataStore.query(Provider, jobInfo.mainProvider).then((providerFound) => {
+          setMainProvider(`${providerFound.firstName} ${providerFound.lastName}`);
         });
       }
     }
     //set backup providers if available
     if (jobInfo.backupProviders && jobInfo.backupProviders.length != 0) {
       let listOfBackups = [];
-      for (let next of jobInfo.backupProviders) {
-        await DataStore.query(Provider, (provider) =>
-          provider.id("eq", next)
-        ).then((providerFound) => {
-          listOfBackups.push(
-            `${providerFound[0].firstName} ${providerFound[0].lastName}`
-          );
+      for (let next of jobInfo.backupProviders) {await DataStore.query(Provider, next).then((providerFound) => {
+          listOfBackups.push(`${providerFound.firstName} ${providerFound.lastName}`);
         });
       }
       setBackupProviders(listOfBackups);
@@ -167,22 +158,28 @@ const JobSignUp = ({ route, navigation }) => {
     getDateFormat();
     getProviders();
     getRequestOwnerName();
-    //check for time conflict
-    let jobStart = new Date(jobInfo.requestDateTime);
-    let jobEnd = new Date(jobInfo.requestDateTime)
-    jobEnd.setHours(jobEnd.getHours() + jobInfo.duration)
-    const jobRange = moment.range(jobStart, jobEnd)
-    
-    let start, end, range;
-    for (let job of activeJobs) {
-      start = new Date(job.requestDateTime);
-      end = new Date(job.requestDateTime)
-      end.setHours(end.getHours() + job.duration)
-      range = moment.range(start, end)
-      if(jobRange.overlaps(range)){
-        setCanSignUp(false)
-        break;
-      } 
+    //check if there is 1 main and 2 backups already
+    if(jobInfo.mainProvider && jobInfo.backupProviders.length == 2){
+      setCanSignUp(false)
+    }
+    else{
+      //check for time conflict
+      let jobStart = new Date(jobInfo.requestDateTime);
+      let jobEnd = new Date(jobInfo.requestDateTime)
+      jobEnd.setHours(jobEnd.getHours() + jobInfo.duration)
+      const jobRange = moment.range(jobStart, jobEnd)
+      
+      let start, end, range;
+      for (let job of activeJobs) {
+        start = new Date(job.requestDateTime);
+        end = new Date(job.requestDateTime)
+        end.setHours(end.getHours() + job.duration)
+        range = moment.range(start, end)
+        if(jobRange.overlaps(range)){
+          setCanSignUp(false)
+          break;
+        } 
+      }
     }
 
     setLoading(false);

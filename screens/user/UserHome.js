@@ -24,7 +24,7 @@ const UserHome = ({ navigation }) => {
   const dispatch = useDispatch()
   const [jobList, setJobList] = useState(activeJobs);
   const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   
   const getNotifications = async() => {
@@ -39,11 +39,13 @@ const UserHome = ({ navigation }) => {
   
 
   const onRefresh = React.useCallback(async () => {
+    setLoading(true)
     setRefreshing(true);
     dispatch(initializeJobs({
       userID: userInfo.userID
     }))
     setRefreshing(false);
+    setLoading(false)
   }, [refreshing]);
 
   //Get all current jobs
@@ -86,10 +88,7 @@ const UserHome = ({ navigation }) => {
             <Text style={styles.helpText}>Click on any of the following jobs for more details</Text>
             <FlatList
               keyExtractor={(item) => item.id}
-              refreshControl = {
-                  <RefreshControl refreshing = {refreshing}
-                  onRefresh = {onRefresh}
-                  />}
+              refreshControl = { <RefreshControl refreshing = {refreshing} onRefresh = {onRefresh} />}
               data={jobList}
               renderItem={({ item }) => <JobCard jobInfo={item} />}
             />

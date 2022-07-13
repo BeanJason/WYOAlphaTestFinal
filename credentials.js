@@ -136,5 +136,3 @@ const getManagerData = async(attributes) => {
          return null
      }
 }
-
-export const stripeKey = "pk_test_51LAbv7GUC6WuR4axP3o28XT3NNuJW1Reiy10HWN33J35I6hAaEEs18ZVnmUVbCSwmv4sLic0KdI6ZnFnjkl1B5yW00IAMz9BzM"

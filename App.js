@@ -10,13 +10,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch, Provider } from "react-redux";
 import {Amplify, Auth, DataStore, Hub, nav} from "aws-amplify"
-import { checkCredentials, stripeKey } from "./credentials";
+import { checkCredentials } from "./credentials";
 import { changeUserStatus, logout, changeExpoToken } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from "expo-asset"
 import { LogBox } from 'react-native';
 import { StripeProvider } from '@stripe/stripe-react-native';
+import {STRIPE_KEY} from "@env"
 
 
 //SCREENS
@@ -168,7 +169,7 @@ export default function App() {
   
   return (
     <Provider store={Store}>
-      <StripeProvider publishableKey = "pk_test_51LAbv7GUC6WuR4axP3o28XT3NNuJW1Reiy10HWN33J35I6hAaEEs18ZVnmUVbCSwmv4sLic0KdI6ZnFnjkl1B5yW00IAMz9BzM" >
+      <StripeProvider publishableKey = {STRIPE_KEY} >
         <RootNavigation />
       </StripeProvider>
       

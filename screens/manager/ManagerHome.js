@@ -43,7 +43,6 @@ const ManagerHome = ({ navigation }) => {
 
 
   const setup = async() => {
-      //get jobs from selected zip code
       let filter = {
         and: [
           { _deleted: {ne: true} },

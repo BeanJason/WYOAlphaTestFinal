@@ -20,6 +20,7 @@ import { register, resetState } from "../../redux/authReducer";
 import { FontAwesome } from "@expo/vector-icons";
 import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete"
 import { getNotificationToken } from "../../notifications";
+import {GOOGLE_API} from "@env"
 
 //Provider registration page
 const ProviderRegistration = ({ navigation }) => {
@@ -161,7 +162,7 @@ const ProviderRegistration = ({ navigation }) => {
                         setLng(details.geometry.location.lng)
                       }}
                       query={{
-                        key: "AIzaSyAFD8BEuFIvJtQOj31rKE-i0YubHze6LS4",
+                        key: GOOGLE_API,
                         language: "en",
                         components: "country:us",
                         type: "geocode"

@@ -20,12 +20,12 @@ async function getItem(id) {
       id: id,
     },
     ExpressionAttributeNames: {
-      "#Date": "requestDateTime",
+      "#Amount": "price",
       "#PayID": "paymentID",
       "#Status": "currentStatus",
     },
     Select: "SPECIFIC_ATTRIBUTES",
-    ProjectionExpression: "#Date, #PayID, #Status",
+    ProjectionExpression: "#Amount, #PayID, #Status",
   };
   try {
     return await docClient.get(params).promise();
@@ -71,8 +71,10 @@ exports.handler = async (event) => {
     //if cancelled
     if (arguments.isCancel) {
         //refund
+        let amount = jobInfo.Item.price - 250;
         const refund = await stripe.refunds.create({
-            payment_intent: jobInfo.Item.paymentID
+            payment_intent: jobInfo.Item.paymentID,
+            amount: amount
         })
         if(refund.status == 'succeeded'){
           try {
@@ -87,8 +89,10 @@ exports.handler = async (event) => {
       //if not accepted
       if (jobInfo.Item.currentStatus == "REQUESTED") {
           //refund
+          let amount = jobInfo.Item.price - 250;
           const refund = await stripe.refunds.create({
-              payment_intent: jobInfo.Item.paymentID
+              payment_intent: jobInfo.Item.paymentID,
+              amount: amount
           })
           if(refund.status == 'succeeded'){
             try {

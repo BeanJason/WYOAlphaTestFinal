@@ -63,8 +63,8 @@ const ProviderJobInfo = ({ route, navigation }) => {
         setMainProvider(`${userInfo.firstName} ${userInfo.lastName}`);
       }
       else{
-        await DataStore.query(Provider, provider => provider.id("eq", jobInfo.mainProvider)).then((providerFound) => {
-          setMainProvider(`${providerFound[0].firstName} ${providerFound[0].lastName}`);
+        await DataStore.query(Provider, jobInfo.mainProvider).then((providerFound) => {
+          setMainProvider(`${providerFound.firstName} ${providerFound.lastName}`);
         });
       }
     }
@@ -72,8 +72,8 @@ const ProviderJobInfo = ({ route, navigation }) => {
     if(jobInfo.backupProviders && jobInfo.backupProviders.length != 0){
       let listOfBackups = []
       for(let next of jobInfo.backupProviders){
-        await DataStore.query(Provider, provider => provider.id("eq", next)).then((providerFound) => {
-          listOfBackups.push(`${providerFound[0].firstName} ${providerFound[0].lastName}`)
+        await DataStore.query(Provider, next).then((providerFound) => {
+          listOfBackups.push(`${providerFound.firstName} ${providerFound.lastName}`)
         });
       }
       setBackupProviders(listOfBackups)

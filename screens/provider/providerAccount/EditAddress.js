@@ -16,6 +16,7 @@ import {
   import { changeUserInfo } from "../../../redux/authReducer";
   import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete"
   import { useState, useEffect } from "react";
+  import {GOOGLE_API} from "@env"
 
   
   //Login screen
@@ -105,7 +106,7 @@ import {
                         setChanged(true)
                       }}
                       query={{
-                        key: "AIzaSyAFD8BEuFIvJtQOj31rKE-i0YubHze6LS4",
+                        key: GOOGLE_API,
                         language: "en",
                         components: "country:us",
                         type: "geocode"

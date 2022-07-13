@@ -20,6 +20,7 @@ import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
 import MapView, {Marker}  from "react-native-maps"
 import Geocoder from "react-native-geocoding";
 import { cancelNotificationByID, sendNotificationToProvider, sendNotificationToUser } from "../../notifications";
+import {GOOGLE_API} from "@env"
 
 //Login screen
 const ServiceView = ({ route, navigation }) => {
@@ -84,8 +85,8 @@ const ServiceView = ({ route, navigation }) => {
         setMainProvider(`${userInfo.firstName} ${userInfo.lastName}`);
       }
       else{
-        await DataStore.query(Provider, provider => provider.id("eq", jobInfo.mainProvider)).then((providerFound) => {
-          setMainProvider(`${providerFound[0].firstName} ${providerFound[0].lastName}`);
+        await DataStore.query(Provider, jobInfo.mainProvider).then((providerFound) => {
+          setMainProvider(`${providerFound.firstName} ${providerFound.lastName}`);
         });
       }
     }
@@ -93,8 +94,8 @@ const ServiceView = ({ route, navigation }) => {
     if(jobInfo.backupProviders && jobInfo.backupProviders.length != 0){
       let listOfBackups = []
       for(let next of jobInfo.backupProviders){
-        await DataStore.query(Provider, provider => provider.id("eq", next)).then((providerFound) => {
-          listOfBackups.push(`${providerFound[0].firstName} ${providerFound[0].lastName}`)
+        await DataStore.query(Provider, next).then((providerFound) => {
+          listOfBackups.push(`${providerFound.firstName} ${providerFound.lastName}`)
         });
       }
       setBackupProviders(listOfBackups)
@@ -224,7 +225,7 @@ const ServiceView = ({ route, navigation }) => {
   //get coordinates by address
   const setCoordinatesForMap = async () => {
     console.log('geocoder');
-    Geocoder.init('AIzaSyAFD8BEuFIvJtQOj31rKE-i0YubHze6LS4', {language: 'en'})
+    Geocoder.init(GOOGLE_API, {language: 'en'})
     if(Geocoder.isInit){
       const response = await Geocoder.from(`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`)
       console.log(response.results[0].geometry.location);
@@ -235,12 +236,18 @@ const ServiceView = ({ route, navigation }) => {
       setLoading(false)
     }
   }
+
+  const checkProviderRadius = async() => {
+    //check if the provider is within the area of the job location
+  }
   
   useEffect(() => {
     getDateFormat()
     getProviders()
     setCanCancel(true)
-    setAllowCheckOut(jobInfo.checkInTime)
+    if(jobInfo.checkInTime){
+      setAllowCheckOut(true)
+    }
     //Testing
     // setCoordinatesForMap()
     setLoading(false)
