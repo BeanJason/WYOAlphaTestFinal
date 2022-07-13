@@ -65,7 +65,9 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                   "backgroundCheckStatus": false,
                   "employeeID": '-1',
                   "offenses": 0,
-                  "overallRating": 0.0
+                  "overallRating": 0.0,
+                  "ratingCount": 0,
+                  "isBan": false
               })
             )
           }
@@ -81,7 +83,9 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                 biography: userData.biography,
                 backgroundCheck: userData.backgroundCheckStatus,
                 profilePicture: userData.profilePictureURL,
-                expoToken: data.expoToken
+                expoToken: data.expoToken,
+                isBan: data.isBan,
+                employeeID: data.employeeID
               }
             }
             else{

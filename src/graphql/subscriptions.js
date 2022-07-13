@@ -115,6 +115,8 @@ export const onCreateProvider = /* GraphQL */ `
       employeeID
       offenses
       overallRating
+      ratingCount
+      isBan
       jobs {
         nextToken
         startedAt
@@ -145,6 +147,8 @@ export const onUpdateProvider = /* GraphQL */ `
       employeeID
       offenses
       overallRating
+      ratingCount
+      isBan
       jobs {
         nextToken
         startedAt
@@ -175,6 +179,8 @@ export const onDeleteProvider = /* GraphQL */ `
       employeeID
       offenses
       overallRating
+      ratingCount
+      isBan
       jobs {
         nextToken
         startedAt

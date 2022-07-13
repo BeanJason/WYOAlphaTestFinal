@@ -323,6 +323,20 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "ratingCount": {
+                    "name": "ratingCount",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "isBan": {
+                    "name": "isBan",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "jobs": {
                     "name": "jobs",
                     "isArray": true,
@@ -709,5 +723,5 @@ export const schema = {
             }
         }
     },
-    "version": "5aa7c4bcfce6be88485aa724a57be7c6"
+    "version": "18adf2081e42af8bc77549cad3316df0"
 };

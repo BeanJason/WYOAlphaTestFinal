@@ -77,6 +77,8 @@ export declare class Provider {
   readonly employeeID: string;
   readonly offenses: number;
   readonly overallRating: number;
+  readonly ratingCount: number;
+  readonly isBan: boolean;
   readonly jobs?: (Job | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;

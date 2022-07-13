@@ -50,6 +50,14 @@ import ProviderJobHistory from "./screens/provider/ProviderJobHistory";
 import JobSignUp from "./screens/provider/JobSignUp";
 import ServiceView from "./screens/provider/ServiceView";
 
+//Manager Screens
+import ManagerHome from "./screens/manager/ManagerHome";
+import ManagerJobInfo from "./screens/manager/ManagerJobInfo";
+import EmployeeMain from "./screens/manager/employee/EmployeeMain";
+import EmployeeInfo from "./screens/manager/employee/EmployeeInfo";
+import EmployeeJobs from "./screens/manager/employee/EmployeeJobs";
+import NewApplicants from "./screens/manager/applicants/NewApplicants";
+
 //Common screens
 import ChangePassword from "./screens/commonScreens/ChangePassword";
 import VerifyAccount from "./screens/commonScreens/VerifyAccount";
@@ -63,6 +71,9 @@ import EditAddress from "./screens/provider/providerAccount/EditAddress";
 import notifications from "./notifications"
 import * as TaskManager from "expo-task-manager"
 import * as Notifications from "expo-notifications"
+import CreateManager from "./screens/account/CreateManager";
+import ApplicantsInfo from "./screens/manager/applicants/ApplicantsInfo";
+
 
 
 // const NEW_PROVIDER_TASK = "background-provider-task"
@@ -208,6 +219,7 @@ const RootNavigation = () => {
 const GuestNavigation = () => {
   return (
     <Stack.Navigator screenOptions={{transitionSpec:{open: config, close: config}}}>
+      {/* <Stack.Screen options={{ headerShown: false }} name="CreateManager" component={CreateManager}/> */}
       <Stack.Screen options={{ headerShown: false }} name="LoginScreen" component={LoginScreen}/>
       <Stack.Screen options={{ headerShown: false }} name="ForgotPassword1" component={ForgotPassword1}/>
       <Stack.Screen options={{ headerShown: false }} name="ForgotPassword2" component={ForgotPassword2}/>
@@ -229,7 +241,7 @@ const AuthNavigation = () => {
   return(
   <Stack.Navigator screenOptions={{transitionSpec:{open: config, close: config}}}>
     {authUser['custom:type'] === 'Manager' ? (
-      <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
+      <Stack.Screen options={{headerShown: false}} name="ManagerNavigation" component={ManagerNavigation} />
     ): <>
       {authUser['custom:type']  === 'User' ? (
         <Stack.Screen options={{headerShown: false}} name="UserNavigation" component={UserNavigation}/>
@@ -242,6 +254,9 @@ const AuthNavigation = () => {
   </Stack.Navigator>
   )
 };
+
+
+
 
 //USER NAVIGATION
 const UserNavigation = () => {
@@ -327,6 +342,11 @@ const UserAccountTab = () => {
   )
 }
 
+
+
+
+
+
 //Provider NAVIGATION
 const ProviderNavigation = () => {
   return (
@@ -397,6 +417,85 @@ const ProviderAccountTab = () => {
       <Stack.Screen options={{ title: 'Change Password' }} name="ChangePassword" component={ChangePassword}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountProvider" component={EditAccountProvider}/>
       <Stack.Screen options={{ title: 'Edit Address' }} name="EditAddress" component={EditAddress}/>
+    </Stack.Navigator>
+  )
+}
+
+
+
+
+
+
+//Manager NAVIGATION
+const ManagerNavigation = () => {
+  return (
+    <Tab.Navigator 
+      initialRouteName="ManagerHome"
+      screenOptions={(route) => ({
+        unmountOnBlur: true,
+        tabBarActiveTintColor: 'blue',
+        tabBarInactiveTintColor: 'grey',  
+        tabBarLabelStyle: {paddingBottom: 5, fontSize: 15, fontFamily: 'Montserrat-Bold'},
+        tabBarStyle:{padding: 10, height: 70},
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+          let name = route.route.name
+          if (name === 'Home'){
+            iconName = focused ? 'home' : 'home-outline'
+          } else if (name === 'Employees') {
+            iconName = focused ? 'people' : 'people-outline'
+          } else if (name === 'Applicants') {
+            iconName = focused ? 'add-circle' : 'add-circle-outline'
+          } else if (name === 'Account') {
+            iconName = focused ? 'settings' : 'settings-outline'
+          }
+          return (<Ionicons name={iconName} size={size} color={color} />)
+        }
+      })}
+      >
+      <Tab.Screen options={{headerShown: false}} name='Home' component={ManagerHomeTab}/>
+      <Tab.Screen options={{headerShown: false}} name='Employees' component={EmployeeTab}/>
+      <Tab.Screen options={{headerShown: false}} name='Applicants' component={NewApplicantsTab}/>
+      <Tab.Screen options={{headerShown: false}} name='Account' component={ManagerAccountTab}/>
+    </Tab.Navigator> 
+  )
+}
+
+
+const ManagerHomeTab = () => {
+  return (
+    <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
+      <Stack.Screen options={{headerShown: false}} name='ManagerHome' component={ManagerHome}/>
+      <Stack.Screen options={{ title: 'Job Information' }} name="ManagerJobInfo" component={ManagerJobInfo}/>
+    </Stack.Navigator>
+  )
+}
+
+const EmployeeTab = () => {
+  return(
+  <Stack.Navigator>
+    <Stack.Screen options={{headerShown: false }} name="EmployeeMain" component={EmployeeMain}/>
+    <Stack.Screen options={{title: 'Employee Information' }} name="EmployeeInfo" component={EmployeeInfo}/>
+    <Stack.Screen options={{title: 'Employee Jobs' }} name="EmployeeJobs" component={EmployeeJobs}/>
+    <Stack.Screen options={{ title: 'Job Information' }} name="ManagerJobInfo" component={ManagerJobInfo}/>
+  </Stack.Navigator>
+  )
+}
+
+const NewApplicantsTab = () => {
+  return (
+    <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
+      <Stack.Screen options={{headerShown: false }} name="NewApplicants" component={NewApplicants}/>
+      <Stack.Screen options={{title: 'Applicant Information' }} name="ApplicantsInfo" component={ApplicantsInfo}/>
+    </Stack.Navigator>
+  )
+}
+
+const ManagerAccountTab = () => {
+  return (
+    <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
+      <Stack.Screen options={{ headerShown: false }} name="MyAccount" component={MyAccount}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="VerifyAccount" component={VerifyAccount}/>
     </Stack.Navigator>
   )
 }

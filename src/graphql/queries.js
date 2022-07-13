@@ -137,6 +137,8 @@ export const getProvider = /* GraphQL */ `
       employeeID
       offenses
       overallRating
+      ratingCount
+      isBan
       jobs {
         nextToken
         startedAt
@@ -172,6 +174,8 @@ export const listProviders = /* GraphQL */ `
         employeeID
         offenses
         overallRating
+        ratingCount
+        isBan
         createdAt
         updatedAt
         _version
@@ -212,6 +216,8 @@ export const syncProviders = /* GraphQL */ `
         employeeID
         offenses
         overallRating
+        ratingCount
+        isBan
         createdAt
         updatedAt
         _version

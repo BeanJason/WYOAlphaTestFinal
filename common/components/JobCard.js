@@ -31,6 +31,11 @@ const JobCard = ({ jobInfo, type = '' }) => {
         navigation.navigate('ProviderJobInfo', {name: 'ProviderJobInfo', jobInfo})
       }
     }
+    else if(authUser['custom:type'] == 'Manager'){
+      if(type == 'manager'){
+        navigation.navigate('ManagerJobInfo', {name: 'ManagerJobInfo', jobInfo})
+      }
+    }
     else{
       navigation.navigate('UserJobInfo', {name: 'UserJobInfo', jobInfo})
     }
