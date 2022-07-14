@@ -13,23 +13,56 @@ import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useEffect, useState } from "react";
 import { DataStore} from "aws-amplify";
-import { Job, Provider } from "../../src/models";
+import { Job, Manager, Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch, useSelector } from "react-redux";
-import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
+import { addOrRemoveJob, resetLocation, updateLocation } from "../../redux/jobsProviderReducer";
 import MapView, {Marker}  from "react-native-maps"
 import Geocoder from "react-native-geocoding";
-import { cancelNotificationByID, sendNotificationToProvider, sendNotificationToUser } from "../../notifications";
+import { cancelNotificationByID, sendNotificationToManager, sendNotificationToProvider, sendNotificationToUser } from "../../notifications";
 import {GOOGLE_API} from "@env"
+import { getLocationPermission } from "../../common/functions";
+import * as TaskManager from "expo-task-manager"
+import * as Location from "expo-location"
+import isPointWithinRadius from 'geolib/es/isPointWithinRadius';
+let foregroundSubscription
 
 //Login screen
 const ServiceView = ({ route, navigation }) => {
   const dispatch = useDispatch();
   let { jobInfo, owner } = route.params;
   const { userInfo } = useSelector((state) => state.auth);
+  const { position } = useSelector((state) => state.providerJobs);
+
+  TaskManager.defineTask('BACKGROUND_LOCATION', async ({data, error}) => {
+    console.log('task is setup');
+      if (error) {
+          console.error(error);
+          return;
+        }
+        if(data){
+          const {locations} = data
+          const location = locations[0]
+          if(location){
+              // console.log(location);
+              console.log('location change');
+              // let original = await DataStore.query(Provider, userInfo.userID)
+              // try {
+              //   await DataStore.save(Provider.copyOf(original, (updated) => {
+              //     updated.currentLocation = JSON.stringify({latitude: location.coords.latitude, longitude: location.coords.longitude})
+              //   }))
+              // } catch (error) {
+              //   console.log(error);
+              // }
+              dispatch(updateLocation(location.coords))
+          }
+        }
+  })
+
+
+  
 
   const [mainProvider, setMainProvider] = useState('')
-  const [backupProviders, setBackupProviders] = useState([])
   const [canCancel, setCanCancel] = useState(false)
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
@@ -40,6 +73,7 @@ const ServiceView = ({ route, navigation }) => {
   const [lng, setLng] = useState()
   const [allowCheckIn, setAllowCheckIn] = useState(false)
   const [allowCheckOut, setAllowCheckOut] = useState(false)
+  const [currentPosition, setCurrentPosition] = useState()
 
   const getDateFormat = () => {
     let formatDate = new Date(jobInfo.requestDateTime)
@@ -70,13 +104,6 @@ const ServiceView = ({ route, navigation }) => {
     }
   }
 
-  const getBackupProviders = () => {
-    let text = ''
-    for(let next of backupProviders){
-      text += next + '\n'
-    }
-    return text
-  }
 
   const getProviders = async () => {
     //set main provider if available
@@ -90,16 +117,6 @@ const ServiceView = ({ route, navigation }) => {
         });
       }
     }
-    //set backup providers if available
-    if(jobInfo.backupProviders && jobInfo.backupProviders.length != 0){
-      let listOfBackups = []
-      for(let next of jobInfo.backupProviders){
-        await DataStore.query(Provider, next).then((providerFound) => {
-          listOfBackups.push(`${providerFound.firstName} ${providerFound.lastName}`)
-        });
-      }
-      setBackupProviders(listOfBackups)
-    }
   }
 
   const checkIn = async () => {
@@ -107,9 +124,21 @@ const ServiceView = ({ route, navigation }) => {
     let today = new Date()
     await DataStore.save(Job.copyOf(original, updated => {
       updated.checkInTime = today.toString()
+      updated.currentStatus = 'IN_SERVICE'
     }))
     createToast('You have checked in. Please do not forget to check out after the job is complete')
-    jobInfo.checkInTime = today.toString()
+    let newJobInfo = jobInfo
+    newJobInfo.checkInTime = today.toString()
+    dispatch(addOrRemoveJob({ type: "REMOVE_ACTIVE_JOB", jobInfo }));
+    dispatch(addOrRemoveJob({ type: "ADD_ACTIVE_JOB", jobInfo: newJobInfo }));
+    //send notification to the user
+    jobInfo = newJobInfo
+    let messageInfo = {
+      title: 'Checked In',
+      message:  `Provider ${mainProvider} has just checked into your home to accommodate your job request`,
+      data: {jobID: jobInfo.id}
+    }
+    await sendNotificationToUser(jobInfo.requestOwner, messageInfo)
     setAllowCheckIn(false)
     setAllowCheckOut(true)
   }
@@ -119,11 +148,29 @@ const ServiceView = ({ route, navigation }) => {
     let today = new Date()
     await DataStore.save(Job.copyOf(original, updated => {
       updated.checkOutTime = today.toString()
+      updated.currentStatus = 'COMPLETED'
     }))
     createToast('You have successfully checked out of the job')
-    jobInfo.checkOutTime = today.toString()
+    let newJobInfo = jobInfo
+    newJobInfo.checkOutTime = today.toString()
+    dispatch(addOrRemoveJob({ type: "REMOVE_ACTIVE_JOB", jobInfo }));
+    dispatch(addOrRemoveJob({ type: "ADD_COMPLETED_JOB", jobInfo: newJobInfo }));
+    jobInfo = newJobInfo
+    let managers = await DataStore.query(Manager)
+    let messageInfo = {
+      title: 'Checked Out',
+      message:  `Provider ${mainProvider} has just checked out of their ${jobInfo.title} job request made by the client ${owner.firstName} ${owner.lastName}`,
+      data: {jobID: jobInfo.id}
+    }
+    for(let next of managers){
+      sendNotificationToManager(next.expoToken, messageInfo)
+    }
     setAllowCheckIn(false)
     setAllowCheckOut(false)
+    if(await TaskManager.isTaskRegisteredAsync('BACKGROUND_LOCATION')){
+      await Location.stopLocationUpdatesAsync('BACKGROUND_LOCATION')
+      console.log('turned off');
+    }  
   }
 
   const cancelJob = async () => {
@@ -213,9 +260,9 @@ const ServiceView = ({ route, navigation }) => {
       }
 
       dispatch(addOrRemoveJob({type: 'REMOVE_ACTIVE_JOB', jobInfo}))
-      createToast('Your job service has been cancelled')
       setTimeout(() => {
         setStartCancel(false)
+        createToast('Your job service has been cancelled')
         navigation.navigate('ProviderHome', {name: 'ProviderHome'})
       }, 5000)
     }
@@ -228,7 +275,6 @@ const ServiceView = ({ route, navigation }) => {
     Geocoder.init(GOOGLE_API, {language: 'en'})
     if(Geocoder.isInit){
       const response = await Geocoder.from(`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`)
-      console.log(response.results[0].geometry.location);
       let newLat = response.results[0].geometry.location.lat
       let newLng = response.results[0].geometry.location.lng
       setLat(newLat)
@@ -237,17 +283,131 @@ const ServiceView = ({ route, navigation }) => {
     }
   }
 
+
+
+  //start service for location
+  const startBackgroundLocation = async() => {
+      dispatch(resetLocation())
+      console.log('getting permissions');
+      if(await TaskManager.isTaskRegisteredAsync('BACKGROUND_LOCATION')){
+        await Location.stopLocationUpdatesAsync('BACKGROUND_LOCATION')
+        console.log('turned off');
+      }   
+      const backgroundPermission = await Location.requestBackgroundPermissionsAsync()
+      console.log(backgroundPermission.status);
+      if(backgroundPermission.granted){
+        const isTaskDefined = TaskManager.isTaskDefined('BACKGROUND_LOCATION')
+        if(!isTaskDefined){
+          console.log('task not defined, unable to track location');
+        }
+        else{
+          const hasStarted = await Location.hasStartedLocationUpdatesAsync('BACKGROUND_LOCATION')
+          if(hasStarted){
+            console.log('already started location tracking');
+          }
+          else{
+            let current = await Location.getCurrentPositionAsync()
+            if(!current){
+              createToast('Please turn on your GPS before attempting to check in')
+            }
+            else{
+              console.log('starting track');
+              await Location.startLocationUpdatesAsync('BACKGROUND_LOCATION', {
+                showsBackgroundLocationIndicator: true,
+                accuracy: Location.Accuracy.Highest,
+                foregroundService: {
+                    notificationTitle: "Location",
+                    notificationBody: "Location tracking in background",
+                    notificationColor: "#fff",
+                },
+                deferredUpdatesInterval: 1000
+              })
+            }
+          }
+        }
+      }
+      else{
+        createToast('You must enable location permissions in order to check in')
+      }
+    
+  }
+  //get permission for location
+  const startForegroundLocation = async() => {
+    const foregroundPermission = await Location.requestForegroundPermissionsAsync()
+    if(!foregroundPermission.granted){
+        createToast('You must enable location permissions on the app in order to check in')
+    }
+    else{
+      let position = await Location.getCurrentPositionAsync()
+      if(!position){
+        createToast('Your GPS must be turned on to check in')
+      }
+      else{
+        foregroundSubscription?.remove()
+        foregroundSubscription = await Location.watchPositionAsync({
+          accuracy: Location.Accuracy.BestForNavigation,
+          distanceInterval: 1
+        },
+        location => {
+          setCurrentPosition(location.coords)
+        }
+        )
+      }
+    }
+  }
+
+  const stopForegroundLocation = async() => {
+    foregroundSubscription?.remove()
+    console.log(foregroundSubscription);
+    setCurrentPosition(null)
+  }
+
+  useEffect(() => {
+    console.log(position);
+    if(position != null){
+      console.log(position.latitude);
+      console.log(position.longitude);
+      checkProviderRadius()
+    }
+  },[position])
+
   const checkProviderRadius = async() => {
     //check if the provider is within the area of the job location
+    let check = isPointWithinRadius(
+      {latitude: position.latitude, longitude: position.longitude},
+      {latitude: parseFloat(jobInfo?.latitude), longitude: parseFloat(jobInfo?.longitude)},
+      500)
+      if(check){
+        //within radius
+        if(!jobInfo.checkInTime){
+          setAllowCheckIn(true)
+        }
+        else{
+          setAllowCheckOut(true)
+        }
+      } 
+      //not within radius
+      else{
+        if(!jobInfo.checkInTime){
+          setAllowCheckIn(false)
+        }
+        else{
+          setAllowCheckOut(false)
+        }
+      }
+      
   }
+
   
   useEffect(() => {
+    // startForegroundLocation()
+    if(!jobInfo.checkInTime || !jobInfo.checkOutTime){
+      startBackgroundLocation()
+    }
+
     getDateFormat()
     getProviders()
     setCanCancel(true)
-    if(jobInfo.checkInTime){
-      setAllowCheckOut(true)
-    }
     //Testing
     // setCoordinatesForMap()
     setLoading(false)
@@ -339,12 +499,6 @@ const ServiceView = ({ route, navigation }) => {
             <Text style={[styles.generalText, {marginBottom: 30}]}>{time}</Text>
             {jobInfo.jobDescription ? <Text style={[styles.generalText, {marginBottom: 30}]}>Job Description: {jobInfo.jobDescription}</Text> : <></>}
             <Text style={[styles.generalText, {marginBottom: 10}]}>Main Provider: {mainProvider ? mainProvider : 'None'}</Text>
-            {backupProviders.length == 0 ? <></> : (
-              <View>
-                <Text style={[styles.generalText, {borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Backup Providers</Text>
-                <Text style={styles.generalText}>{getBackupProviders()}</Text>
-              </View>
-            )}
           </View>
           <View style={styles.jobContainer}>
             {/* Buttons */}
@@ -384,8 +538,7 @@ const ServiceView = ({ route, navigation }) => {
                 coordinate={{
                   
                   latitude: parseFloat(jobInfo?.latitude),
-                  longitude: parseFloat(jobInfo?.longitude
-                  )
+                  longitude: parseFloat(jobInfo?.longitude)
                 }}
                 description={`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}
               />

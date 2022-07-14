@@ -33,6 +33,10 @@ type ManagerMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
+type BlacklistMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 export declare class Job {
   readonly id: string;
   readonly jobTitle: string;
@@ -79,6 +83,7 @@ export declare class Provider {
   readonly overallRating: number;
   readonly ratingCount: number;
   readonly isBan: boolean;
+  readonly currentLocation?: string | null;
   readonly jobs?: (Job | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -127,4 +132,14 @@ export declare class Manager {
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Manager, ManagerMetaData>);
   static copyOf(source: Manager, mutator: (draft: MutableModel<Manager, ManagerMetaData>) => MutableModel<Manager, ManagerMetaData> | void): Manager;
+}
+
+export declare class Blacklist {
+  readonly id: string;
+  readonly email: string;
+  readonly phoneNumber: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  constructor(init: ModelInit<Blacklist, BlacklistMetaData>);
+  static copyOf(source: Blacklist, mutator: (draft: MutableModel<Blacklist, BlacklistMetaData>) => MutableModel<Blacklist, BlacklistMetaData> | void): Blacklist;
 }

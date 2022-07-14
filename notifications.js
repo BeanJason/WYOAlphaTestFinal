@@ -250,7 +250,7 @@ export const createProviderReminder = async (jobInfo) => {
   return ids;
 };
 
-export const sendNotificationToUser = async(userID, messageInfo, data = {}) => {
+export const sendNotificationToUser = async(userID, messageInfo) => {
   let user = await DataStore.query(User, userID)
   let token = user.expoToken
   try {
@@ -258,14 +258,14 @@ export const sendNotificationToUser = async(userID, messageInfo, data = {}) => {
       token: token,
       title: messageInfo.title,
       message: messageInfo.message,
-      data: data
+      data: messageInfo.data || {}
     }))
   } catch (error) {
     console.log(error);
   }
 }
 
-export const sendNotificationToProvider = async(userID, messageInfo, data = {}) => {
+export const sendNotificationToProvider = async(userID, messageInfo) => {
   let user = await DataStore.query(Provider, userID)
   let token = user.expoToken
   try {
@@ -273,10 +273,26 @@ export const sendNotificationToProvider = async(userID, messageInfo, data = {}) 
       token: token,
       title: messageInfo.title,
       message: messageInfo.message,
-      data: data
+      data: messageInfo.data || {}
     }))
   } catch (error) {
     console.log(error);
+  }
+}
+
+
+export const sendNotificationToManager = async(token, messageInfo) => {
+  if(token){
+    try {
+      await API.graphql(graphqlOperation(sendNotification, {
+        token: token,
+        title: messageInfo.title,
+        message: messageInfo.message,
+        data: messageInfo.data || {}
+      }))
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 

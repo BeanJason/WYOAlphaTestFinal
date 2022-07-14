@@ -58,6 +58,7 @@ type Provider @model @auth(rules: [{allow: public}]) {
   overallRating: Float!
   ratingCount: Int!
   isBan: Boolean!
+  currentLocation: String
   jobs: [Job] @hasMany(indexName: "byProvider", fields: ["id"])
 }
 
@@ -88,6 +89,12 @@ type Manager @model @auth(rules: [{allow: public}]) {
   expoToken: String
   firstName: String!
   lastName: String!
+  email: AWSEmail!
+  phoneNumber: AWSPhone!
+}
+
+type Blacklist @model @auth(rules: [{allow: public}]) {
+  id: ID!
   email: AWSEmail!
   phoneNumber: AWSPhone!
 }

@@ -161,6 +161,7 @@ export const createProvider = /* GraphQL */ `
       overallRating
       ratingCount
       isBan
+      currentLocation
       jobs {
         nextToken
         startedAt
@@ -196,6 +197,7 @@ export const updateProvider = /* GraphQL */ `
       overallRating
       ratingCount
       isBan
+      currentLocation
       jobs {
         nextToken
         startedAt
@@ -231,6 +233,7 @@ export const deleteProvider = /* GraphQL */ `
       overallRating
       ratingCount
       isBan
+      currentLocation
       jobs {
         nextToken
         startedAt
@@ -434,6 +437,57 @@ export const deleteManager = /* GraphQL */ `
       expoToken
       firstName
       lastName
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const createBlacklist = /* GraphQL */ `
+  mutation CreateBlacklist(
+    $input: CreateBlacklistInput!
+    $condition: ModelBlacklistConditionInput
+  ) {
+    createBlacklist(input: $input, condition: $condition) {
+      id
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateBlacklist = /* GraphQL */ `
+  mutation UpdateBlacklist(
+    $input: UpdateBlacklistInput!
+    $condition: ModelBlacklistConditionInput
+  ) {
+    updateBlacklist(input: $input, condition: $condition) {
+      id
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteBlacklist = /* GraphQL */ `
+  mutation DeleteBlacklist(
+    $input: DeleteBlacklistInput!
+    $condition: ModelBlacklistConditionInput
+  ) {
+    deleteBlacklist(input: $input, condition: $condition) {
+      id
       email
       phoneNumber
       createdAt

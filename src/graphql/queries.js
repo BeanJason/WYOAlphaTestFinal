@@ -139,6 +139,7 @@ export const getProvider = /* GraphQL */ `
       overallRating
       ratingCount
       isBan
+      currentLocation
       jobs {
         nextToken
         startedAt
@@ -176,6 +177,7 @@ export const listProviders = /* GraphQL */ `
         overallRating
         ratingCount
         isBan
+        currentLocation
         createdAt
         updatedAt
         _version
@@ -218,6 +220,7 @@ export const syncProviders = /* GraphQL */ `
         overallRating
         ratingCount
         isBan
+        currentLocation
         createdAt
         updatedAt
         _version
@@ -448,6 +451,70 @@ export const syncManagers = /* GraphQL */ `
         expoToken
         firstName
         lastName
+        email
+        phoneNumber
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getBlacklist = /* GraphQL */ `
+  query GetBlacklist($id: ID!) {
+    getBlacklist(id: $id) {
+      id
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listBlacklists = /* GraphQL */ `
+  query ListBlacklists(
+    $filter: ModelBlacklistFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listBlacklists(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        email
+        phoneNumber
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncBlacklists = /* GraphQL */ `
+  query SyncBlacklists(
+    $filter: ModelBlacklistFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncBlacklists(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
         email
         phoneNumber
         createdAt

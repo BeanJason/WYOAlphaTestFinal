@@ -117,6 +117,7 @@ export const onCreateProvider = /* GraphQL */ `
       overallRating
       ratingCount
       isBan
+      currentLocation
       jobs {
         nextToken
         startedAt
@@ -149,6 +150,7 @@ export const onUpdateProvider = /* GraphQL */ `
       overallRating
       ratingCount
       isBan
+      currentLocation
       jobs {
         nextToken
         startedAt
@@ -181,6 +183,7 @@ export const onDeleteProvider = /* GraphQL */ `
       overallRating
       ratingCount
       isBan
+      currentLocation
       jobs {
         nextToken
         startedAt
@@ -357,6 +360,48 @@ export const onDeleteManager = /* GraphQL */ `
       expoToken
       firstName
       lastName
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onCreateBlacklist = /* GraphQL */ `
+  subscription OnCreateBlacklist {
+    onCreateBlacklist {
+      id
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateBlacklist = /* GraphQL */ `
+  subscription OnUpdateBlacklist {
+    onUpdateBlacklist {
+      id
+      email
+      phoneNumber
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteBlacklist = /* GraphQL */ `
+  subscription OnDeleteBlacklist {
+    onDeleteBlacklist {
+      id
       email
       phoneNumber
       createdAt

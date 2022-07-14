@@ -19,6 +19,10 @@ import { Ionicons } from '@expo/vector-icons';
 import {RadioButton} from "react-native-paper"
 import ProfilePicture from "../../common/components/ProfilePicture";
 import * as Notifications from "expo-notifications"
+import * as Location from "expo-location"
+
+
+
 
 
 
@@ -32,14 +36,15 @@ const ProviderHome = ({ navigation }) => {
   const [loading, setLoading] = useState(true)
   const [checkedBtn, setCheckedBtn] = useState('allJobs')
   const [refreshing, setRefreshing] = React.useState(false);
+  
 
   const getNotifications = async() => {
-    let n = await Notifications.getAllScheduledNotificationsAsync()
-    console.log(n);
+    // let n = await Notifications.getAllScheduledNotificationsAsync()
+    // console.log(n);
   }
 
   const cancelNotifications = async ()=> {
-    await Notifications.cancelAllScheduledNotificationsAsync()
+    // await Notifications.cancelAllScheduledNotificationsAsync()
   }
 
   const testNotifications = async () => {
@@ -63,6 +68,8 @@ const ProviderHome = ({ navigation }) => {
       setRefreshing(false);
   }, [refreshing]);
 
+
+
   //Get all current jobs
   useEffect(() => {
     //Get provider's current jobs
@@ -71,7 +78,6 @@ const ProviderHome = ({ navigation }) => {
     }
     //TESTING
     // setJobList(getManyJobs())
-
 
     setLoading(false)
   }, []);
@@ -99,7 +105,7 @@ const ProviderHome = ({ navigation }) => {
             <ProfilePicture imageUrl={userInfo.profilePicture} name={`${userInfo.firstName} ${userInfo.lastName}`} size={50}/>
             <Text style={styles.name}>Welcome Provider {userInfo.firstName}</Text>
           </View>
-          <TouchableOpacity onPress={() => getNotifications()}>
+          <TouchableOpacity onPress={() => testNotifications()}>
           <Text>Get Notifications</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => cancelNotifications()}>

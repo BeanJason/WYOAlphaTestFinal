@@ -8,7 +8,8 @@ const initialState = {
     jobHistory: [],
     newJobID: "",
     message: "",
-    initialized: false
+    initialized: false,
+    position: null
 }
 
 //ASYNC FUNCTIONS
@@ -38,7 +39,7 @@ export const jobsProviderReducer = createSlice({
                     state.activeJobs = state.activeJobs.filter(job => job.id != action.payload.jobInfo.id)
                     console.log('removed');
                     break;
-                case 'ADD_OLD_JOB' :
+                case 'ADD_COMPLETED_JOB' :
                     state.jobHistory.push(action.payload.jobInfo)
                     break;
                 default:
@@ -51,9 +52,15 @@ export const jobsProviderReducer = createSlice({
             state.activeJobs = []
             state.jobHistory = []
             state.initialized = false;
+            state.position = null
         },
-        storeNewJobID: (state, action) => {
-            state.newJobID = action.payload.jobID
+        updateLocation: (state, action) => {
+            console.log('action');
+            console.log(action.payload);
+            state.position = action.payload
+        },
+        resetLocation: (state) => {
+            state.position = null
         }
     },
     extraReducers: (builder) => {
@@ -72,5 +79,5 @@ export const jobsProviderReducer = createSlice({
 
 })
 
-export const {addOrRemoveJob, resetState, reinitialize, storeNewJobID} = jobsProviderReducer.actions
+export const {addOrRemoveJob, resetState, reinitialize, updateLocation, resetLocation} = jobsProviderReducer.actions
 export default jobsProviderReducer.reducer

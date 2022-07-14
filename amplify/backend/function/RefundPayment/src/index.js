@@ -89,10 +89,8 @@ exports.handler = async (event) => {
       //if not accepted
       if (jobInfo.Item.currentStatus == "REQUESTED") {
           //refund
-          let amount = jobInfo.Item.price - 250;
           const refund = await stripe.refunds.create({
               payment_intent: jobInfo.Item.paymentID,
-              amount: amount
           })
           if(refund.status == 'succeeded'){
             try {

@@ -67,7 +67,7 @@ import VerifyAccount from "./screens/commonScreens/VerifyAccount";
 import { config } from "./common/styles";
 import { getProvider, getUser } from "./testData";
 import { resetState, storeNewJobID } from "./redux/jobsReducer";
-import { checkUnverifiedJob } from "./common/functions";
+import { checkUnverifiedJob, setNewPosition } from "./common/functions";
 import EditAddress from "./screens/provider/providerAccount/EditAddress";
 import notifications from "./notifications"
 import * as TaskManager from "expo-task-manager"
@@ -77,30 +77,30 @@ import ApplicantsInfo from "./screens/manager/applicants/ApplicantsInfo";
 
 
 
-// const NEW_PROVIDER_TASK = "background-provider-task"
-// //when the app is in the background and you receieve a notification
-// console.log('setting task');
-// TaskManager.defineTask(NEW_PROVIDER_TASK, async ({data, error}) => {
-//   console.log('background notification');
-//   if(error){
-//     console.log(error);
-//     return;
-//   }
-//   console.log(data);
-//   if(data.request.content.title == 'New Provider'){
-//     let data = data.request.content.data
-//     try {
-//       let original = await DataStore.query(Job, data.jobID)
-//       let ids = await createProviderReminder(original)
-//       await DataStore.save(Job.copyOf(original, (updated) => {
-//         updated.providerNotificationID.push(ids[0])
-//         updated.providerNotificationID.push(ids[1])
-//       }))
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   }
-// })
+const NEW_PROVIDER_TASK = "NOTIFICATION_TASK"
+//when the app is in the background and you receieve a notification
+TaskManager.defineTask(NEW_PROVIDER_TASK, async ({data, error}) => {
+  console.log('background notification');
+  if(error){
+    console.log(error);
+    return;
+  }
+  console.log(data);
+  // if(data.request.content.title == 'New Provider'){
+  //   let data = data.request.content.data
+  //   try {
+  //     let original = await DataStore.query(Job, data.jobID)
+  //     let ids = await createProviderReminder(original)
+  //     await DataStore.save(Job.copyOf(original, (updated) => {
+  //       updated.providerNotificationID.push(ids[0])
+  //       updated.providerNotificationID.push(ids[1])
+  //     }))
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+})
+
 
 
 
@@ -151,10 +151,10 @@ export default function App() {
   }
 
   let loadAllResources = async () => {
-    await DataStore.clear()
+    await DataStore.stop()
     await loadAssetsAsync()
     setImagesLoaded(true)
-    // await Notifications.registerTaskAsync(NEW_PROVIDER_TASK)
+    await Notifications.registerTaskAsync('NOTIFICATION_TASK')
     loadDataStore()
   }
 

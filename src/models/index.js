@@ -9,7 +9,7 @@ const Jobstatus = {
   "COMPLETED": "COMPLETED"
 };
 
-const { Job, Provider, User, Code, Manager, PaymentIntent } = initSchema(schema);
+const { Job, Provider, User, Code, Manager, Blacklist, PaymentIntent } = initSchema(schema);
 
 export {
   Job,
@@ -17,6 +17,7 @@ export {
   User,
   Code,
   Manager,
+  Blacklist,
   Jobstatus,
   PaymentIntent
 };
