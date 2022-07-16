@@ -55,8 +55,6 @@ export const jobsProviderReducer = createSlice({
             state.position = null
         },
         updateLocation: (state, action) => {
-            console.log('action');
-            console.log(action.payload);
             state.position = action.payload
         },
         resetLocation: (state) => {

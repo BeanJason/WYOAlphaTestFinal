@@ -9,7 +9,9 @@ import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch, Provider } from "react-redux";
-import {Amplify, Auth, DataStore, Hub, nav} from "aws-amplify"
+import { loggedIn } from "./redux/authReducer"
+import {Amplify, Auth, DataStore, Hub } from "aws-amplify"
+import {Provider as ProviderModel} from "./src/models"
 import { checkCredentials } from "./credentials";
 import { changeUserStatus, logout, changeExpoToken } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
@@ -20,7 +22,7 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 import {STRIPE_KEY} from "@env"
 
 
-//SCREENS
+//GUEST SCREENS
 import RegistrationScreen from "./screens/account/RegistrationScreen";
 import UserRegistration from "./screens/account/UserRegistration";
 import ProviderRegistration from "./screens/account/ProviderRegistration";
@@ -28,6 +30,7 @@ import LoginScreen from "./screens/account/LoginScreen";
 import AboutProviders from "./screens/aboutScreens/AboutProviders";
 import AboutUs from "./screens/aboutScreens/AboutUs";
 import AboutUsers from "./screens/aboutScreens/AboutUsers";
+import ContactUs from "./screens/aboutScreens/ContactUs";
 import ForgotPassword1 from "./screens/account/forgotPassword/ForgotPassword1";
 import ForgotPassword2 from "./screens/account/forgotPassword/ForgotPassword2";
 
@@ -41,6 +44,9 @@ import JobCreation1 from "./screens/user/JobCreation1"
 import JobCreationPayment from "./screens/user/JobCreationPayment"
 import UserJobInfo from "./screens/user/UserJobInfo"
 import UserJobHistory from "./screens/user/UserJobHistory"
+//USER FUNCTIONS
+import { resetState } from "./redux/jobsReducer";
+import { checkUnverifiedJob } from "./common/functions";
 
 //Provider Screens
 import ProviderHome from "./screens/provider/ProviderHome";
@@ -50,6 +56,8 @@ import ProviderJobInfo from "./screens/provider/ProviderJobInfo";
 import ProviderJobHistory from "./screens/provider/ProviderJobHistory";
 import JobSignUp from "./screens/provider/JobSignUp";
 import ServiceView from "./screens/provider/ServiceView";
+import EditAddress from "./screens/provider/providerAccount/EditAddress";
+
 
 //Manager Screens
 import ManagerHome from "./screens/manager/ManagerHome";
@@ -58,6 +66,8 @@ import EmployeeMain from "./screens/manager/employee/EmployeeMain";
 import EmployeeInfo from "./screens/manager/employee/EmployeeInfo";
 import EmployeeJobs from "./screens/manager/employee/EmployeeJobs";
 import NewApplicants from "./screens/manager/applicants/NewApplicants";
+import ApplicantsInfo from "./screens/manager/applicants/ApplicantsInfo";
+
 
 //Common screens
 import ChangePassword from "./screens/commonScreens/ChangePassword";
@@ -66,20 +76,42 @@ import VerifyAccount from "./screens/commonScreens/VerifyAccount";
 
 import { config } from "./common/styles";
 import { getProvider, getUser } from "./testData";
-import { resetState, storeNewJobID } from "./redux/jobsReducer";
-import { checkUnverifiedJob, setNewPosition } from "./common/functions";
-import EditAddress from "./screens/provider/providerAccount/EditAddress";
 import notifications from "./notifications"
 import * as TaskManager from "expo-task-manager"
 import * as Notifications from "expo-notifications"
 import CreateManager from "./screens/account/CreateManager";
-import ApplicantsInfo from "./screens/manager/applicants/ApplicantsInfo";
+import { updateLocation } from "./redux/jobsProviderReducer";
 
+//BACKGROUND TASKS
+//Location
+TaskManager.defineTask('BACKGROUND_LOCATION', async ({data, error}) => {
+  console.log('task is setup');
+    if (error) {
+        console.error(error);
+        return;
+      }
+      if(data){
+        const {locations} = data
+        const location = locations[0]
+        let state = Store.getState()
+      
+        if(state.auth.loggedIn && location){
+            console.log('updating location');
+            let original = await DataStore.query(ProviderModel, userInfo.userID)
+            try {
+                await DataStore.save(ProviderModel.copyOf(original, (updated) => {
+                updated.currentLocation = JSON.stringify({latitude: location.coords.latitude, longitude: location.coords.longitude, dateUpdated: new Date()})
+              }))
+            } catch (error) {
+              console.log(error);
+            }
+            Store.dispatch(updateLocation(location.coords))
+        }
+      }
+})
 
-
-const NEW_PROVIDER_TASK = "NOTIFICATION_TASK"
-//when the app is in the background and you receieve a notification
-TaskManager.defineTask(NEW_PROVIDER_TASK, async ({data, error}) => {
+//Notification
+TaskManager.defineTask("NOTIFICATION_TASK", async ({data, error}) => {
   console.log('background notification');
   if(error){
     console.log(error);
@@ -231,6 +263,7 @@ const GuestNavigation = () => {
       <Stack.Screen options={{title: 'About Users'}} name="AboutUsers" component={AboutUsers} />
       <Stack.Screen options={{title: 'About Providers'}} name="AboutProviders" component={AboutProviders} />
       <Stack.Screen options={{ headerShown: false }} name="ConfirmEmail" component={ConfirmEmail}/>
+      <Stack.Screen options={{title: 'Contact Us'}} name="ContactUs" component={ContactUs} />
     </Stack.Navigator>
   );
 };
@@ -339,6 +372,10 @@ const UserAccountTab = () => {
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountUser" component={EditAccountUser}/>
       <Stack.Screen options={{ title: 'Change Password' }} name="ChangePassword" component={ChangePassword}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="AddAddress" component={AddAddress}/>
+      <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
+      <Stack.Screen options={{title: 'About Users'}} name="AboutUsers" component={AboutUsers} />
+      <Stack.Screen options={{title: 'About Providers'}} name="AboutProviders" component={AboutProviders} />
+      <Stack.Screen options={{title: 'Contact Us'}} name="ContactUs" component={ContactUs} />
     </Stack.Navigator>
   )
 }
@@ -388,6 +425,7 @@ const ProviderHomeTab = () => {
     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
       <Stack.Screen options={{headerShown: false}} name='ProviderHome' component={ProviderHome}/>
       <Stack.Screen options={{ title: 'Job Information' }} name="ServiceView" component={ServiceView}/>
+      <Stack.Screen options={{ title: 'Job Information' }} name="ProviderJobInfo" component={ProviderJobInfo}/>
     </Stack.Navigator>
   )
 }
@@ -418,6 +456,10 @@ const ProviderAccountTab = () => {
       <Stack.Screen options={{ title: 'Change Password' }} name="ChangePassword" component={ChangePassword}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountProvider" component={EditAccountProvider}/>
       <Stack.Screen options={{ title: 'Edit Address' }} name="EditAddress" component={EditAddress}/>
+      <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
+      <Stack.Screen options={{title: 'About Users'}} name="AboutUsers" component={AboutUsers} />
+      <Stack.Screen options={{title: 'About Providers'}} name="AboutProviders" component={AboutProviders} />
+      <Stack.Screen options={{title: 'Contact Us'}} name="ContactUs" component={ContactUs} />
     </Stack.Navigator>
   )
 }
@@ -474,7 +516,7 @@ const ManagerHomeTab = () => {
 
 const EmployeeTab = () => {
   return(
-  <Stack.Navigator>
+  <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
     <Stack.Screen options={{headerShown: false }} name="EmployeeMain" component={EmployeeMain}/>
     <Stack.Screen options={{title: 'Employee Information' }} name="EmployeeInfo" component={EmployeeInfo}/>
     <Stack.Screen options={{title: 'Employee Jobs' }} name="EmployeeJobs" component={EmployeeJobs}/>

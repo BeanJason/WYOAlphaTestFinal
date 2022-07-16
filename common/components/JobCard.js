@@ -4,11 +4,10 @@ import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Dimensions, Pressable } from "react-native";
 import { useSelector } from "react-redux";
 import { Job, User } from "../../src/models";
-import haversine from "haversine"
 import { Fontisto } from '@expo/vector-icons'; 
 
 
-const JobCard = ({ jobInfo, type = '' }) => {
+const JobCard = ({ jobInfo, type = '', role = 'backup' }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [ownerName, setOwnerName] = useState("");
@@ -83,12 +82,13 @@ const JobCard = ({ jobInfo, type = '' }) => {
   return (
       <Pressable onPress={onPress}>
       <View style={active ? styles.jobContainerActive: styles.jobContainer}>
+        {type == 'manager' ? <Text style={[styles.noteText, {alignSelf: 'flex-end'}]}>Role: {role == 'main' ? 'Main Provider': 'Backup Provider'} </Text> : <></>}
         <Text style={[styles.generalText, styles.title]}>
           {jobInfo.jobTitle}
         </Text>
         <Text style={styles.generalText}>Request Owner: {ownerName}</Text>
         <Text style={styles.generalText}>Duration: {jobInfo.duration} Hrs</Text>
-        {type != 'signUp' ? <Text style={styles.generalText}>Address: {`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}</Text>: <></> }
+        {type == 'service' ? <Text style={styles.generalText}>Address: {`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}</Text>: <></> }
         <Text style={styles.generalText}>Date: {date}</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text style={styles.generalText}>Time: {time}</Text>
@@ -140,6 +140,10 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Bold",
     fontSize: 18,
     marginRight: 5,
+  },
+  noteText: {
+    fontFamily: "Montserrat-Italic",
+    fontSize: 14,
   },
 });
 

@@ -77,7 +77,7 @@ import { createUserReminder } from "../../notifications";
             dispatch(storeNewJobID({jobID: ""}))
             setTimeout(() => {
               route.params.jobInfo = paidJob.data.getJob
-              setPaymentStatus('Payment was successful!')
+              setPaymentStatus('Payment was successful! You have 24 hours to cancel the job for a refund.')
               navigation.navigate("Home")
             }, 2000)
           }

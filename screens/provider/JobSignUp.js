@@ -120,7 +120,7 @@ const JobSignUp = ({ route, navigation }) => {
         dispatch(addOrRemoveJob({ type: "ADD_ACTIVE_JOB", jobInfo }));
         setTimeout(() => {
           createToast(
-            "You have successfully signed up as a main provider for the job"
+            "You have successfully signed up as a main provider for the job. If you wish to cancel please do so 3 days before the job date"
           );
           setStartSignUp(false);
           dispatch(reinitialize());
@@ -217,6 +217,7 @@ const JobSignUp = ({ route, navigation }) => {
                     You are about to sign up for this job as a {role}. Are you
                     sure you want to continue?
                   </Text>
+                  <Text style={[styles.noteText, {textAlign: 'center',marginTop: 10}]}>Note: If you wish to cancel after signing up please do so at least 3 days before the job date. Failure to do so will result in an offense</Text>
                   {startSignUp ? (
                     <Spinner color={"black"} />
                   ) : (
@@ -393,6 +394,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     alignSelf: "center",
     textAlign: "center",
+  },
+  noteText: {
+    fontFamily: "Montserrat-Italic",
+    fontSize: 14,
   },
 });
 

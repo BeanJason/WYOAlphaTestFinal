@@ -17,15 +17,14 @@ import { Job, Manager, Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob, resetLocation, updateLocation } from "../../redux/jobsProviderReducer";
-import MapView, {Marker}  from "react-native-maps"
+import MapView, {Marker, PROVIDER_GOOGLE}  from "react-native-maps"
 import Geocoder from "react-native-geocoding";
 import { cancelNotificationByID, sendNotificationToManager, sendNotificationToProvider, sendNotificationToUser } from "../../notifications";
 import {GOOGLE_API} from "@env"
-import { getLocationPermission } from "../../common/functions";
 import * as TaskManager from "expo-task-manager"
 import * as Location from "expo-location"
 import isPointWithinRadius from 'geolib/es/isPointWithinRadius';
-let foregroundSubscription
+import { Ionicons } from '@expo/vector-icons';
 
 //Login screen
 const ServiceView = ({ route, navigation }) => {
@@ -34,36 +33,11 @@ const ServiceView = ({ route, navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);
   const { position } = useSelector((state) => state.providerJobs);
 
-  TaskManager.defineTask('BACKGROUND_LOCATION', async ({data, error}) => {
-    console.log('task is setup');
-      if (error) {
-          console.error(error);
-          return;
-        }
-        if(data){
-          const {locations} = data
-          const location = locations[0]
-          if(location){
-              // console.log(location);
-              console.log('location change');
-              // let original = await DataStore.query(Provider, userInfo.userID)
-              // try {
-              //   await DataStore.save(Provider.copyOf(original, (updated) => {
-              //     updated.currentLocation = JSON.stringify({latitude: location.coords.latitude, longitude: location.coords.longitude})
-              //   }))
-              // } catch (error) {
-              //   console.log(error);
-              // }
-              dispatch(updateLocation(location.coords))
-          }
-        }
-  })
-
 
   
 
   const [mainProvider, setMainProvider] = useState('')
-  const [canCancel, setCanCancel] = useState(false)
+  const [isCancelOffense, setIsCancelOffense] = useState(false)
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [startCancel, setStartCancel] = useState(false)
@@ -73,7 +47,9 @@ const ServiceView = ({ route, navigation }) => {
   const [lng, setLng] = useState()
   const [allowCheckIn, setAllowCheckIn] = useState(false)
   const [allowCheckOut, setAllowCheckOut] = useState(false)
-  const [currentPosition, setCurrentPosition] = useState()
+  const [isServiceDay, setIsServiceDay] = useState(false)
+  const [loadingLocation, setLoadingLocation] = useState(false)
+  const [canCancel, setCanCancel] = useState(true)
 
   const getDateFormat = () => {
     let formatDate = new Date(jobInfo.requestDateTime)
@@ -93,18 +69,16 @@ const ServiceView = ({ route, navigation }) => {
 
     //check in btn?
     let today = new Date()
-    today.setDate(today.getDate() + 8) //testing line
     if(today.toLocaleDateString() == formatDate.toLocaleDateString()){
-      if(jobInfo.checkInTime){
-        setAllowCheckOut(true)
-      }
-      else{
-        setAllowCheckIn(true)
-      }
+      setIsServiceDay(true)
+    } 
+
+    //check if 3 days away or less
+    formatDate.setHours(formatDate.getHours() - 72)
+    if(today > formatDate){
+      setIsCancelOffense(true)
     }
   }
-
-
   const getProviders = async () => {
     //set main provider if available
     if(jobInfo.mainProvider){
@@ -119,60 +93,99 @@ const ServiceView = ({ route, navigation }) => {
     }
   }
 
-  const checkIn = async () => {
-    const original = await DataStore.query(Job, jobInfo.id)
-    let today = new Date()
-    await DataStore.save(Job.copyOf(original, updated => {
-      updated.checkInTime = today.toString()
-      updated.currentStatus = 'IN_SERVICE'
-    }))
-    createToast('You have checked in. Please do not forget to check out after the job is complete')
-    let newJobInfo = jobInfo
-    newJobInfo.checkInTime = today.toString()
-    dispatch(addOrRemoveJob({ type: "REMOVE_ACTIVE_JOB", jobInfo }));
-    dispatch(addOrRemoveJob({ type: "ADD_ACTIVE_JOB", jobInfo: newJobInfo }));
-    //send notification to the user
-    jobInfo = newJobInfo
-    let messageInfo = {
-      title: 'Checked In',
-      message:  `Provider ${mainProvider} has just checked into your home to accommodate your job request`,
-      data: {jobID: jobInfo.id}
+
+
+  //get coordinates by address
+  const setCoordinatesForMap = async () => {
+    console.log('geocoder');
+    Geocoder.init(GOOGLE_API, {language: 'en'})
+    if(Geocoder.isInit){
+      const response = await Geocoder.from(`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`)
+      let newLat = response.results[0].geometry.location.lat
+      let newLng = response.results[0].geometry.location.lng
+      setLat(newLat)
+      setLng(newLng)
+      setLoading(false)
     }
-    await sendNotificationToUser(jobInfo.requestOwner, messageInfo)
-    setAllowCheckIn(false)
-    setAllowCheckOut(true)
   }
 
+  //recheck before checkin/out
+  const recheck = async() => {
+    let current = await Location.getCurrentPositionAsync({})
+    let check = isPointWithinRadius(
+      {latitude: current.coords.latitude, longitude: current.coords.longitude},
+      {latitude: parseFloat(jobInfo?.latitude), longitude: parseFloat(jobInfo?.longitude)},
+      450)       
+      return check
+  }
+
+  //check in function
+  const checkIn = async () => {    
+    if(await recheck()){
+      const original = await DataStore.query(Job, jobInfo.id)
+      let today = new Date()
+      await DataStore.save(Job.copyOf(original, updated => {
+        updated.checkInTime = today.toString()
+        updated.currentStatus = 'IN_SERVICE'
+      }))
+      createToast('You have checked in. Please do not forget to check out after the job is complete')
+      let newJobInfo = Object.create(jobInfo)
+      newJobInfo.checkInTime = today.toString()
+      console.log('set job');
+      dispatch(addOrRemoveJob({ type: "REMOVE_ACTIVE_JOB", jobInfo }));
+      dispatch(addOrRemoveJob({ type: "ADD_ACTIVE_JOB", jobInfo: newJobInfo }));
+      //send notification to the user
+      let messageInfo = {
+        title: 'Checked In',
+        message:  `Provider ${mainProvider} has just checked into your home to accommodate your job request`,
+        data: {jobID: jobInfo.id}
+      }
+      await sendNotificationToUser(jobInfo.requestOwner, messageInfo)
+      setAllowCheckIn(false)
+      setAllowCheckOut(true)
+    }
+    else{
+      createToast('Check in failed! Please go to the job site to check in')
+    }
+  }
+
+  //check out function
   const checkOut = async () => {
-    const original = await DataStore.query(Job, jobInfo.id)
-    let today = new Date()
-    await DataStore.save(Job.copyOf(original, updated => {
-      updated.checkOutTime = today.toString()
-      updated.currentStatus = 'COMPLETED'
-    }))
-    createToast('You have successfully checked out of the job')
-    let newJobInfo = jobInfo
-    newJobInfo.checkOutTime = today.toString()
-    dispatch(addOrRemoveJob({ type: "REMOVE_ACTIVE_JOB", jobInfo }));
-    dispatch(addOrRemoveJob({ type: "ADD_COMPLETED_JOB", jobInfo: newJobInfo }));
-    jobInfo = newJobInfo
-    let managers = await DataStore.query(Manager)
-    let messageInfo = {
-      title: 'Checked Out',
-      message:  `Provider ${mainProvider} has just checked out of their ${jobInfo.title} job request made by the client ${owner.firstName} ${owner.lastName}`,
-      data: {jobID: jobInfo.id}
+    if(await recheck()){
+      const original = await DataStore.query(Job, jobInfo.id)
+      let today = new Date()
+      await DataStore.save(Job.copyOf(original, updated => {
+        updated.checkOutTime = today.toString()
+        updated.currentStatus = 'COMPLETED'
+      }))
+      createToast('You have successfully checked out of the job')
+      let newJobInfo = Object.create(jobInfo)
+      newJobInfo.checkInTime = today.toString()
+      dispatch(addOrRemoveJob({ type: "REMOVE_ACTIVE_JOB", jobInfo }));
+      dispatch(addOrRemoveJob({ type: "ADD_COMPLETED_JOB", jobInfo: newJobInfo }));
+      let managers = await DataStore.query(Manager)
+      let messageInfo = {
+        title: 'Checked Out',
+        message:  `Provider ${mainProvider} has just checked out of their ${jobInfo.title} job request made by the client ${owner.firstName} ${owner.lastName}`,
+        data: {jobID: jobInfo.id}
+      }
+      for(let next of managers){
+        sendNotificationToManager(next.expoToken, messageInfo)
+      }
+      setAllowCheckIn(false)
+      setAllowCheckOut(false)
+      if(await TaskManager.isTaskRegisteredAsync('BACKGROUND_LOCATION')){
+        await Location.stopLocationUpdatesAsync('BACKGROUND_LOCATION')
+        console.log('turned off');
+      }  
     }
-    for(let next of managers){
-      sendNotificationToManager(next.expoToken, messageInfo)
+    else{
+      setAllowCheckOut(false)
+      createToast('Check out failed! Please go to the job site to check out')
     }
-    setAllowCheckIn(false)
-    setAllowCheckOut(false)
-    if(await TaskManager.isTaskRegisteredAsync('BACKGROUND_LOCATION')){
-      await Location.stopLocationUpdatesAsync('BACKGROUND_LOCATION')
-      console.log('turned off');
-    }  
   }
 
+  //cancel job function
   const cancelJob = async () => {
     setStartCancel(true)
     //cancel services
@@ -219,6 +232,14 @@ const ServiceView = ({ route, navigation }) => {
               message: `${userInfo.firstName} is now the main provider for your job request`
             }
             await sendNotificationToUser(original.requestOwner, messageInfo2)
+            if(isCancelOffense){
+              let providerOriginal = await DataStore.query(Provider, userInfo.userID)
+              let count = providerOriginal.offenses
+              count += 1
+              await DataStore.save(Provider.copyOf(providerOriginal, updated => {
+                updated.offenses = count
+              }))
+            }
           } catch (error) {
               console.log(error);
           }
@@ -243,6 +264,14 @@ const ServiceView = ({ route, navigation }) => {
               message: 'The main provider has cancelled your job request'
             }
             await sendNotificationToUser(original.requestOwner, messageInfo)
+            if(isCancelOffense){
+              let providerOriginal = await DataStore.query(Provider, userInfo.userID)
+              let count = providerOriginal.offenses
+              count += 1
+              await DataStore.save(Provider.copyOf(providerOriginal, updated => {
+                updated.offenses = count
+              }))
+            }
           } catch (error) {
               console.log(error);
           }
@@ -269,114 +298,42 @@ const ServiceView = ({ route, navigation }) => {
     
   }
 
-  //get coordinates by address
-  const setCoordinatesForMap = async () => {
-    console.log('geocoder');
-    Geocoder.init(GOOGLE_API, {language: 'en'})
-    if(Geocoder.isInit){
-      const response = await Geocoder.from(`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`)
-      let newLat = response.results[0].geometry.location.lat
-      let newLng = response.results[0].geometry.location.lng
-      setLat(newLat)
-      setLng(newLng)
-      setLoading(false)
-    }
-  }
 
 
 
-  //start service for location
-  const startBackgroundLocation = async() => {
-      dispatch(resetLocation())
-      console.log('getting permissions');
-      if(await TaskManager.isTaskRegisteredAsync('BACKGROUND_LOCATION')){
-        await Location.stopLocationUpdatesAsync('BACKGROUND_LOCATION')
-        console.log('turned off');
-      }   
-      const backgroundPermission = await Location.requestBackgroundPermissionsAsync()
-      console.log(backgroundPermission.status);
-      if(backgroundPermission.granted){
-        const isTaskDefined = TaskManager.isTaskDefined('BACKGROUND_LOCATION')
-        if(!isTaskDefined){
-          console.log('task not defined, unable to track location');
-        }
-        else{
-          const hasStarted = await Location.hasStartedLocationUpdatesAsync('BACKGROUND_LOCATION')
-          if(hasStarted){
-            console.log('already started location tracking');
+  //get current location function (refresh button)
+  const getCurrentLocation = async() => {
+    setLoadingLocation(true)
+    let status = await Location.requestForegroundPermissionsAsync()
+    if(status.granted){
+      try {
+        let current = await Location.getCurrentPositionAsync({})
+        if(current){
+          let original = await DataStore.query(Provider, userInfo.userID)
+          try {
+            await DataStore.save(Provider.copyOf(original, (updated) => {
+              updated.currentLocation = JSON.stringify({latitude: current.coords.latitude, longitude: current.coords.longitude, dateUpdated: new Date()})
+            }))
+          } catch (error) {
+            console.log(error);
           }
-          else{
-            let current = await Location.getCurrentPositionAsync()
-            if(!current){
-              createToast('Please turn on your GPS before attempting to check in')
-            }
-            else{
-              console.log('starting track');
-              await Location.startLocationUpdatesAsync('BACKGROUND_LOCATION', {
-                showsBackgroundLocationIndicator: true,
-                accuracy: Location.Accuracy.Highest,
-                foregroundService: {
-                    notificationTitle: "Location",
-                    notificationBody: "Location tracking in background",
-                    notificationColor: "#fff",
-                },
-                deferredUpdatesInterval: 1000
-              })
-            }
-          }
+          dispatch(updateLocation(current.coords))
+          setLoadingLocation(false)
         }
+      } catch (error) {
+        console.log(error);
+        createToast('You must turn on location to check in')
       }
-      else{
-        createToast('You must enable location permissions in order to check in')
-      }
-    
   }
-  //get permission for location
-  const startForegroundLocation = async() => {
-    const foregroundPermission = await Location.requestForegroundPermissionsAsync()
-    if(!foregroundPermission.granted){
-        createToast('You must enable location permissions on the app in order to check in')
-    }
-    else{
-      let position = await Location.getCurrentPositionAsync()
-      if(!position){
-        createToast('Your GPS must be turned on to check in')
-      }
-      else{
-        foregroundSubscription?.remove()
-        foregroundSubscription = await Location.watchPositionAsync({
-          accuracy: Location.Accuracy.BestForNavigation,
-          distanceInterval: 1
-        },
-        location => {
-          setCurrentPosition(location.coords)
-        }
-        )
-      }
-    }
-  }
+}
 
-  const stopForegroundLocation = async() => {
-    foregroundSubscription?.remove()
-    console.log(foregroundSubscription);
-    setCurrentPosition(null)
-  }
-
-  useEffect(() => {
-    console.log(position);
-    if(position != null){
-      console.log(position.latitude);
-      console.log(position.longitude);
-      checkProviderRadius()
-    }
-  },[position])
-
-  const checkProviderRadius = async() => {
+  //check if provider is within range of job site
+  const checkProviderRadius = () => {
     //check if the provider is within the area of the job location
     let check = isPointWithinRadius(
       {latitude: position.latitude, longitude: position.longitude},
       {latitude: parseFloat(jobInfo?.latitude), longitude: parseFloat(jobInfo?.longitude)},
-      500)
+      450)
       if(check){
         //within radius
         if(!jobInfo.checkInTime){
@@ -395,29 +352,86 @@ const ServiceView = ({ route, navigation }) => {
           setAllowCheckOut(false)
         }
       }
-      
   }
 
-  
-  useEffect(() => {
-    // startForegroundLocation()
-    if(!jobInfo.checkInTime || !jobInfo.checkOutTime){
-      startBackgroundLocation()
+  //make sure background task is off before starting it again
+  const checkBackgroundTask = async() => {
+    if(await TaskManager.isTaskRegisteredAsync('BACKGROUND_LOCATION')){
+      await TaskManager.unregisterTaskAsync('BACKGROUND_LOCATION')
     }
+  }
+  //start service for background location
+  const startBackgroundLocation = async() => {
+      dispatch(resetLocation())
+      console.log('getting permissions');  
+      const foregroundPermission = await Location.requestForegroundPermissionsAsync()
+      if(!foregroundPermission.granted){
+          createToast('You must enable location permissions on the app in order to check in')
+      }
+      else{
+        const backgroundPermission = await Location.requestBackgroundPermissionsAsync()
+        if(backgroundPermission.granted){
+          const isTaskDefined = TaskManager.isTaskDefined('BACKGROUND_LOCATION')
+          if(!isTaskDefined){
+            console.log('task not defined, unable to track location');
+          } 
+          else{
+            const hasStarted = await Location.hasStartedLocationUpdatesAsync('BACKGROUND_LOCATION')
+            if(hasStarted){
+              console.log('already started location tracking');
+            }
+            else{
+              createToast('Please turn on your GPS before attempting to check in')
+              console.log('starting track');
+              await Location.startLocationUpdatesAsync('BACKGROUND_LOCATION', {
+                showsBackgroundLocationIndicator: true,
+                accuracy: Location.Accuracy.Highest,
+                foregroundService: {
+                    notificationTitle: "Location",
+                    notificationBody: "Location tracking in background",
+                    notificationColor: "#fff",
+                },
+                deferredUpdatesInterval: 600000,
+              })
+            }
+          }
+        }
+        else{
+          createToast('You must enable background location permissions in order to check in')
+        }
+      }
+     
+      
+    
+  }
 
+
+
+
+  //whenever provider position changes 
+  useEffect(() => {
+    if(position != null){
+      checkProviderRadius()
+    }
+  },[position])
+
+ 
+  useEffect(() => {
+    dispatch(resetLocation())
     getDateFormat()
     getProviders()
-    setCanCancel(true)
+    if(jobInfo.checkInTime){
+      setCanCancel(false)
+    }
+    if(isServiceDay && (!jobInfo.checkInTime || !jobInfo.checkOutTime)){
+      checkBackgroundTask()
+      getCurrentLocation()
+      startBackgroundLocation()
+    }
     //Testing
     // setCoordinatesForMap()
     setLoading(false)
   },[])
-
-  if(loading){
-    return (
-      <Spinner color={'#0EFC11'}/>
-    )
-  }
 
   return (
     <KeyboardAwareScrollView>
@@ -425,19 +439,22 @@ const ServiceView = ({ route, navigation }) => {
         style={[commonStyles.background, {height: 1100}]}
         source={require("../../assets/wyo_background.png")}>
         <SafeAreaView style={commonStyles.safeContainer}>
-          {/* MODAL */}
-          <Modal
+         {/* MODAL */}
+         <Modal
             visible={showModal}
             transparent
             animationType='slide'
             hardwareAccelerated
           >
             <View style={styles.centeredView}>
-            {canCancel ? (
               <View style={styles.warningModal}>
                 <Text style={styles.modalTitle}>Warning</Text>
                 <Text style={styles.modalText}>Are you sure you want to cancel service for this job?
                 </Text>
+                {isCancelOffense ? 
+                  <Text style={[styles.noteText, {textAlign: 'center'}]}>Note: This job request is Scheduled for less than 3 days from now. Cancellation of this job will result in an offense on your account</Text> : (
+                  <Text style={[styles.noteText, {textAlign: 'center'}]}>Note: Cancellation of this job will not result in an offense on your account because it is scheduled for more than 3 days from today</Text>
+                )}
                 {startCancel ?  <Spinner color={'black'}/> : (
                   //Buttons
                   <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 40}}>
@@ -456,95 +473,101 @@ const ServiceView = ({ route, navigation }) => {
                   </View>
                 )}
               </View>
-            ):
-              <View style={styles.warningModal}>
-                <Text style={styles.modalTitle}>Cancellation</Text>
-                <Text style={styles.modalText}>You are no longer able to cancel services for this job at this time.
-                </Text>
-                <TouchableOpacity
-                    onPress={() => setShowModal(false)}
-                    style={[styles.button, {alignSelf: 'center', marginTop: 10}]}
-                  >
-                  <Text style={styles.btnText}>Back</Text>
-                  </TouchableOpacity>
-              </View>
-            }
             </View>
           </Modal>
 
-
-          <Text style={styles.head}>Job Details</Text>
-          <View style={styles.jobContainer}>
-            <View style={{alignItems: 'flex-end', marginBottom: -10}}>
-              {jobInfo.currentStatus != 'COMPLETED' ? 
-                  <TouchableOpacity
-                    onPress={() => setShowModal(true)}
-                    style={styles.button}
-                    >
-                    <Text style={styles.btnText}>Cancel Job</Text> 
-                  </TouchableOpacity>
-                : <></>
+          {loading ? <Spinner color="#0EFC11" /> : (
+            <View>
+              <Text style={styles.head}>Job Details</Text>
+              <View style={styles.jobContainer}>
+              {!canCancel ? <></> : (
+                <View style={{alignItems: 'flex-end', marginBottom: -10}}>
+                  {jobInfo.currentStatus != 'COMPLETED' ? 
+                      <TouchableOpacity
+                        onPress={() => setShowModal(true)}
+                        style={styles.button}
+                        >
+                        <Text style={styles.btnText}>Cancel Job</Text> 
+                      </TouchableOpacity>
+                    : <></>
+                    }
+                </View>
+              )}
+                <Text style={styles.title}>{jobInfo.jobTitle}</Text>
+                <Text style={styles.generalText}>Request Owner: {owner.firstName + " " + owner.lastName}</Text>
+                {owner.contactMethod == 'phone' ? 
+                <Text style={styles.generalText}>Contact: {owner.phoneNumber}</Text>:
+                <Text style={styles.generalText}>Contact: {owner.email}</Text>
                 }
+                <Text style={styles.generalText}>Duration: {jobInfo.duration} Hours</Text>
+                <Text style={styles.generalText}>Address: {jobInfo.address}</Text>
+                <Text style={styles.generalText}>City: {jobInfo.city} {jobInfo.zipCode}</Text>
+                <Text style={styles.generalText}>Scheduled for {date}</Text>
+                <Text style={[styles.generalText, {marginBottom: 30}]}>{time}</Text>
+                {jobInfo.jobDescription ? <Text style={[styles.generalText, {marginBottom: 30}]}>Job Description: {jobInfo.jobDescription}</Text> : <></>}
+                <Text style={[styles.generalText, {marginBottom: 10}]}>Main Provider: {mainProvider ? mainProvider : 'None'}</Text>
+              </View>
+              <View style={styles.jobContainer}>
+                {/* Buttons */}
+                {!isServiceDay ? <></> : (
+                  <View>
+                    <Text style={[styles.noteText, {textAlign: "center"}]}>Click on the refresh button to check if your current location allows you to check in/out</Text>
+                    <View style={{alignItems: 'center', marginBottom: 20}}>
+                    {loadingLocation ? <Spinner color='white'/> : (
+                      <TouchableOpacity onPress={() => {getCurrentLocation()}}>
+                        <Ionicons name="refresh" size={35} />
+                      </TouchableOpacity>
+                    )}
+                    </View>
+                  </View>
+                )}
+                <View style={{alignItems: 'flex-end'}}>
+                {allowCheckIn ? (
+                  <TouchableOpacity
+                  onPress={() => checkIn()}
+                  style={styles.button}
+                  >
+                  <Text style={styles.btnText}>Check In</Text> 
+                  </TouchableOpacity>
+                ): <></>}
+                {allowCheckOut ? (
+                  <TouchableOpacity
+                  onPress={() => checkOut()}
+                  style={styles.button}
+                  >
+                  <Text style={styles.btnText}>Check Out</Text> 
+                  </TouchableOpacity>
+                ): <></>}
+              </View>
+
+              {/* Map */}
+                <Text style={[styles.title, {textAlign: 'center', alignSelf: 'center'}]}>Map</Text>
+                <Text style={[styles.generalText, {marginBottom: 10, textAlign: 'center'}]}>Click the marker on the map to open up directions on your maps application</Text>
+                <MapView
+                  style={{width: '100%', height: 350}}
+                  provider={PROVIDER_GOOGLE}
+                  followsUserLocation
+                  showsUserLocation
+                  region={{
+                    latitude: parseFloat(jobInfo?.latitude),
+                    longitude: parseFloat(jobInfo?.longitude),
+                    latitudeDelta: 0.0822,
+                    longitudeDelta: 0.0421,
+                  }}
+                >
+                  <Marker
+                    title="Destination"
+                    coordinate={{
+                      
+                      latitude: parseFloat(jobInfo?.latitude),
+                      longitude: parseFloat(jobInfo?.longitude)
+                    }}
+                    description={`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}
+                  />
+                </MapView>
+              </View>
             </View>
-            <Text style={styles.title}>{jobInfo.jobTitle}</Text>
-            <Text style={styles.generalText}>Request Owner: {owner.firstName + " " + owner.lastName}</Text>
-            {owner.contactMethod == 'phone' ? 
-            <Text style={styles.generalText}>Contact: {owner.phoneNumber}</Text>:
-            <Text style={styles.generalText}>Contact: {owner.email}</Text>
-            }
-            <Text style={styles.generalText}>Duration: {jobInfo.duration}</Text>
-            <Text style={styles.generalText}>Address: {jobInfo.address}</Text>
-            <Text style={styles.generalText}>City: {jobInfo.city} {jobInfo.zipCode}</Text>
-            <Text style={styles.generalText}>Scheduled for {date}</Text>
-            <Text style={[styles.generalText, {marginBottom: 30}]}>{time}</Text>
-            {jobInfo.jobDescription ? <Text style={[styles.generalText, {marginBottom: 30}]}>Job Description: {jobInfo.jobDescription}</Text> : <></>}
-            <Text style={[styles.generalText, {marginBottom: 10}]}>Main Provider: {mainProvider ? mainProvider : 'None'}</Text>
-          </View>
-          <View style={styles.jobContainer}>
-            {/* Buttons */}
-            <View style={{alignItems: 'flex-end'}}>
-            {allowCheckIn ? (
-              <TouchableOpacity
-              onPress={() => checkIn()}
-              style={styles.button}
-              >
-              <Text style={styles.btnText}>Check In</Text> 
-              </TouchableOpacity>
-            ): <></>}
-            {allowCheckOut ? (
-              <TouchableOpacity
-              onPress={() => checkOut()}
-              style={styles.button}
-              >
-              <Text style={styles.btnText}>Check Out</Text> 
-              </TouchableOpacity>
-            ): <></>}
-          </View>
-
-          {/* Map */}
-            <Text style={[styles.title, {textAlign: 'center', alignSelf: 'center'}]}>Map</Text>
-            <Text style={[styles.generalText, {marginBottom: 10, textAlign: 'center'}]}>Click the marker on the map to open up directions on your maps application</Text>
-            <MapView
-              style={{width: '100%', height: 300}}
-              region={{
-                latitude: parseFloat(jobInfo?.latitude),
-                longitude: parseFloat(jobInfo?.longitude),
-                latitudeDelta: 0.0822,
-                longitudeDelta: 0.0421,
-              }}
-            >
-              <Marker
-                title="Destination"
-                coordinate={{
-                  
-                  latitude: parseFloat(jobInfo?.latitude),
-                  longitude: parseFloat(jobInfo?.longitude)
-                }}
-                description={`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}
-              />
-
-            </MapView>
-          </View>
+          )}
         </SafeAreaView>
       </ImageBackground>
     </KeyboardAwareScrollView>
@@ -632,7 +655,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     alignSelf: 'center',
     textAlign: 'center'
-  }
+  },
+  noteText: {
+    fontFamily: "Montserrat-Italic",
+    fontSize: 14,
+  },
 });
 
 export default ServiceView;

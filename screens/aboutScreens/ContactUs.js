@@ -10,8 +10,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { commonStyles } from "../../common/styles";
 
-//Information screen about the company
-const AboutUs = ({ navigation }) => {
+const ContactUs = ({ navigation }) => {
   return (
     <KeyboardAwareScrollView>
     <ImageBackground
@@ -19,17 +18,16 @@ const AboutUs = ({ navigation }) => {
       source={require("../../assets/wyo_background.png")}
     >
       <SafeAreaView style={commonStyles.safeContainer}>
-        <Text style={styles.header1}>Company Information</Text>
+        <Text style={styles.header1}>Contact Us</Text>
         <View style={styles.logoContainer}>
         <Image
           style={commonStyles.logo}
           source={require("../../assets/Logo.png")}
         />
         </View>
-        <Text style={styles.header2}>About the Company</Text>
+        <Text style={styles.header2}>Have a question or would like to leave a suggestion?</Text>
 
-        <Text style={styles.header3}>WYO is a service based company that offers members of your community the chance to earn income helping you While You’re Out.
-schedule a trusted WYO who lives in your community today.</Text>
+       
       </SafeAreaView>
     </ImageBackground>
     </KeyboardAwareScrollView>
@@ -64,4 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AboutUs;
+export default ContactUs;

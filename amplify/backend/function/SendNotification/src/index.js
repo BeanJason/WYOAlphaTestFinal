@@ -27,7 +27,8 @@ exports.handler = async (event) => {
     sound: "default",
     title: arguments?.title,
     body: arguments?.message,
-    data: arguments?.data || {}
+    data: arguments?.data || {},
+    "content-available": "1",
   });
   let chunks = expo.chunkPushNotifications(messages);
   let tickets = [];

@@ -3,19 +3,29 @@ import {
   ImageBackground,
   StyleSheet,
   Text,
-  SafeAreaView
+  SafeAreaView,
+  View,
+  Image
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { commonStyles } from "../../common/styles";
 
 //Information screen about providers
 const AboutProviders = ({ navigation }) => {
   return (
+    <KeyboardAwareScrollView>
     <ImageBackground
-      style={commonStyles.background}
+      style={[commonStyles.background, {height: 1000}]}
       source={require("../../assets/wyo_background.png")}
     >
       <SafeAreaView style={commonStyles.safeContainer}>
         <Text style={styles.header1}>Provider Information</Text>
+        <View style={styles.logoContainer}>
+        <Image
+          style={commonStyles.logo}
+          source={require("../../assets/Logo.png")}
+        />
+        </View>
         <Text style={styles.header2}>About the Provider</Text>
 
         <Text style={styles.header3}>WYO providers are trusted individuals that live in your community who will come to your home or place of business to wait for service providers when you can’t be there because of work, or other obligations. Many of our WYO’s are retired individuals who have lived in your neighborhood for many years and are highly involved and trusted by your community members. All WYO providers have cleared a background check.</Text>
@@ -25,6 +35,7 @@ const AboutProviders = ({ navigation }) => {
 
       </SafeAreaView>
     </ImageBackground>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -73,6 +84,9 @@ const styles = StyleSheet.create({
     marginBottom: -15,
     marginTop: 35,
     marginHorizontal: 10,
+  },
+  logoContainer: {
+    alignItems: "center",
   },
 });
 

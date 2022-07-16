@@ -16,6 +16,7 @@ import { commonStyles } from "../../../common/styles";
 import * as queries from "../../../src/graphql/queries"
 import { FontAwesome } from "@expo/vector-icons"
 import { getManyProviders } from "../../../testData";
+import { useIsFocused } from "@react-navigation/native";
 
 
 
@@ -23,7 +24,7 @@ import { getManyProviders } from "../../../testData";
 
 
 const EmployeeMain = ({ navigation }) => {
-
+  const isFocused = useIsFocused()
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [employeeList, setEmployeeList] = useState([])
@@ -55,7 +56,7 @@ const EmployeeMain = ({ navigation }) => {
 
   useEffect(() => {
     setup()
-  },[])
+  },[isFocused])
 
   useEffect(() => {
     setFilteredList(employeeList)
@@ -75,13 +76,6 @@ const EmployeeMain = ({ navigation }) => {
       setFilteredList(employeeList)
       setSearch(text)
     }
-  }
-
-
-  if(loading){
-    return(
-      <Spinner color={'black'}/>
-    )
   }
 
   return (

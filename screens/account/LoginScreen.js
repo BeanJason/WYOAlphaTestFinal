@@ -62,11 +62,6 @@ const LoginScreen = ({ navigation }) => {
     dispatch(login(data));
   };
 
-  //If login is loading from server side show the spinner
-  if (isLoading) {
-    return <Spinner />;
-  }
-
   return (
     <KeyboardAwareScrollView>
       <ImageBackground
@@ -82,108 +77,110 @@ const LoginScreen = ({ navigation }) => {
               source={require("../../assets/Logo.png")}
             />
           </View>
-          <View style={styles.loginContainer}>
-            <UserInput
-              style={styles.input}
-              icon="email"
-              location="MaterialIcons"
-              name="email"
-              rules={{ required: "Email is Required" }}
-              placeholder={"Email"}
-              control={control}
-            />
-            <UserInput
-              style={styles.input}
-              icon="lock"
-              location="MaterialIcons"
-              name="password"
-              rules={{ required: "Password is required" }}
-              placeholder={"Password"}
-              control={control}
-              secureTextEntry
-            />
+          {isLoading ? <Spinner color='green'/> : (
+            <View style={styles.loginContainer}>
+              <UserInput
+                style={styles.input}
+                icon="email"
+                location="MaterialIcons"
+                name="email"
+                rules={{ required: "Email is Required" }}
+                placeholder={"Email"}
+                control={control}
+              />
+              <UserInput
+                style={styles.input}
+                icon="lock"
+                location="MaterialIcons"
+                name="password"
+                rules={{ required: "Password is required" }}
+                placeholder={"Password"}
+                control={control}
+                secureTextEntry
+              />
 
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <TouchableOpacity onPress={handleSubmit(submitForm)}>
-                <View style={styles.loginButton}>
-                  <Text style={styles.btnText}>Login</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <View style={{ flexDirection: "row", marginTop: 10}}>
-              <Text style={styles.regularText}>Dont have an account?</Text>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("RegistrationScreen", {
-                    name: "Registration",
-                  })
-                }
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                <Text style={[{ color: "blue", marginLeft: 5 }, styles.regularText]}>
-                  Sign Up
-                </Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity onPress={handleSubmit(submitForm)}>
+                  <View style={styles.loginButton}>
+                    <Text style={styles.btnText}>Login</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
 
-            {/* Forgot password link */}
-            <TouchableOpacity
-              onPress={() =>
-                // TODO: NAVIGATE TO FORGOT PASSWORD SCREEN
-                navigation.navigate("ForgotPassword1", {
-                  name: "ForgotPassword1",
-                })
-              }
-            >
-              <Text
-                style={[{ color: "blue", marginTop: 10 }, styles.regularText]}
-              >
-                Forgot Password?
-              </Text>
-            </TouchableOpacity>
+              <View style={{ flexDirection: "row", marginTop: 10}}>
+                <Text style={styles.regularText}>Dont have an account?</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("RegistrationScreen", {
+                      name: "Registration",
+                    })
+                  }
+                >
+                  <Text style={[{ color: "blue", marginLeft: 5 }, styles.regularText]}>
+                    Sign Up
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
-            <View
-              style={{
-                alignItems: "center",
-                flexDirection: "row",
-                marginTop: 30,
-              }}
-            >
-              {/* About us link */}
+              {/* Forgot password link */}
               <TouchableOpacity
                 onPress={() =>
                   // TODO: NAVIGATE TO FORGOT PASSWORD SCREEN
-                  navigation.navigate("AboutUs", {
-                    name: "About Us",
-                  })
-                }
-                style={{marginRight: 10}}
-              >
-                <Text style={[{ color: "black" }, styles.regularText]}>
-                  About
-                </Text>
-              </TouchableOpacity>
-              {/* Contact Us */}
-              <TouchableOpacity
-                onPress={() =>
-                  // TODO: NAVIGATE TO FORGOT PASSWORD SCREEN
-                  navigation.navigate("AboutUs", {
-                    name: "About Us",
+                  navigation.navigate("ForgotPassword1", {
+                    name: "ForgotPassword1",
                   })
                 }
               >
-                <Text style={[{ color: "black" }, styles.regularText]}>
-                  Contact Us
+                <Text
+                  style={[{ color: "blue", marginTop: 10 }, styles.regularText]}
+                >
+                  Forgot Password?
                 </Text>
               </TouchableOpacity>
-            </View>
 
-          </View>
+              <View
+                style={{
+                  alignItems: "center",
+                  flexDirection: "row",
+                  marginTop: 30,
+                }}
+              >
+                {/* About us link */}
+                <TouchableOpacity
+                  onPress={() =>
+                    // TODO: NAVIGATE TO FORGOT PASSWORD SCREEN
+                    navigation.navigate("AboutUs", {
+                      name: "About Us",
+                    })
+                  }
+                  style={{marginRight: 10}}
+                >
+                  <Text style={[{ color: "black" }, styles.regularText]}>
+                    About
+                  </Text>
+                </TouchableOpacity>
+                {/* Contact Us */}
+                <TouchableOpacity
+                  onPress={() =>
+                    // TODO: NAVIGATE TO FORGOT PASSWORD SCREEN
+                    navigation.navigate("AboutUs", {
+                      name: "About Us",
+                    })
+                  }
+                >
+                  <Text style={[{ color: "black" }, styles.regularText]}>
+                    Contact Us
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+            </View>
+          )}
         </SafeAreaView>
       </ImageBackground>
     </KeyboardAwareScrollView>

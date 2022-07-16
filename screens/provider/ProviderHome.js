@@ -35,7 +35,7 @@ const ProviderHome = ({ navigation }) => {
   const [jobList, setJobList] = useState([]);
   const [loading, setLoading] = useState(true)
   const [checkedBtn, setCheckedBtn] = useState('allJobs')
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   
 
   const getNotifications = async() => {
@@ -49,6 +49,7 @@ const ProviderHome = ({ navigation }) => {
 
   const testNotifications = async () => {
     await Notifications.scheduleNotificationAsync({
+
       content:{
         title: 'test',
         body: 'fake msg',
@@ -147,7 +148,7 @@ const ProviderHome = ({ navigation }) => {
               keyExtractor={(item) => item.id}
               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
               data={jobList}
-              renderItem={({ item }) => <JobCard jobInfo={item} type={'service'}/>}
+              renderItem={({ item }) => <JobCard jobInfo={item} type={userInfo.userID == item.mainProvider ? 'service' : null}/>}
             />
           </View>
         )}

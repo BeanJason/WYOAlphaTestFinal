@@ -68,16 +68,15 @@ const EmployeeInfo = ({ navigation, route }) => {
   }
 
 
-  //ban 
-  const banProvider = async() => {
+  //unban 
+  const unbanProvider = async() => {
     setOperation(true)
-    console.log('ban');
     let original = await DataStore.query(Provider, employeeInfo.id)
     try {
       await DataStore.save(Provider.copyOf(original, (updated) => {
-        updated.isBan = true
+        updated.isBan = false
       }))
-      createToast('Provider has been banned')
+      createToast('Provider has been unbanned')
       setOperation(false)
       navigation.navigate('EmployeeMain')
     } catch (error) {
@@ -86,6 +85,27 @@ const EmployeeInfo = ({ navigation, route }) => {
   }
 
   //ban 
+  const banProvider = async() => {
+    setOperation(true)
+    console.log('ban');
+    let original = await DataStore.query(Provider, employeeInfo.id)
+    let offenses = original.offenses
+    offenses += 1
+    try {
+      await DataStore.save(Provider.copyOf(original, (updated) => {
+        updated.isBan = true
+        updated.offenses = offenses
+      }))
+      createToast('Provider has been banned')
+      setOperation(false)
+      navigation.reset({ routes: [{name: 'EmployeeMain'}]})
+      navigation.navigate('EmployeeMain')
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //fire
   const fireProvider = async() => {
     setOperation(true)
     console.log('fire');
@@ -116,23 +136,48 @@ const EmployeeInfo = ({ navigation, route }) => {
             <View style={styles.warningModal}>
               {chosenModal == 'ban' ? (
                 <View>
-                  <Text style={styles.modalTitle}>WARNING</Text>
-                  <Text style={[styles.generalText, {textAlign: 'center', marginTop: 20}]}>
-                  Are your sure you want to suspend {employeeInfo.firstName} {employeeInfo.lastName} from being a provider. This will not allow them to search for jobs anymore until the suspension is lifted.
-                  </Text>
-                  <Text style={[styles.dateText, {textAlign: 'center', marginBottom: 20}]}>Note: They will still have access to their current active jobs</Text>
-                  {operation ? <Spinner color={'red'}/> : (
-                    <View style={{flexDirection:'row', justifyContent: 'space-evenly'}}>
-                      <TouchableOpacity onPress={() => {setChosenModal(''); setShowModal(false)}}>
-                        <View style={styles.button}>
-                          <Text style={styles.btnText}>No</Text>
+                  {employeeInfo.isBan ? (
+                    <View>
+                      <Text style={styles.modalTitle}>ATTENTION</Text>
+                      <Text style={[styles.generalText, {textAlign: 'center', marginTop: 20, marginBottom: 20}]}>
+                      Are your sure you want to unban {employeeInfo.firstName} {employeeInfo.lastName}. This will allow them to search for jobs as a provider again.
+                      </Text>
+                      {operation ? <Spinner color={'red'}/> : (
+                        <View style={{flexDirection:'row', justifyContent: 'space-evenly'}}>
+                          <TouchableOpacity onPress={() => {setChosenModal(''); setShowModal(false)}}>
+                            <View style={styles.button}>
+                              <Text style={styles.btnText}>No</Text>
+                            </View>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => unbanProvider()}>
+                            <View style={styles.button}>
+                              <Text style={styles.btnText}>Yes</Text>
+                            </View>
+                          </TouchableOpacity>
                         </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => banProvider()}>
-                        <View style={styles.button}>
-                          <Text style={styles.btnText}>Yes</Text>
+                      )}
+                    </View>
+                  ): (
+                    <View>
+                      <Text style={styles.modalTitle}>WARNING</Text>
+                      <Text style={[styles.generalText, {textAlign: 'center', marginTop: 20}]}>
+                      Are your sure you want to suspend {employeeInfo.firstName} {employeeInfo.lastName} from being a provider. This will not allow them to search for jobs anymore until the suspension is lifted. This will also increase their offenses.
+                      </Text>
+                      <Text style={[styles.dateText, {textAlign: 'center', marginBottom: 20}]}>Note: They will still have access to their current active jobs</Text>
+                      {operation ? <Spinner color={'red'}/> : (
+                        <View style={{flexDirection:'row', justifyContent: 'space-evenly'}}>
+                          <TouchableOpacity onPress={() => {setChosenModal(''); setShowModal(false)}}>
+                            <View style={styles.button}>
+                              <Text style={styles.btnText}>No</Text>
+                            </View>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => banProvider()}>
+                            <View style={styles.button}>
+                              <Text style={styles.btnText}>Yes</Text>
+                            </View>
+                          </TouchableOpacity>
                         </View>
-                      </TouchableOpacity>
+                      )}
                     </View>
                   )}
                 </View>
@@ -142,7 +187,7 @@ const EmployeeInfo = ({ navigation, route }) => {
                   <Text style={[styles.generalText, {textAlign: 'center', marginTop: 20}]}>
                   Are your sure you want to fire {employeeInfo.firstName} {employeeInfo.lastName} from being a provider. This will immediately stop all provider activities and cancel all their active jobs. They will also not be able to sign in anymore. 
                   </Text>
-                  <Text style={[styles.dateText, {textAlign: 'center', marginBottom: 20}]}>Note: Firing a provider is permanent and they will not be able to sign up again with the same email or phone number</Text>
+                  <Text style={[styles.dateText, {textAlign: 'center', marginBottom: 20}]}>Note: Firing a provider is irreversible and they will not be able to sign up again with the same email or phone number</Text>
                   {operation ? <Spinner color={'red'}/> : (
                     <View style={{flexDirection:'row', justifyContent: 'space-evenly'}}>
                       <TouchableOpacity onPress={() => {setChosenModal(''); setShowModal(false)}}>
@@ -206,7 +251,7 @@ const EmployeeInfo = ({ navigation, route }) => {
               <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 30}}>
                 <TouchableOpacity onPress={() => {setChosenModal('ban'); setShowModal(true)}}>
                     <View style={styles.button}>
-                      <Text style={styles.btnText}>Suspend</Text>
+                      <Text style={styles.btnText}>{employeeInfo.isBan ? "Unban": "Ban"}</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {setChosenModal('fire'); setShowModal(true)}}>

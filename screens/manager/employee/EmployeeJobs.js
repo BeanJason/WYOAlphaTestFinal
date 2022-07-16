@@ -118,7 +118,7 @@ const EmployeeJobs = ({ navigation, route }) => {
                   keyExtractor={(item) => item.id}
                   refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                   data={filteredJobList}
-                  renderItem={({ item }) => <JobCard jobInfo={item} type={'manager'}/>}
+                  renderItem={({ item }) => <JobCard jobInfo={item} type={'manager'} role={employeeInfo.id == item.mainProvider ? 'main' : null}/>}
                 />
               </View>
             )}
