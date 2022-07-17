@@ -19,7 +19,8 @@
       "function": {
         "CreatePaymentIntent": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/CreatePaymentIntent-6e396b55586e756c5538-build.zip"
+          "s3Key": "amplify-builds/CreatePaymentIntent-3750376d534f62713268-build.zip",
+          "stripeKey": "sk_test_51LAbv7GUC6WuR4axUGk966Vt9d0HlrVZ5Ms8z8X96wwhsS84Vbp7ESV19nH7YBBCS2wwZNWMbRvkc9oCd2iJDCEU00yEf71IGp"
         },
         "StripeWebhook": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
@@ -27,7 +28,8 @@
         },
         "RefundPayment": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/RefundPayment-785135706f5a55793879-build.zip"
+          "s3Key": "amplify-builds/RefundPayment-48706a52382b504d5347-build.zip",
+          "stripeKey": "sk_test_51LAbv7GUC6WuR4axUGkVtdHlrVZ5Ms8z8X96wwhsS84Vbp7ESV19nH7YBBCS2wwZNWMbRvkc9oCd2iJDCEU00yEf71IGp"
         },
         "ResizeFunction": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
@@ -40,6 +42,13 @@
         "SendNotification": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
           "s3Key": "amplify-builds/SendNotification-2b71766e773130477162-build.zip"
+        },
+        "SendEmail": {
+          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
+          "s3Key": "amplify-builds/SendEmail-484e6443325a525a6a36-build.zip",
+          "service": "Gmail",
+          "email": "kassimballout@gmail.com",
+          "password": "fmtrwjtgwwdphamr"
         }
       }
     }

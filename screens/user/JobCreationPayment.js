@@ -20,7 +20,8 @@ import {
   import { addOrRemoveJob, storeNewJobID } from "../../redux/jobsReducer";
   import * as queries from "../../src/graphql/queries"
   import * as mutations from "../../src/graphql/mutations"
-import { createUserReminder } from "../../notifications";
+  import { createUserReminder } from "../../notifications";
+import { sendPaymentEmail } from "../../common/functions";
   
   //Login screen
   const JobCreationPayment = ({route, navigation }) => {
@@ -75,9 +76,11 @@ import { createUserReminder } from "../../notifications";
             paidJob.data.getJob.userNotificationID = ids
             dispatch(addOrRemoveJob({type: 'ADD_ACTIVE_JOB', jobInfo: paidJob.data.getJob}))
             dispatch(storeNewJobID({jobID: ""}))
+            setPaymentStatus('Payment was successful! You have 24 hours to cancel the job for a refund.')
             setTimeout(() => {
               route.params.jobInfo = paidJob.data.getJob
-              setPaymentStatus('Payment was successful! You have 24 hours to cancel the job for a refund.')
+              sendPaymentEmail(paidJob.data.getJob, userInfo.firstName, authUser.email)
+              createToast('Job request has been made successfully')
               navigation.navigate("Home")
             }, 2000)
           }

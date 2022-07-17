@@ -244,7 +244,7 @@ const JobCreation1 = ({ navigation }) => {
           break;
         }
       }
-      data.price = price
+      data.price = price + 250
       data.tip = tip
       data.total = total
       //Send info to the server

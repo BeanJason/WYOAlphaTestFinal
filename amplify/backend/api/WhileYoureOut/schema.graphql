@@ -7,6 +7,7 @@ type Mutation {
   createPaymentIntent(amount: Int!, email: String!, jobID: String!): PaymentIntent! @function(name: "CreatePaymentIntent-${env}")
   refundPayment(isCancel: Boolean!, jobID: String!): Boolean! @function(name: "RefundPayment-${env}")
   sendNotification(token: String!, title: String!, message: String!, data: String): Boolean! @function(name: "SendNotification-${env}")
+  sendEmail(userEmail: String!, subject: String!, message: String! ): String! @function(name: "SendEmail-${env}")
 }
 
 enum JOBSTATUS {

@@ -33,6 +33,15 @@ export const sendNotification = /* GraphQL */ `
     )
   }
 `;
+export const sendEmail = /* GraphQL */ `
+  mutation SendEmail(
+    $userEmail: String!
+    $subject: String!
+    $message: String!
+  ) {
+    sendEmail(userEmail: $userEmail, subject: $subject, message: $message)
+  }
+`;
 export const createJob = /* GraphQL */ `
   mutation CreateJob(
     $input: CreateJobInput!

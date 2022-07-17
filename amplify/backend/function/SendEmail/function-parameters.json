@@ -1,0 +1,17 @@
+{
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "service",
+      "environmentVariableName": "SERVICE"
+    },
+    {
+      "cloudFormationParameterName": "email",
+      "environmentVariableName": "EMAIL"
+    },
+    {
+      "cloudFormationParameterName": "password",
+      "environmentVariableName": "PASSWORD"
+    }
+  ]
+}

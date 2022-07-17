@@ -16,15 +16,16 @@ import { API, DataStore, graphqlOperation, Storage } from "aws-amplify";
 import { refundPayment } from "../../src/graphql/mutations";
 import { Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob } from "../../redux/jobsReducer";
-import { decrementZipCodeCount } from "../../common/functions";
+import { decrementZipCodeCount, sendRefundEmail } from "../../common/functions";
 import ProfilePicture from "../../common/components/ProfilePicture";
 
 //Login screen
 const UserJobInfo = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { jobInfo } = route.params;
+  const { authUser, userInfo } = useSelector((state) => state.auth);
   const [mainProvider, setMainProvider] = useState('')
   const [providerImage, setProviderImage] = useState()
   const [mainProviderBio, setMainProviderBio] = useState()
@@ -100,6 +101,7 @@ const UserJobInfo = ({ route, navigation }) => {
           dispatch(addOrRemoveJob({type: 'REMOVE_ACTIVE_JOB', jobInfo}))
           setTimeout(() => {
             setStartCancel(false)
+            sendRefundEmail(jobInfo, userInfo.firstName, authUser.email)
             createToast('Your job request has been cancelled')
             navigation.reset({ routes: [{name: 'UserHome'}]})
             navigation.navigate('UserHome', {name: 'UserHome'})

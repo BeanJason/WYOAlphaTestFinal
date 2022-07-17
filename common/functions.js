@@ -1,9 +1,10 @@
-import { DataStore } from "aws-amplify"
+import { API, DataStore, graphqlOperation } from "aws-amplify"
 import * as Device from "expo-device"
 import { Code, Job, Provider, User } from "../src/models"
 import * as Notifications from "expo-notifications"
 import { Platform } from "react-native"
 import { cancelNotificationByID, sendNotificationToProvider, sendNotificationToUser } from "../notifications"
+import { sendEmail } from "../src/graphql/mutations"
 
 export const getUnacceptedJobs = (activeJobs) => {
     //get requested jobs
@@ -163,4 +164,83 @@ export const checkUnverifiedJob = async (job, code) => {
             //remove reminders
         }
     }
+}
+
+//emails
+export const sendPaymentEmail = async (jobInfo, user, email) => {
+    let date = new Date(jobInfo.requestDateTime)
+    let total = (jobInfo.price + jobInfo.tip) / 100
+    total = total.toFixed(2)
+    
+    let html = 
+    `<html>
+        <head>
+            <h1>
+                WYO Payment Confirmation,
+            </h1>
+            <body>
+                <p>
+                    Hello ${user}
+                </p>
+                <p>
+                    This email confirms your payment of $${total} for your job request ${jobInfo.jobTitle} 
+                    that is scheduled for ${date.toLocaleDateString()} at ${date.toLocaleTimeString()}. 
+                    You have 24 hours to cancel this job for a refund. 
+                    Note that the $2.50 service fee will not be refunded if the job is cancelled.
+                </p>
+                <p>
+                    Your Payment ID: ${jobInfo.paymentID}
+                </p>
+                <p>
+                    Thank you.
+                </p>
+            </body>
+        </head>
+    </html>`
+
+    await API.graphql(graphqlOperation(sendEmail, {
+        userEmail: email,
+        subject: 'Payment Confirmation',
+        message: html
+    }))
+
+}
+
+export const sendRefundEmail = async (jobInfo, user, email) => {
+    let date = new Date(jobInfo.requestDateTime)
+    let total = (jobInfo.price + jobInfo.tip - 250) / 100
+    total = total.toFixed(2)
+    
+    let html = 
+    `<html>
+        <head>
+            <h1>
+                WYO Refund Confirmation
+            </h1>
+            <body>
+                <p>
+                    Hello ${user},
+                </p>
+                <p>
+                    This email confirms your refund of $${total} for your job request ${jobInfo.jobTitle} 
+                    that was scheduled for ${date.toLocaleDateString()} at ${date.toLocaleTimeString()}.
+                    The refund will be sent to your original payment method.
+                    Note that the $2.50 service fee will not be refunded.
+                </p>
+                <p>
+                    Your Payment ID: ${jobInfo.paymentID}
+                </p>
+                <p>
+                    Thank you.
+                </p>
+            </body>
+        </head>
+    </html>`
+
+    await API.graphql(graphqlOperation(sendEmail, {
+        userEmail: email,
+        subject: 'Refund Confirmation',
+        message: html
+    }))
+
 }

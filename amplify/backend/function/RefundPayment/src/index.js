@@ -7,7 +7,7 @@
 Amplify Params - DO NOT EDIT */
 
 const AWS = require("aws-sdk");
-const stripe = require("stripe")("sk_test_51LAbv7GUC6WuR4axUGk966Vt9d0HlrVZ5Ms8z8X96wwhsS84Vbp7ESV19nH7YBBCS2wwZNWMbRvkc9oCd2iJDCEU00yEf71IGp")
+const stripe = require("stripe")(process.env.STRIPE_KEY)
 const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.API_WHILEYOUREOUT_JOBTABLE_NAME;
 const region = process.env.REGION;

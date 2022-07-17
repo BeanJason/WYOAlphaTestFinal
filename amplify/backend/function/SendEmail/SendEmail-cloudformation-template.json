@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"9.0.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"9.1.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -16,11 +16,13 @@
     "s3Key": {
       "Type": "String"
     },
-    "apiWhileYoureOutGraphQLAPIIdOutput": {
-      "Type": "String",
-      "Default": "apiWhileYoureOutGraphQLAPIIdOutput"
+    "service": {
+      "Type": "String"
     },
-    "stripeKey": {
+    "email": {
+      "Type": "String"
+    },
+    "password": {
       "Type": "String"
     }
   },
@@ -54,12 +56,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "RefundPayment",
+            "SendEmail",
             {
               "Fn::Join": [
                 "",
                 [
-                  "RefundPayment",
+                  "SendEmail",
                   "-",
                   {
                     "Ref": "env"
@@ -77,37 +79,14 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "API_WHILEYOUREOUT_JOBTABLE_NAME": {
-              "Fn::ImportValue": {
-                "Fn::Sub": "${apiWhileYoureOutGraphQLAPIIdOutput}:GetAtt:JobTable:Name"
-              }
+            "SERVICE": {
+              "Ref": "service"
             },
-            "API_WHILEYOUREOUT_JOBTABLE_ARN": {
-              "Fn::Join": [
-                "",
-                [
-                  "arn:aws:dynamodb:",
-                  {
-                    "Ref": "AWS::Region"
-                  },
-                  ":",
-                  {
-                    "Ref": "AWS::AccountId"
-                  },
-                  ":table/",
-                  {
-                    "Fn::ImportValue": {
-                      "Fn::Sub": "${apiWhileYoureOutGraphQLAPIIdOutput}:GetAtt:JobTable:Name"
-                    }
-                  }
-                ]
-              ]
+            "EMAIL": {
+              "Ref": "email"
             },
-            "API_WHILEYOUREOUT_GRAPHQLAPIIDOUTPUT": {
-              "Ref": "apiWhileYoureOutGraphQLAPIIdOutput"
-            },
-            "STRIPE_KEY": {
-              "Ref": "stripeKey"
+            "PASSWORD": {
+              "Ref": "password"
             }
           }
         },
@@ -128,12 +107,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "whileyoureoutLambdaRole2b12df40",
+            "whileyoureoutLambdaRole4b7a6171",
             {
               "Fn::Join": [
                 "",
                 [
-                  "whileyoureoutLambdaRole2b12df40",
+                  "whileyoureoutLambdaRole4b7a6171",
                   "-",
                   {
                     "Ref": "env"
@@ -199,86 +178,43 @@
                   }
                 ]
               }
+            },
+            {
+              "Action": [
+                "ses:SendEmail"
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ses:us-east-2:308200325510:identity/info@wyoservices.com"
             }
           ]
         }
       }
     },
-    "AmplifyResourcesPolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
+    "CustomLambdaExecutionPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "PolicyName": "amplify-lambda-execution-policy",
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
+        "PolicyName": "custom-lambda-execution-policy",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
             {
-              "Effect": "Allow",
               "Action": [
-                "dynamodb:Get*",
-                "dynamodb:BatchGetItem",
-                "dynamodb:List*",
-                "dynamodb:Describe*",
-                "dynamodb:Scan",
-                "dynamodb:Query",
-                "dynamodb:Delete*"
+                "ses:SendRawEmail"
               ],
               "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":table/",
-                      {
-                        "Fn::ImportValue": {
-                          "Fn::Sub": "${apiWhileYoureOutGraphQLAPIIdOutput}:GetAtt:JobTable:Name"
-                        }
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":table/",
-                      {
-                        "Fn::ImportValue": {
-                          "Fn::Sub": "${apiWhileYoureOutGraphQLAPIIdOutput}:GetAtt:JobTable:Name"
-                        }
-                      },
-                      "/index/*"
-                    ]
-                  ]
-                }
-              ]
+                "arn:aws:ses:us-east-2:308200325510:identity/*"
+              ],
+              "Effect": "Allow"
             }
           ]
-        }
-      }
+        },
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ]
+      },
+      "DependsOn": "LambdaExecutionRole"
     }
   },
   "Outputs": {
