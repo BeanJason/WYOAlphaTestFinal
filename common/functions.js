@@ -152,7 +152,6 @@ export const checkUnverifiedJob = async (job, code) => {
         await decrementZipCodeCount(code)
     }
     else{
-        console.log(job.paymentID);
         if(job.paymentID == '' || job.paymentID == undefined || job.paymentID == null){
             //remove reminders
             for(let next of job.userNotificationID){
@@ -165,6 +164,8 @@ export const checkUnverifiedJob = async (job, code) => {
         }
     }
 }
+
+
 
 //emails
 export const sendPaymentEmail = async (jobInfo, user, email) => {

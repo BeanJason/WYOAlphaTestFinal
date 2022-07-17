@@ -76,13 +76,13 @@ import { sendPaymentEmail } from "../../common/functions";
             paidJob.data.getJob.userNotificationID = ids
             dispatch(addOrRemoveJob({type: 'ADD_ACTIVE_JOB', jobInfo: paidJob.data.getJob}))
             dispatch(storeNewJobID({jobID: ""}))
-            setPaymentStatus('Payment was successful! You have 24 hours to cancel the job for a refund.')
+            setPaymentStatus('Payment was successful! You have 24 hours if you wish to cancel the job for a refund.')
             setTimeout(() => {
               route.params.jobInfo = paidJob.data.getJob
               sendPaymentEmail(paidJob.data.getJob, userInfo.firstName, authUser.email)
               createToast('Job request has been made successfully')
               navigation.navigate("Home")
-            }, 2000)
+            }, 4000)
           }
         }
       }
@@ -245,7 +245,7 @@ import { sendPaymentEmail } from "../../common/functions";
             </View>
           {loading ? (
             <View style={{flex: 1}}>
-              <Text style={styles.generalText}>{paymentStatus}</Text>
+              <Text style={[styles.generalText, {textAlign: 'center'}]}>{paymentStatus}</Text>
               <Spinner color={'black'}/> 
             </View>
             ): (

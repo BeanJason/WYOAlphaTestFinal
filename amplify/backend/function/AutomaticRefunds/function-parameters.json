@@ -6,10 +6,19 @@
         "read",
         "update",
         "delete"
+      ],
+      "SendEmail": [
+        "create",
+        "read",
+        "update",
+        "delete"
       ]
     },
     "storage": {
       "Job:@model(appsync)": [
+        "read"
+      ],
+      "User:@model(appsync)": [
         "read"
       ]
     }

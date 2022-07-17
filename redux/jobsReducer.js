@@ -16,6 +16,7 @@ const initialState = {
 //ASYNC FUNCTIONS
 export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, thunkAPI) => {
     const {userID} = data;
+    console.log('init');
     try {
         let response = await DataStore.query(Job, job => job.requestOwner("eq", userID))
         //REMOVE: NOT NEEDED BECAUSE THERE IS AUTO REFUNDS

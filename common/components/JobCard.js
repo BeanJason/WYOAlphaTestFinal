@@ -7,7 +7,7 @@ import { Job, User } from "../../src/models";
 import { Fontisto } from '@expo/vector-icons'; 
 
 
-const JobCard = ({ jobInfo, type = '', role = 'backup' }) => {
+const JobCard = ({ jobInfo, type = '', role = '' }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [ownerName, setOwnerName] = useState("");
@@ -82,7 +82,7 @@ const JobCard = ({ jobInfo, type = '', role = 'backup' }) => {
   return (
       <Pressable onPress={onPress}>
       <View style={active ? styles.jobContainerActive: styles.jobContainer}>
-        {type == 'manager' ? <Text style={[styles.noteText, {alignSelf: 'flex-end'}]}>Role: {role == 'main' ? 'Main Provider': 'Backup Provider'} </Text> : <></>}
+        {type == 'manager' && role ? <Text style={[styles.noteText, {alignSelf: 'flex-end'}]}>Role: {role == 'main' ? 'Main Provider': role == 'backup' ? 'Backup Provider' : <></>} </Text> : <></>}
         <Text style={[styles.generalText, styles.title]}>
           {jobInfo.jobTitle}
         </Text>

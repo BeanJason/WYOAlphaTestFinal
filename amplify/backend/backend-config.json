@@ -116,6 +116,13 @@
           ]
         },
         {
+          "category": "function",
+          "resourceName": "SendEmail",
+          "attributes": [
+            "Name"
+          ]
+        },
+        {
           "category": "api",
           "resourceName": "WhileYoureOut",
           "attributes": [

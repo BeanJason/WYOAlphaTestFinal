@@ -37,7 +37,7 @@ const MyAccount = ({ navigation }) => {
           <Text style={styles.header1}>Your Account</Text>
           <View style={{marginTop: 30}}>
               <Text style={[styles.subtitle, {marginBottom: 10} ]}>You are currently logged in as </Text>
-              <Text style={[styles.subtitle, {marginLeft: 10, marginTop: 5, alignSelf: 'flex-start', borderBottomWidth: 1}]}>{userInfo.firstName} {userInfo.lastName}</Text>
+              <Text style={[styles.subtitle, {marginLeft: 10, marginTop: 5, alignSelf: 'center', borderBottomWidth: 1}]}>{userInfo.firstName} {userInfo.lastName}</Text>
             <View style={{flexDirection: 'row', marginTop: 20, justifyContent: 'space-evenly'}}>
               <TouchableOpacity onPress={() => {navigation.navigate('VerifyAccount')}}>
                 <View style={styles.button}>

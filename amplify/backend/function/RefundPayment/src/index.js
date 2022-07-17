@@ -69,7 +69,7 @@ exports.handler = async (event) => {
   console.log(jobInfo);
   if (jobInfo) {
     //if cancelled
-    if (arguments.isCancel) {
+    if (arguments.isCancel == true) {
         //refund
         let amount = jobInfo.Item.price - 250;
         const refund = await stripe.refunds.create({
@@ -87,6 +87,7 @@ exports.handler = async (event) => {
         return false;
     } else {
       //if not accepted
+      console.log('auto-refund')
       if (jobInfo.Item.currentStatus == "REQUESTED") {
           //refund
           const refund = await stripe.refunds.create({

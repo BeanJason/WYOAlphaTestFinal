@@ -23,6 +23,10 @@
     "apiWhileYoureOutGraphQLAPIIdOutput": {
       "Type": "String",
       "Default": "apiWhileYoureOutGraphQLAPIIdOutput"
+    },
+    "functionSendEmailName": {
+      "Type": "String",
+      "Default": "functionSendEmailName"
     }
   },
   "Conditions": {
@@ -109,6 +113,35 @@
             },
             "API_WHILEYOUREOUT_GRAPHQLAPIIDOUTPUT": {
               "Ref": "apiWhileYoureOutGraphQLAPIIdOutput"
+            },
+            "FUNCTION_SENDEMAIL_NAME": {
+              "Ref": "functionSendEmailName"
+            },
+            "API_WHILEYOUREOUT_USERTABLE_NAME": {
+              "Fn::ImportValue": {
+                "Fn::Sub": "${apiWhileYoureOutGraphQLAPIIdOutput}:GetAtt:UserTable:Name"
+              }
+            },
+            "API_WHILEYOUREOUT_USERTABLE_ARN": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:aws:dynamodb:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":table/",
+                  {
+                    "Fn::ImportValue": {
+                      "Fn::Sub": "${apiWhileYoureOutGraphQLAPIIdOutput}:GetAtt:UserTable:Name"
+                    }
+                  }
+                ]
+              ]
             }
           }
         },
@@ -258,6 +291,41 @@
             {
               "Effect": "Allow",
               "Action": [
+                "lambda:Create*",
+                "lambda:Put*",
+                "lambda:Add*",
+                "lambda:Get*",
+                "lambda:List*",
+                "lambda:Invoke*",
+                "lambda:Update*",
+                "lambda:Delete*",
+                "lambda:Remove*"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:lambda:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":function:",
+                      {
+                        "Ref": "functionSendEmailName"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
                 "dynamodb:Get*",
                 "dynamodb:BatchGetItem",
                 "dynamodb:List*",
@@ -303,6 +371,62 @@
                       {
                         "Fn::ImportValue": {
                           "Fn::Sub": "${apiWhileYoureOutGraphQLAPIIdOutput}:GetAtt:JobTable:Name"
+                        }
+                      },
+                      "/index/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Get*",
+                "dynamodb:BatchGetItem",
+                "dynamodb:List*",
+                "dynamodb:Describe*",
+                "dynamodb:Scan",
+                "dynamodb:Query"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:dynamodb:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":table/",
+                      {
+                        "Fn::ImportValue": {
+                          "Fn::Sub": "${apiWhileYoureOutGraphQLAPIIdOutput}:GetAtt:UserTable:Name"
+                        }
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:dynamodb:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":table/",
+                      {
+                        "Fn::ImportValue": {
+                          "Fn::Sub": "${apiWhileYoureOutGraphQLAPIIdOutput}:GetAtt:UserTable:Name"
                         }
                       },
                       "/index/*"
