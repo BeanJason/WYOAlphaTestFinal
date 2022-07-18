@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/authReducer";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { resetState } from "../../redux/jobsReducer";
+import { DataStore } from "aws-amplify";
+import { Manager, Provider, User } from "../../src/models";
 
 
 
@@ -22,7 +24,25 @@ const MyAccount = ({ navigation }) => {
     const dispatch = useDispatch();
     const {authUser, userInfo} = useSelector((state) => state.auth)
 
-    const resetAndLogout = () => {
+    const resetAndLogout = async() => {
+      if(authUser['custom:type'] == 'Manager'){
+        let original = await DataStore.query(Manager, userInfo.userID);
+        await DataStore.save(Manager.copyOf(original, (updated) => {
+          updated.expoToken = ""
+        }))
+      }
+      else if(authUser['custom:type'] == 'Provider'){
+        let original = await DataStore.query(Provider, userInfo.userID);
+        await DataStore.save(Provider.copyOf(original, (updated) => {
+          updated.expoToken = ""
+        }))
+      }
+      else{
+        let original = await DataStore.query(User, userInfo.userID);
+        await DataStore.save(User.copyOf(original, (updated) => {
+          updated.expoToken = ""
+        }))
+      }
       dispatch(resetState())
       dispatch(logout())
     }

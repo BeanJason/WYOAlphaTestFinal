@@ -245,3 +245,37 @@ export const sendRefundEmail = async (jobInfo, user, email) => {
     }))
 
 }
+
+export const sendProviderEmail = async (email) => {
+    let html = 
+    `<html>
+        <head>
+            <h1>
+                WYO Provider Sign Up
+            </h1>
+            <body>
+                <p>
+                    Welcome Provider,
+                </p>
+                <p>
+                    This email confirms that your application as a WYO Provider has been successfully sent in to be processed.
+                    The final step is to complete a background check at the following link:  
+                </p>
+                <p>
+                    Please upload your background check form and a picture of your driver's license to info@wyoservices.com. Once
+                    accepted, you will then be able to search for jobs as a provider.
+                </p>
+                <p>
+                    Thank you, we hope to hear from you soon!
+                </p>
+            </body>
+        </head>
+    </html>`
+
+    await API.graphql(graphqlOperation(sendEmail, {
+        userEmail: email,
+        subject: 'WYO Provider Application',
+        message: html
+    }))
+
+}

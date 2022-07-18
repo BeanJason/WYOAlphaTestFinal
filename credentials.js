@@ -56,10 +56,12 @@ const getUserData = async (attributes) => {
             contactMethod: userData[0].contactMethod,
             expoToken: userData[0].expoToken
        }
-       if(userInfo.expoToken == "" || userInfo.expoToken == null){
-        let token = await getNotificationToken();
+       let token = await getNotificationToken();
+       if(userInfo.expoToken != token){
         if(token != "" && token != null){
-            updateExpoToken('User', userInfo.userID, token)
+            await DataStore.save(User.copyOf(userData[0], (updated) => {
+                updated.expoToken = token
+            }))
             userInfo.expoToken = token
         }
        }
@@ -96,13 +98,15 @@ const getProviderData = async (attributes) => {
             isBan: userData[0].isBan,
             employeeID: userData[0].employeeID
         }
-        if(userInfo.expoToken == "" || userInfo.expoToken == null){
-            let token = await getNotificationToken();
-            if(token != "" && token != null){
-                updateExpoToken('Provider', userInfo.userID, token)
-                userInfo.expoToken = token
-            }
+        let token = await getNotificationToken();
+       if(userInfo.expoToken != token){
+        if(token != "" && token != null){
+            await DataStore.save(Provider.copyOf(userData[0], (updated) => {
+                updated.expoToken = token
+            }))
+            userInfo.expoToken = token
         }
+       }
         return userInfo
      } catch (error) {
          console.log(error);
@@ -123,13 +127,15 @@ const getManagerData = async(attributes) => {
              lastName: userData[0].lastName,
              expoToken: userData[0].expoToken
         }
-        if(userInfo.expoToken == "" || userInfo.expoToken == null){
-         let token = await getNotificationToken();
-         if(token != "" && token != null){
-             updateExpoToken('Manager', userInfo.userID, token)
-             userInfo.expoToken = token
-         }
+        let token = await getNotificationToken();
+       if(userInfo.expoToken != token){
+        if(token != "" && token != null){
+            await DataStore.save(Manager.copyOf(userData[0], (updated) => {
+                updated.expoToken = token
+            }))
+            userInfo.expoToken = token
         }
+       }
         return userInfo
      } catch (error) {
          console.log(error);

@@ -37,7 +37,6 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
             userData = await DataStore.save(
                 new User({
                 "subID": authUser?.userSub,
-                "expoToken": data.expoToken,
                 "firstName": data.firstName,
                 "lastName": data.lastName,
                 "email": email,
@@ -54,7 +53,6 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
             userData = await DataStore.save(
               new Provider({
                   "subID": authUser?.userSub,
-                  "expoToken": data.expoToken,
                   "firstName": data.firstName,
                   "lastName": data.lastName,
                   "email": email,
@@ -83,7 +81,6 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                 biography: userData.biography,
                 backgroundCheck: userData.backgroundCheckStatus,
                 profilePicture: userData.profilePictureURL,
-                expoToken: data.expoToken,
                 isBan: data.isBan,
                 employeeID: data.employeeID
               }
@@ -96,10 +93,10 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                 address: userData.address,
                 phoneNumber: userData.phoneNumber,
                 contactMethod: userData.contactMethod,
-                expoToken: data.expoToken
               }
             }
             let attr = {
+              email: authUser.email,
               sub: authUser.userSub,
               'custom:type': data.type,
             }
