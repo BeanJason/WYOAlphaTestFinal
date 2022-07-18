@@ -42,6 +42,7 @@ const ProviderRegistration = ({ navigation }) => {
   //Set use state variables
   const [birthdaySelected, setBirthdaySelected] = useState(false);
   const pwd = watch("password");
+  const phone = watch('phoneNumber');
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [birthDayError, setBirthdayError] = useState("");
@@ -68,7 +69,7 @@ const ProviderRegistration = ({ navigation }) => {
       }
     }
     if(isSuccess){
-      navigation.navigate('ConfirmEmail',{name: 'ConfirmEmail'})
+      navigation.navigate('ConfirmEmail',{name: 'ConfirmEmail', type: 'Provider'})
     }
     //Reset the variable states after login or failed attempt
     dispatch(resetState());
@@ -99,12 +100,6 @@ const ProviderRegistration = ({ navigation }) => {
           data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1)
           data.firstName = data.firstName.trim()
           data.lastName = data.lastName.trim()
-          //get token used for notifications
-          let token = await getNotificationToken()
-          if(token == null){
-            token = "";
-          }
-          data.expoToken = token
   
           let addressArray = {
             street: `${address} ${street}`,
@@ -115,7 +110,6 @@ const ProviderRegistration = ({ navigation }) => {
           };
           data.address = JSON.stringify(addressArray);
           dispatch(register(data))
-          navigation.navigate("ConfirmEmail", { name: "ConfirmEmail" });
         }
       }
       else{
@@ -273,7 +267,7 @@ const ProviderRegistration = ({ navigation }) => {
                 rules={{
                   required: "Phone Number is Required",
                 }}
-                placeholder={"Phone Number"}
+                placeholder={phone || "Phone Number"}
                 control={control}
               />
             </View>

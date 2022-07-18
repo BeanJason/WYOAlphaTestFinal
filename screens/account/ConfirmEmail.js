@@ -13,10 +13,15 @@ import { useForm } from "react-hook-form";
 import UserInput from "../../common/components/UserInput";
 import { createToast } from "../../common/components/Toast";
 import { Auth } from "aws-amplify";
+import { sendProviderEmail } from "../../common/functions";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { resetState } from "../../redux/authReducer";
 
 //Email verification screen after successful registration or if not verified yet
-const ConfirmEmail = ({ navigation }) => {
-
+const ConfirmEmail = ({ navigation, route }) => {
+  const {type} = route.params
+  const dispatch = useDispatch()
   //Set the user input variables
   const {
     control,
@@ -32,7 +37,15 @@ const ConfirmEmail = ({ navigation }) => {
   const submitForm = async (data) => {
     try {
       await Auth.confirmSignUp(data.email.trim(), data.confirmationCode)
-      navigation.navigate('LoginScreen', {name: 'LoginScreen'})
+      if(type == 'Provider'){
+        await sendProviderEmail(email)
+        createToast("Your email has been verified, an email was sent to you with further instructions");
+        navigation.navigate('LoginScreen', {name: 'LoginScreen'})
+      }
+      else{
+        createToast("Your email has been verified");
+        navigation.navigate('LoginScreen', {name: 'LoginScreen'})
+      }
     } catch (error) {
       if(error.message === 'User cannot be confirmed. Current status is CONFIRMED'){
         navigation.navigate('LoginScreen', {name: 'LoginScreen'})
@@ -62,6 +75,10 @@ const ConfirmEmail = ({ navigation }) => {
       })
     }
   };
+
+  useEffect(() => {
+    dispatch(resetState())
+  },[])
 
   return (
     <KeyboardAwareScrollView>

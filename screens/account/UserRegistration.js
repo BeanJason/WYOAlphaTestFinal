@@ -45,6 +45,7 @@ const UserRegistration = ({ navigation }) => {
   //Set use state variables
   const [birthdaySelected, setBirthdaySelected] = useState(false);
   const pwd = watch("password");
+  const phone = watch('phoneNumber');
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [birthDayError, setBirthdayError] = useState("");
@@ -60,8 +61,6 @@ const UserRegistration = ({ navigation }) => {
   const [lng, setLng] = useState()
   const [addressError, setAddressError] = useState()
 
- 
-
   //Anytime an error appears along with a message, display it on the screen
   useEffect(() => {
     if (isError) {
@@ -73,7 +72,7 @@ const UserRegistration = ({ navigation }) => {
       }
     }
     if (isSuccess) {
-      navigation.navigate("ConfirmEmail", { name: "ConfirmEmail" });
+      navigation.navigate("ConfirmEmail", { name: "ConfirmEmail", type: 'User' });
     }
     //Reset the variable states after login or failed attempt
     dispatch(resetState());
@@ -90,6 +89,7 @@ const UserRegistration = ({ navigation }) => {
 
   //Submit the user input
   const submitForm = async (data) => {
+    console.log(data.phoneNumber);
     //check if birthday is over 18
     if (new Date().getFullYear() - date.getFullYear() >= 18) {
       //check address
@@ -104,14 +104,7 @@ const UserRegistration = ({ navigation }) => {
         data.firstName = data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1);
         data.lastName = data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1);
         data.firstName = data.firstName.trim();
-        data.lastName = data.lastName.trim();
-        //get token used for notifications
-        let token = await getNotificationToken()
-        if(token == null){
-          token = "";
-        }
-        data.expoToken = token
-        
+        data.lastName = data.lastName.trim();        
  
         let addressArray = {
           street: `${address} ${street}`,
@@ -122,7 +115,6 @@ const UserRegistration = ({ navigation }) => {
         };
         data.address = [JSON.stringify(addressArray)];
         dispatch(register(data));
-        navigation.navigate("ConfirmEmail", { name: "ConfirmEmail" });
       }
      }
      else{
@@ -293,7 +285,7 @@ const UserRegistration = ({ navigation }) => {
                 rules={{
                   required: "Phone Number is Required",
                 }}
-                placeholder={"Phone Number"}
+                placeholder={phone || "Phone Number"}
                 control={control}
               />
             </View>
