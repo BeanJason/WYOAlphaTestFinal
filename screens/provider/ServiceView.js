@@ -312,7 +312,7 @@ const ServiceView = ({ route, navigation }) => {
           let original = await DataStore.query(Provider, userInfo.userID)
           try {
             await DataStore.save(Provider.copyOf(original, (updated) => {
-              updated.currentLocation = JSON.stringify({latitude: current.coords.latitude, longitude: current.coords.longitude, dateUpdated: new Date()})
+              updated.currentLocation = JSON.stringify({latitude: current.coords.latitude, longitude: current.coords.longitude, dateUpdated: new Date().toString()})
             }))
           } catch (error) {
             console.log(error);
