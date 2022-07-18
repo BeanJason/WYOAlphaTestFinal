@@ -253,30 +253,34 @@ export const createProviderReminder = async (jobInfo) => {
 export const sendNotificationToUser = async(userID, messageInfo) => {
   let user = await DataStore.query(User, userID)
   let token = user.expoToken
-  try {
-    await API.graphql(graphqlOperation(sendNotification, {
-      token: token,
-      title: messageInfo.title,
-      message: messageInfo.message,
-      data: messageInfo.data || {}
-    }))
-  } catch (error) {
-    console.log(error);
+  if(token != ""){
+    try {
+      await API.graphql(graphqlOperation(sendNotification, {
+        token: token,
+        title: messageInfo.title,
+        message: messageInfo.message,
+        data: messageInfo.data || {}
+      }))
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
 export const sendNotificationToProvider = async(userID, messageInfo) => {
   let user = await DataStore.query(Provider, userID)
   let token = user.expoToken
-  try {
-    await API.graphql(graphqlOperation(sendNotification, {
-      token: token,
-      title: messageInfo.title,
-      message: messageInfo.message,
-      data: messageInfo.data || {}
-    }))
-  } catch (error) {
-    console.log(error);
+  if(token != ""){
+    try {
+      await API.graphql(graphqlOperation(sendNotification, {
+        token: token,
+        title: messageInfo.title,
+        message: messageInfo.message,
+        data: messageInfo.data || {}
+      }))
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 

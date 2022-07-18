@@ -16,6 +16,9 @@ import { API, DataStore,} from "aws-amplify";
 import { Provider, User } from "../../src/models";
 import { useDispatch } from "react-redux";
 import { FontAwesome } from "@expo/vector-icons";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
+import { createToast } from "../../common/components/Toast";
+import * as queries from "../../src/graphql/queries"
 
 
 //Login screen
@@ -28,11 +31,14 @@ const ManagerJobInfo = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true)
   const [date, setDate] = useState()
   const [time, setTime] = useState()
-  const [ongoing, setOngoing] = useState(true)
+  const [ongoing, setOngoing] = useState(false)
   const [checkInTime, setCheckInTime] = useState()
   const [checkOutTime, setCheckOutTime] = useState()
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false)
   const [refresh, setRefresh] = useState(false)
+  const [lat, setLat] = useState()
+  const [lng, setLng] = useState()
+  const [prevDate, setPrevDate] = useState()
 
   const getDateFormat = () => {
     let formatDate = new Date(jobInfo.requestDateTime)
@@ -62,9 +68,16 @@ const ManagerJobInfo = ({ route, navigation }) => {
   const getProviders = async () => {
     //set main provider if available
     if(jobInfo.mainProvider){
-      await DataStore.query(Provider, jobInfo.mainProvider).then((providerFound) => {
-        setMainProvider(`${providerFound.firstName} ${providerFound.lastName}`);
-      })
+      let providerFound = await DataStore.query(Provider, jobInfo.mainProvider)
+      setMainProvider(providerFound)
+      if(providerFound.currentLocation){
+        let location = providerFound.currentLocation
+        location = JSON.parse(location)
+        setLat(location.latitude)
+        setLng(location.longitude)
+        let date = new Date(location.dateUpdated)
+        setPrevDate(`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`)
+      }
     }
     //set backup providers if available
     if(jobInfo.backupProviders && jobInfo.backupProviders.length != 0){
@@ -85,6 +98,30 @@ const ManagerJobInfo = ({ route, navigation }) => {
       console.log(error);
     }
     setLoading(false)
+  }
+
+  const refreshLocation = async() => {
+    // setRefresh(true)
+    let filter = {
+      ID: {eq: jobInfo.mainProvider}
+   }
+   
+    let prov = await API.graphql({
+      query: queries.getProvider, 
+      variables: {id: jobInfo.mainProvider}})
+      let location = prov.data.getProvider.currentLocation
+      console.log(location);
+      if(location){
+        location = JSON.parse(location)
+        setLat(location.latitude)
+        setLng(location.longitude)
+        let date = new Date(location.dateUpdated)
+        setPrevDate(`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`)
+      }
+      else{
+        createToast('Location currently not available')
+      }
+    setRefresh(false)
   }
   
   useEffect(() => {
@@ -127,25 +164,47 @@ const ManagerJobInfo = ({ route, navigation }) => {
           >
           <View style={styles.centeredView}>
             <View style={styles.warningModal}>
-              {ongoing ? (
                 <View>
-                  <Text style={styles.modalTitle}>Current Location of provider {mainProvider}</Text>
-                  <TouchableOpacity
-                    onPress={() => (setRefresh(true))}
-                    style={{ alignSelf: "flex-end", padding: 10}}
+                  <View>
+                    <Text style={styles.modalTitle}>Current Location of {mainProvider.firstName}</Text>
+                    <View style={{flexDirection:'row', justifyContent: 'space-between', marginBottom: 10}}>
+                      <View>
+                        <Text style={[styles.generalText, {marginLeft: 5}]}>Last location received at:</Text>
+                        <Text style={[styles.noteText, {marginLeft: 5}]}>{prevDate || 'Not Available'}</Text>
+                      </View>
+                      {refresh ? (
+                        <Spinner color={'black'} />
+                      ): (
+                        <TouchableOpacity
+                          onPress={() => refreshLocation()}
+                          style={{marginRight: 5}}
+                        >
+                          <FontAwesome name="refresh"  size={40}/>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  </View>
+                    <MapView
+                    style={{width: '100%', height: 320, marginBottom: 20}}
+                    provider={PROVIDER_GOOGLE}
+                    region={{
+                      latitude: lat || parseFloat(jobInfo?.latitude),
+                      longitude: lng || parseFloat(jobInfo?.longitude),
+                      latitudeDelta: 0.0100,
+                      longitudeDelta: 0.0100,
+                    }}
                   >
-                    <FontAwesome name="refresh"  size={40}/>
-                  </TouchableOpacity>
+                  {lat ? (
+                    <Marker
+                      title="Position"
+                      coordinate={{
+                        latitude: lat,
+                        longitude: lng
+                      }}
+                    />
+                  ): <></>}
+                  </MapView>
                 </View>
-                  //map here
-              ) : (
-                <View style={styles.warningModal}>
-                  <Text style={styles.modalTitle}>Current Location</Text>
-                  <Text style={styles.modalText}>
-                    This provider has not checked in yet and the current status of the job is not in service as of this moment.
-                  </Text>
-                </View>
-              )}
               <TouchableOpacity
                 onPress={() => setShowModal(false)}
                 style={[ styles.button, { alignSelf: "center"}]}
@@ -164,7 +223,7 @@ const ManagerJobInfo = ({ route, navigation }) => {
             <View>
               {jobInfo.currentStatus == 'COMPLETED' ? <></> : (
                 <View>
-                  {jobInfo.currentStatus == 'IN_SERVICE' ? (
+                  {ongoing ? (
                     <TouchableOpacity onPress={() => setShowModal(true)} style={{alignSelf: 'flex-end'}}>
                       <View style={styles.button}>
                         <FontAwesome name="map-marker" size={25} style={{color: 'white', marginLeft: 5}} />
@@ -193,7 +252,7 @@ const ManagerJobInfo = ({ route, navigation }) => {
             : <></>}
             <Text style={[styles.subtitle, { borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Main Provider</Text>
               {mainProvider ? (
-                  <Text style={[styles.generalText]}>{mainProvider}</Text>
+                  <Text style={[styles.generalText]}>{mainProvider.firstName}</Text>
               ): (
                   <Text style={styles.generalText}>None</Text>
               )}            
@@ -271,7 +330,7 @@ const styles = StyleSheet.create({
   },
   warningModal: {
     width: 360,
-    height: 430,
+    height: 500,
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#000',
@@ -299,7 +358,11 @@ const styles = StyleSheet.create({
   subtitle:{
     fontFamily: 'Montserrat-Bold',
     fontSize: 18,
-  }
+  },
+  noteText: {
+    fontFamily: "Montserrat-Italic",
+    fontSize: 14,
+  },
 });
 
 export default ManagerJobInfo;
