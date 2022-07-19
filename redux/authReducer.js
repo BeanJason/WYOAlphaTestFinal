@@ -139,6 +139,11 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
       console.log(message);
       return thunkAPI.rejectWithValue(message);
     }
+    else if(dataCheck.userInfo == 'invalid'){
+      message = "Your account is banned"
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
     else if(dataCheck.authUser != null && dataCheck.userInfo != null){
       return {authUser: dataCheck.authUser, userInfo: dataCheck.userInfo}
     }

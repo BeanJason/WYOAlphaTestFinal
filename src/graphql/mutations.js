@@ -42,15 +42,6 @@ export const sendEmail = /* GraphQL */ `
     sendEmail(userEmail: $userEmail, subject: $subject, message: $message)
   }
 `;
-export const disableProvider = /* GraphQL */ `
-  mutation DisableProvider(
-    $manager: String!
-    $userSub: String!
-    $email: String!
-  ) {
-    disableProvider(manager: $manager, userSub: $userSub, email: $email)
-  }
-`;
 export const createJob = /* GraphQL */ `
   mutation CreateJob(
     $input: CreateJobInput!
@@ -472,6 +463,7 @@ export const createBlacklist = /* GraphQL */ `
   ) {
     createBlacklist(input: $input, condition: $condition) {
       id
+      subID
       email
       phoneNumber
       createdAt
@@ -489,6 +481,7 @@ export const updateBlacklist = /* GraphQL */ `
   ) {
     updateBlacklist(input: $input, condition: $condition) {
       id
+      subID
       email
       phoneNumber
       createdAt
@@ -506,6 +499,7 @@ export const deleteBlacklist = /* GraphQL */ `
   ) {
     deleteBlacklist(input: $input, condition: $condition) {
       id
+      subID
       email
       phoneNumber
       createdAt

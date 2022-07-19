@@ -22,6 +22,8 @@ import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete"
 import { getNotificationToken } from "../../notifications";
 import {GOOGLE_API} from "@env"
 import { PhoneNumberUtil } from "google-libphonenumber";
+import { DataStore } from "aws-amplify";
+import { Blacklist } from "../../src/models";
 
 //Provider registration page
 const ProviderRegistration = ({ navigation }) => {
@@ -100,6 +102,15 @@ const ProviderRegistration = ({ navigation }) => {
               type: 'validate',
               message: 'Please enter a valid phone number'
             })
+        }
+        let check = await DataStore.query(Blacklist, person => person.or(
+          person => person.email('eq', data.email).phoneNumber('eq', data.phoneNumber)
+        ))
+        if(check.length != 0){
+          setError('email', {
+            type: 'validate',
+            message: 'This account has been disabled'
+          })
         }
         else{
           data.type = "Provider";

@@ -49,10 +49,6 @@
           "service": "Gmail",
           "email": "kassimballout@gmail.com",
           "password": "fmtrwjtgwwdphamr"
-        },
-        "DisableProvider": {
-          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/DisableProvider-386178366a644d484644-build.zip"
         }
       }
     }

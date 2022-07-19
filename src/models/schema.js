@@ -707,6 +707,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "subID": {
+                    "name": "subID",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "email": {
                     "name": "email",
                     "isArray": false,
@@ -796,5 +803,5 @@ export const schema = {
             }
         }
     },
-    "version": "9dca05b06c3cfbeb08a0081df2939d02"
+    "version": "4cf790f56bc444a760c79131d0118a23"
 };

@@ -1,6 +1,6 @@
 import { DataStore, Auth, Storage } from "aws-amplify"
 import { getNotificationToken, updateExpoToken } from "./notifications";
-import {User, Provider, Manager} from "./src/models"
+import {User, Provider, Manager, Blacklist} from "./src/models"
 
 export async function checkCredentials(){
     let authUser = await getAuthData();
@@ -13,7 +13,13 @@ export async function checkCredentials(){
         userInfo = await getUserData(authUser);
     }
     else if (authUser['custom:type'] == 'Provider'){
-        userInfo = await getProviderData(authUser);
+        let found = await DataStore.query(Blacklist, person => person.subID('eq', authUser.sub))
+        if(found.length != 0){
+            return {authUser: authUser, userInfo: 'invalid'}
+        }
+        else{
+            userInfo = await getProviderData(authUser);
+        }
     }
     else if (authUser['custom:type'] == 'Manager'){
         userInfo = await getManagerData(authUser)

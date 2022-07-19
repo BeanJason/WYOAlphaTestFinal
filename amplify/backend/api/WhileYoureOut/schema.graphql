@@ -8,7 +8,6 @@ type Mutation {
   refundPayment(isCancel: Boolean!, jobID: String!): Boolean! @function(name: "RefundPayment-${env}")
   sendNotification(token: String!, title: String!, message: String!, data: String): Boolean! @function(name: "SendNotification-${env}")
   sendEmail(userEmail: String!, subject: String!, message: String! ): String! @function(name: "SendEmail-${env}")
-  disableProvider(manager: String!, userSub: String!, email: String! ): String! @function(name: "DisableProvider-${env}")
 }
 
 enum JOBSTATUS {
@@ -97,7 +96,8 @@ type Manager @model @auth(rules: [{allow: public}]) {
 
 type Blacklist @model @auth(rules: [{allow: public}]) {
   id: ID!
+  subID: String!
   email: AWSEmail!
-  phoneNumber: AWSPhone!
+  phoneNumber: AWSPhone!,
 }
  

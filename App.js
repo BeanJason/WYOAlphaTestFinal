@@ -206,7 +206,6 @@ export default function App() {
       <StripeProvider publishableKey = {STRIPE_KEY} >
         <RootNavigation />
       </StripeProvider>
-      
     </Provider>
   );
 }
@@ -227,8 +226,13 @@ const RootNavigation = () => {
     // const {authUser, userInfo} = getProvider()
     
     if(authUser && userInfo){
-      dispatch(resetState())
-      dispatch(changeUserStatus({authUser, userInfo}))
+      if(userInfo == 'invalid'){
+        console.log('account is banned');
+      }
+      else{
+        dispatch(resetState())
+        dispatch(changeUserStatus({authUser, userInfo}))
+      }
     }
     setLoading(false)
   }

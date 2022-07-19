@@ -468,6 +468,7 @@ export const getBlacklist = /* GraphQL */ `
   query GetBlacklist($id: ID!) {
     getBlacklist(id: $id) {
       id
+      subID
       email
       phoneNumber
       createdAt
@@ -487,6 +488,7 @@ export const listBlacklists = /* GraphQL */ `
     listBlacklists(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        subID
         email
         phoneNumber
         createdAt
@@ -515,6 +517,7 @@ export const syncBlacklists = /* GraphQL */ `
     ) {
       items {
         id
+        subID
         email
         phoneNumber
         createdAt

@@ -136,6 +136,7 @@ export declare class Manager {
 
 export declare class Blacklist {
   readonly id: string;
+  readonly subID: string;
   readonly email: string;
   readonly phoneNumber: string;
   readonly createdAt?: string | null;

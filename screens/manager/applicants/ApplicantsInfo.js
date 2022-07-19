@@ -15,7 +15,7 @@ import Spinner from "../../../common/components/Spinner";
 import { commonStyles } from "../../../common/styles";
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Job, Provider } from "../../../src/models";
+import { Job, Provider, Blacklist } from "../../../src/models";
 import { removeJobsFromProvider, sendProviderAcceptedEmail, sendProviderRejectEmail } from "../../../common/functions";
 import { createToast } from "../../../common/components/Toast";
 
@@ -80,7 +80,16 @@ const ApplicantsInfo = ({ navigation, route }) => {
   }
 
   const rejectProvider = async() => {
+    let original = await DataStore.query(Provider, employeeInfo.id)
+    await DataStore.save(Provider.copyOf(original, (updated) => {
+      updated.isBan = true
+    }))
     //add to blacklist
+    await DataStore.save(new Blacklist({
+      "subID": employeeInfo.subID,
+      "email": employeeInfo.email,
+      "phoneNumber": employeeInfo.phoneNumber
+    }))
     sendProviderRejectEmail(employeeInfo.firstName, employeeInfo.email)
     setOperation(true)
   }
