@@ -15,8 +15,8 @@ import Spinner from "../../../common/components/Spinner";
 import { commonStyles } from "../../../common/styles";
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Job, Provider } from "../../../src/models";
-import { removeJobsFromProvider } from "../../../common/functions";
+import { Blacklist, Job, Provider } from "../../../src/models";
+import { removeJobsFromProvider, sendBanStatusEmail, sendProviderFiredEmail } from "../../../common/functions";
 import { createToast } from "../../../common/components/Toast";
 
 
@@ -76,6 +76,7 @@ const EmployeeInfo = ({ navigation, route }) => {
       await DataStore.save(Provider.copyOf(original, (updated) => {
         updated.isBan = false
       }))
+      sendBanStatusEmail(employeeInfo.firstName, employeeInfo.email, 'unban')
       createToast('Provider has been unbanned')
       setOperation(false)
       navigation.navigate('EmployeeMain')
@@ -96,6 +97,7 @@ const EmployeeInfo = ({ navigation, route }) => {
         updated.isBan = true
         updated.offenses = offenses
       }))
+      sendBanStatusEmail(employeeInfo.firstName, employeeInfo.email, 'ban')
       createToast('Provider has been banned')
       setOperation(false)
       navigation.reset({ routes: [{name: 'EmployeeMain'}]})
@@ -113,6 +115,17 @@ const EmployeeInfo = ({ navigation, route }) => {
     if(jobsRemoved){
       createToast('Provider jobs were removed successfully')
     }
+    sendProviderFiredEmail(employeeInfo.firstName, employeeInfo.email)
+    let original = await DataStore.query(Provider, employeeInfo.id)
+    await DataStore.save(Provider.copyOf(original, (updated) => {
+      updated.isBan = true
+    }))
+    //add to blacklist
+    await DataStore.save(new Blacklist({
+      "subID": employeeInfo.subID,
+      "email": employeeInfo.email,
+      "phoneNumber": employeeInfo.phoneNumber
+    }))
     setOperation(false)
     navigation.navigate('EmployeeMain')
     

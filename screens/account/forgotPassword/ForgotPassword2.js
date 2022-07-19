@@ -12,6 +12,7 @@ import {
   import { commonStyles } from "../../../common/styles";
   import { useState } from "react";
   import { Auth } from "aws-amplify";
+import { sendChangePasswordEmail } from "../../../common/functions";
   
   //Forgot password part 2. Enter the confirmation code and your new password twice
   const ForgotPassword2 = ({ route, navigation }) => {
@@ -37,6 +38,7 @@ import {
       try {
         await Auth.forgotPasswordSubmit(email, data.token, data.password)
         setShouldShow(false)
+        sendChangePasswordEmail(email)
       } catch (error) {
         console.log(error.message);
         setError('token', {
@@ -138,7 +140,7 @@ import {
             ) : (
               <View style={{ alignItems: "center" }}>
                 <Text style={styles.header2}>
-                  Password was successfully changed
+                  Password was changed successfully
                 </Text>
                 <TouchableOpacity
                   onPress={() =>

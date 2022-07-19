@@ -96,7 +96,8 @@ type Manager @model @auth(rules: [{allow: public}]) {
 
 type Blacklist @model @auth(rules: [{allow: public}]) {
   id: ID!
+  subID: String!
   email: AWSEmail!
-  phoneNumber: AWSPhone!
+  phoneNumber: AWSPhone!,
 }
  

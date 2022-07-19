@@ -21,6 +21,9 @@ import { FontAwesome } from "@expo/vector-icons";
 import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete"
 import { getNotificationToken } from "../../notifications";
 import {GOOGLE_API} from "@env"
+import { PhoneNumberUtil } from "google-libphonenumber";
+import { DataStore } from "aws-amplify";
+import { Blacklist } from "../../src/models";
 
 //Provider registration page
 const ProviderRegistration = ({ navigation }) => {
@@ -57,6 +60,7 @@ const ProviderRegistration = ({ navigation }) => {
   const [lat, setLat] = useState()
   const [lng, setLng] = useState()
   const [addressError, setAddressError] = useState()
+  const phoneUtil = PhoneNumberUtil.getInstance()
 
   //Anytime an error appears along with a message, display it on the screen
   useEffect(() => {
@@ -91,6 +95,22 @@ const ProviderRegistration = ({ navigation }) => {
       if(address && street && city && zipCode && lat && lng){
         if(state != 'Michigan'){
           setAddressError('Your address must be in the state of Michigan')
+        }
+        let isValid = phoneUtil.isValidNumber(phoneUtil.parse(data.phoneNumber, 'US'))
+        if(!isValid){
+          setError('phoneNumber', {
+              type: 'validate',
+              message: 'Please enter a valid phone number'
+            })
+        }
+        let check = await DataStore.query(Blacklist, person => person.or(
+          person => person.email('eq', data.email).phoneNumber('eq', data.phoneNumber)
+        ))
+        if(check.length != 0){
+          setError('email', {
+            type: 'validate',
+            message: 'This account has been disabled'
+          })
         }
         else{
           data.type = "Provider";
@@ -147,11 +167,16 @@ const ProviderRegistration = ({ navigation }) => {
                       placeholder="Address"
                       fetchDetails={true}
                       onPress={(data, details = null) => {
-                        setAddress(details.address_components[0].long_name)
-                        setStreet(details.address_components[1].long_name)
-                        setCity(details.address_components[2].long_name)
-                        setZipCode(details.address_components[6].long_name)
-                        setState(details.address_components[4].long_name)
+                        let city = details.address_components.filter(part => part.types[0] == 'locality')
+                        let state = details.address_components.filter(part => part.types[0] == 'administrative_area_level_1')
+                        let address = details.address_components.filter(part => part.types[0] == 'street_number')
+                        let street = details.address_components.filter(part => part.types[0] == 'route')
+                        let zip = details.address_components.filter(part => part.types[0] == 'postal_code')
+                        setAddress(address[0].long_name)
+                        setStreet(street[0].long_name)
+                        setCity(city[0].long_name)
+                        setZipCode(zip[0].long_name)
+                        setState(state[0].long_name)
                         setLat(details.geometry.location.lat)
                         setLng(details.geometry.location.lng)
                       }}

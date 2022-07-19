@@ -374,6 +374,7 @@ export const onCreateBlacklist = /* GraphQL */ `
   subscription OnCreateBlacklist {
     onCreateBlacklist {
       id
+      subID
       email
       phoneNumber
       createdAt
@@ -388,6 +389,7 @@ export const onUpdateBlacklist = /* GraphQL */ `
   subscription OnUpdateBlacklist {
     onUpdateBlacklist {
       id
+      subID
       email
       phoneNumber
       createdAt
@@ -402,6 +404,7 @@ export const onDeleteBlacklist = /* GraphQL */ `
   subscription OnDeleteBlacklist {
     onDeleteBlacklist {
       id
+      subID
       email
       phoneNumber
       createdAt

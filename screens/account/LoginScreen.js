@@ -42,15 +42,22 @@ const LoginScreen = ({ navigation }) => {
         navigation.navigate("ConfirmEmail", {
           name: "ConfirmEmail",
         });
+      } else if(message === 'Your account is banned'){
+        setError("email", {
+          type: "validate",
+          message: "Your account is disabled",
+        });
       }
-      setError("email", {
-        type: "mismatch",
-        message: "Incorrect username or password",
-      });
-      setError("password", {
-        type: "mismatch",
-        message: "Incorrect username or password",
-      });
+      else{
+        setError("email", {
+          type: "mismatch",
+          message: "Incorrect username or password",
+        });
+        setError("password", {
+          type: "mismatch",
+          message: "Incorrect username or password",
+        });
+      }
     }
     //Reset the variable states after login or failed attempt
     dispatch(resetState());

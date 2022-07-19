@@ -22,6 +22,7 @@ import { createToast } from "../../../common/components/Toast";
 import { DataStore, JS, Storage } from "aws-amplify";
 import * as ImagePicker from "expo-image-picker"
 import ProfilePicture from "../../../common/components/ProfilePicture";
+import { PhoneNumberUtil } from "google-libphonenumber";
 
 
 
@@ -29,6 +30,7 @@ const EditAccountProvider = ({ navigation }) => {
     const dispatch = useDispatch();
     const { userInfo } = useSelector((state) => state.auth);
     const [imageUploading, setImageUploading] = useState(false)
+    const phoneUtil = PhoneNumberUtil.getInstance()
 
     const {
       control,
@@ -52,35 +54,44 @@ const EditAccountProvider = ({ navigation }) => {
     }
 
     const submitPhone = async(data) => {
-      let original = await DataStore.query(Provider, userInfo.userID);
-      try {
-          await DataStore.save(Provider.copyOf(original, updated => {
-              updated.phoneNumber = data.phoneNumber
-          }))
-          reset({
-            data: 'phoneNumber'
+    let isValid = phoneUtil.isValidNumber(phoneUtil.parse(data.phoneNumber, 'US'))
+      if(!isValid){
+        setError('phoneNumber', {
+            type: 'validate',
+            message: 'Please enter a valid phone number'
           })
-          let newInfo = {
-            userID: original.id,
-            firstName: original.firstName,
-            lastName: original.lastName,
-            address: original.address,
-            phoneNumber: data.phoneNumber,
-            biography: original.biography,
-            backgroundCheck: original.backgroundCheckStatus,
-            profilePicture: original.profilePictureURL,
-            isBan: original.isBan,
-            employeeID: original.employeeID
-        }
-        dispatch(changeUserInfo({userInfo: newInfo}))
-        createToast('Your phone number has been changed!')
-      } catch (error) {
-          console.log(error);
-          setError("phoneNumber", {
-            type: "validate",
-            message: "Please enter a valid phone number",
-          });
-      }   
+      }
+      else{
+        let original = await DataStore.query(Provider, userInfo.userID);
+        try {
+            await DataStore.save(Provider.copyOf(original, updated => {
+                updated.phoneNumber = data.phoneNumber
+            }))
+            reset({
+              data: 'phoneNumber'
+            })
+            let newInfo = {
+              userID: original.id,
+              firstName: original.firstName,
+              lastName: original.lastName,
+              address: original.address,
+              phoneNumber: data.phoneNumber,
+              biography: original.biography,
+              backgroundCheck: original.backgroundCheckStatus,
+              profilePicture: original.profilePictureURL,
+              isBan: original.isBan,
+              employeeID: original.employeeID
+          }
+          dispatch(changeUserInfo({userInfo: newInfo}))
+          createToast('Your phone number has been changed!')
+        } catch (error) {
+            console.log(error);
+            setError("phoneNumber", {
+              type: "validate",
+              message: "Please enter a valid phone number",
+            });
+        }   
+      }
     }
 
     const submitBio = async(data) => {

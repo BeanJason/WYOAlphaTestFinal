@@ -463,6 +463,7 @@ export const createBlacklist = /* GraphQL */ `
   ) {
     createBlacklist(input: $input, condition: $condition) {
       id
+      subID
       email
       phoneNumber
       createdAt
@@ -480,6 +481,7 @@ export const updateBlacklist = /* GraphQL */ `
   ) {
     updateBlacklist(input: $input, condition: $condition) {
       id
+      subID
       email
       phoneNumber
       createdAt
@@ -497,6 +499,7 @@ export const deleteBlacklist = /* GraphQL */ `
   ) {
     deleteBlacklist(input: $input, condition: $condition) {
       id
+      subID
       email
       phoneNumber
       createdAt

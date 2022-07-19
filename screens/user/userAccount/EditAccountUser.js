@@ -23,6 +23,7 @@ import { changeUserInfo } from "../../../redux/authReducer";
 import { changeUserStatus } from "../../../redux/authReducer";
 import { RadioButton } from "react-native-paper"
 import {createToast} from "../../../common/components/Toast"
+import { PhoneNumberUtil } from "google-libphonenumber";
 
 //Login screen
 const EditAccountUser = ({ navigation }) => {
@@ -34,6 +35,7 @@ const EditAccountUser = ({ navigation }) => {
   const [addressToDelete, setAddressToDelete] = useState("");
   const [checkedBtn, setCheckedBtn] = useState(userInfo.contactMethod)
   const dispatch = useDispatch();
+  const phoneUtil = PhoneNumberUtil.getInstance()
 
   //Set variables for user input
   const {
@@ -49,29 +51,38 @@ const EditAccountUser = ({ navigation }) => {
       const original = await DataStore.query(User, userInfo.userID);
       //only change phone
       if(data.phoneNumber && checkedBtn == userInfo.contactMethod){
-        try {
-          await DataStore.save(
-            User.copyOf(original, (updated) => {
-              updated.phoneNumber = data.phoneNumber
-            })
-          );
-    
-          let newInfo = {
-            userID: original.id,
-            firstName: original.firstName,
-            lastName: original.lastName,
-            address: original.address,
-            phoneNumber: data.phoneNumber,
-            contactMethod: original.contactMethod
-          };
-          dispatch(changeUserInfo({ userInfo: newInfo }));
-          setphoneNumber(data.phoneNumber);
-          createToast('Phone number has been changed')
-        } catch (error) {
+        let isValid = phoneUtil.isValidNumber(phoneUtil.parse(data.phoneNumber, 'US'))
+        if(!isValid){
           setError('phoneNumber', {
-            type: 'validate',
-            message: 'Please enter a valid phone number'
-          })
+              type: 'validate',
+              message: 'Please enter a valid phone number'
+            })
+        }
+        else{
+          try {
+            await DataStore.save(
+              User.copyOf(original, (updated) => {
+                updated.phoneNumber = data.phoneNumber
+              })
+            );
+      
+            let newInfo = {
+              userID: original.id,
+              firstName: original.firstName,
+              lastName: original.lastName,
+              address: original.address,
+              phoneNumber: data.phoneNumber,
+              contactMethod: original.contactMethod
+            };
+            dispatch(changeUserInfo({ userInfo: newInfo }));
+            setphoneNumber(data.phoneNumber);
+            createToast('Phone number has been changed')
+          } catch (error) {
+            setError('phoneNumber', {
+              type: 'validate',
+              message: 'Please enter a valid phone number'
+            })
+          }
         }
       }
       //only change contact
@@ -102,27 +113,36 @@ const EditAccountUser = ({ navigation }) => {
       }
       //change both
       if(data.phoneNumber && checkedBtn != userInfo.contactMethod){
-        try {
-          await DataStore.save(
-            User.copyOf(original, (updated) => {
-              updated.phoneNumber = data.phoneNumber
-              updated.contactMethod = checkedBtn
+        let isValid = phoneUtil.isValidNumber(phoneUtil.parse(data.phoneNumber, 'US'))
+        if(!isValid){
+          setError('phoneNumber', {
+              type: 'validate',
+              message: 'Please enter a valid phone number'
             })
-          );
-    
-          let newInfo = {
-            userID: original.id,
-            firstName: original.firstName,
-            lastName: original.lastName,
-            address: original.address,
-            phoneNumber: data.phoneNumber,
-            contactMethod: checkedBtn
-          };
-          dispatch(changeUserInfo({ userInfo: newInfo }));
-          setphoneNumber(data.phoneNumber);
-          createToast('Phone number and method of contact has been changed')
-        } catch (error) {
-          console.log(error);
+        }
+        else{
+          try {
+            await DataStore.save(
+              User.copyOf(original, (updated) => {
+                updated.phoneNumber = data.phoneNumber
+                updated.contactMethod = checkedBtn
+              })
+            );
+      
+            let newInfo = {
+              userID: original.id,
+              firstName: original.firstName,
+              lastName: original.lastName,
+              address: original.address,
+              phoneNumber: data.phoneNumber,
+              contactMethod: checkedBtn
+            };
+            dispatch(changeUserInfo({ userInfo: newInfo }));
+            setphoneNumber(data.phoneNumber);
+            createToast('Phone number and method of contact has been changed')
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     }

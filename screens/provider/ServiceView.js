@@ -332,7 +332,7 @@ const ServiceView = ({ route, navigation }) => {
     //check if the provider is within the area of the job location
     let check = isPointWithinRadius(
       {latitude: position.latitude, longitude: position.longitude},
-      {latitude: parseFloat(jobInfo?.latitude), longitude: parseFloat(jobInfo?.longitude)},
+      {latitude: lat || parseFloat(jobInfo?.latitude), longitude: lng || parseFloat(jobInfo?.longitude)},
       450)
       if(check){
         //within radius
@@ -393,6 +393,7 @@ const ServiceView = ({ route, navigation }) => {
                 },
                 deferredUpdatesInterval: 600000,
               })
+              createToast('Your location is now being checked')
             }
           }
         }
@@ -428,9 +429,7 @@ const ServiceView = ({ route, navigation }) => {
       getCurrentLocation()
       startBackgroundLocation()
     }
-    //Testing
-    // setCoordinatesForMap()
-    setLoading(false)
+    setCoordinatesForMap()
   },[])
 
   return (
@@ -495,10 +494,7 @@ const ServiceView = ({ route, navigation }) => {
               )}
                 <Text style={styles.title}>{jobInfo.jobTitle}</Text>
                 <Text style={styles.generalText}>Request Owner: {owner.firstName + " " + owner.lastName}</Text>
-                {owner.contactMethod == 'phone' ? 
                 <Text style={styles.generalText}>Contact: {owner.phoneNumber}</Text>:
-                <Text style={styles.generalText}>Contact: {owner.email}</Text>
-                }
                 <Text style={styles.generalText}>Duration: {jobInfo.duration} Hours</Text>
                 <Text style={styles.generalText}>Address: {jobInfo.address}</Text>
                 <Text style={styles.generalText}>City: {jobInfo.city} {jobInfo.zipCode}</Text>
@@ -549,18 +545,18 @@ const ServiceView = ({ route, navigation }) => {
                   followsUserLocation
                   showsUserLocation
                   region={{
-                    latitude: parseFloat(jobInfo?.latitude),
-                    longitude: parseFloat(jobInfo?.longitude),
-                    latitudeDelta: 0.0822,
-                    longitudeDelta: 0.0421,
+                    latitude: lat || parseFloat(jobInfo?.latitude),
+                    longitude: lng || parseFloat(jobInfo?.longitude),
+                    latitudeDelta: 0.0122,
+                    longitudeDelta: 0.0121,
                   }}
                 >
                   <Marker
                     title="Destination"
                     coordinate={{
                       
-                      latitude: parseFloat(jobInfo?.latitude),
-                      longitude: parseFloat(jobInfo?.longitude)
+                      latitude: lat || parseFloat(jobInfo?.latitude),
+                      longitude: lng || parseFloat(jobInfo?.longitude)
                     }}
                     description={`${jobInfo.address} ${jobInfo.city} ${jobInfo.zipCode}`}
                   />

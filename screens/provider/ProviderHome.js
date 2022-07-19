@@ -20,6 +20,10 @@ import {RadioButton} from "react-native-paper"
 import ProfilePicture from "../../common/components/ProfilePicture";
 import * as Notifications from "expo-notifications"
 import * as Location from "expo-location"
+import { DataStore } from "aws-amplify";
+import { Blacklist } from "../../src/models";
+import { logout } from "../../redux/authReducer";
+import { useIsFocused } from "@react-navigation/native";
 
 
 
@@ -29,7 +33,8 @@ import * as Location from "expo-location"
 
 
 const ProviderHome = ({ navigation }) => {
-  const { userInfo } = useSelector((state) => state.auth);
+  const isFocused = useIsFocused()
+  const { authUser, userInfo } = useSelector((state) => state.auth);
   const { initialized, activeJobs } = useSelector((state) => state.providerJobs);
   const dispatch = useDispatch()
   const [jobList, setJobList] = useState([]);
@@ -70,6 +75,14 @@ const ProviderHome = ({ navigation }) => {
   }, [refreshing]);
 
 
+  const checkIfDisabled = async() => {
+    let check = await DataStore.query(Blacklist, person => person.subID('eq', authUser.sub))
+    if(check.length != 0){
+      dispatch(logout())
+      setLoading(false)
+    }
+    setLoading(false)
+  }
 
   //Get all current jobs
   useEffect(() => {
@@ -79,9 +92,8 @@ const ProviderHome = ({ navigation }) => {
     }
     //TESTING
     // setJobList(getManyJobs())
-
-    setLoading(false)
-  }, []);
+    checkIfDisabled()
+  }, [isFocused]);
 
   useEffect(() => {
     if(checkedBtn == 'activeJobs'){
