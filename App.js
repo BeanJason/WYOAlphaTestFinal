@@ -185,7 +185,7 @@ export default function App() {
   }
 
   let loadAllResources = async () => {
-    await DataStore.clear()
+    await DataStore.stop()
     await loadAssetsAsync()
     setImagesLoaded(true)
     //await Notifications.registerTaskAsync('NOTIFICATION_TASK')
