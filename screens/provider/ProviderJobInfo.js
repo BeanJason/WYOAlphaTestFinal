@@ -119,6 +119,7 @@ const ProviderJobInfo = ({ route, navigation }) => {
     if(original){
       //if provider was the main get the next backup and set as main if available
       if(original.mainProvider == userInfo.userID){
+        //if backups are available
         if(original.backupProviders.length != 0){
           let newMain = original.backupProviders[0]
           //cancel notifications

@@ -146,7 +146,7 @@ const ProviderRegistration = ({ navigation }) => {
   }
 
   return (
-    <KeyboardAwareScrollView extraScrollHeight={20}>
+    <KeyboardAwareScrollView extraScrollHeight={20} keyboardShouldPersistTaps="handled">
       <ImageBackground
         style={[commonStyles.background, { height: 1300 }]}
         source={require("../../assets/wyo_background.png")}

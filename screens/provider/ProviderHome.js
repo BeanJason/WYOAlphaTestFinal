@@ -24,7 +24,7 @@ import { DataStore } from "aws-amplify";
 import { Blacklist } from "../../src/models";
 import { logout } from "../../redux/authReducer";
 import { useIsFocused } from "@react-navigation/native";
-
+import * as TaskManager from "expo-task-manager"
 
 
 
