@@ -132,6 +132,9 @@ const styles = StyleSheet.create({
   subtitle:{
     fontFamily: 'Montserrat-Bold',
     fontSize: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
   },
   container: {
     borderColor: "rgba(0,221,255,0.9)",

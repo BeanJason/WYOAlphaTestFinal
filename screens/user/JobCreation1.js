@@ -443,8 +443,8 @@ const JobCreation1 = ({ navigation }) => {
                 multiline
                 rules={{
                   maxLength: {
-                    value: 350,
-                    message: "Description must be 350 words or less",
+                    value: 2000,
+                    message: "Description must be 2000 characters or less",
                   },
                 }}
                 placeholder={"Description"}
