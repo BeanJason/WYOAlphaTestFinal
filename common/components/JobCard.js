@@ -74,7 +74,7 @@ const JobCard = ({ jobInfo, type = '', role = '' }) => {
     getRequestOwnerName();
     //check if active for today
     let today = new Date()
-    if(formatDate.toLocaleDateString() == today.toLocaleDateString()){
+    if(formatDate.toDateString() == today.toDateString()){
       setActive(true)
     }
   }, [jobInfo]);

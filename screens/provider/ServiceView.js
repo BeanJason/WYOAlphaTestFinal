@@ -69,7 +69,7 @@ const ServiceView = ({ route, navigation }) => {
 
     //check in btn?
     let today = new Date()
-    if(today.toLocaleDateString() == formatDate.toLocaleDateString()){
+    if(today.toDateString() == formatDate.toDateString()){
       setIsServiceDay(true)
     } 
 
@@ -141,6 +141,18 @@ const ServiceView = ({ route, navigation }) => {
         data: {jobID: jobInfo.id}
       }
       await sendNotificationToUser(jobInfo.requestOwner, messageInfo)
+      //notify manager
+      let managers = await DataStore.query(Manager)
+      let messageInfo2 = {
+        title: 'Checked In',
+        message:  `Provider ${mainProvider} has just checked in to the job titled ${jobInfo.title} made by the client ${owner.firstName} ${owner.lastName}`,
+        data: {jobID: jobInfo.id}
+      }
+      for(let next of managers){
+        if(next.expoToken){
+          sendNotificationToManager(next.expoToken, messageInfo2)
+        }
+      }
       setAllowCheckIn(false)
       setAllowCheckOut(true)
     }
@@ -170,7 +182,9 @@ const ServiceView = ({ route, navigation }) => {
         data: {jobID: jobInfo.id}
       }
       for(let next of managers){
-        sendNotificationToManager(next.expoToken, messageInfo)
+        if(next.expoToken){
+          sendNotificationToManager(next.expoToken, messageInfo)
+        }
       }
       setAllowCheckIn(false)
       setAllowCheckOut(false)
@@ -428,6 +442,7 @@ const ServiceView = ({ route, navigation }) => {
       checkBackgroundTask()
       getCurrentLocation()
       startBackgroundLocation()
+      createToast('Your location is now being marked')
     }
     setCoordinatesForMap()
   },[])

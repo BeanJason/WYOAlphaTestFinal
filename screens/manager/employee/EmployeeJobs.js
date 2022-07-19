@@ -41,6 +41,7 @@ const EmployeeJobs = ({ navigation, route }) => {
     let filter = {
       and: [
         { _deleted: {ne: true} },
+        {markedToRemove: {eq: ""}},
         {
           or: [
             {mainProvider: {eq: employeeInfo.id}},

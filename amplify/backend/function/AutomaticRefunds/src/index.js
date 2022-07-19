@@ -135,7 +135,7 @@ exports.handler = async (event) => {
             await sendEmail(job)
           }
         }
-        else if(today.toLocaleDateString() == requestDate.toLocaleDateString()){
+        else if(today.toDateString() == requestDate.toDateString()){
             if( Math.abs((today.getHours() - requestDate.getHours())) <= 4){
               data = {arguments: {isCancel: false, jobID: job.id}}
               res = await lambda.invoke({

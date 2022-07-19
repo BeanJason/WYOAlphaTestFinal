@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"9.0.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"9.1.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -19,9 +19,6 @@
     "apiWhileYoureOutGraphQLAPIIdOutput": {
       "Type": "String",
       "Default": "apiWhileYoureOutGraphQLAPIIdOutput"
-    },
-    "stripeKey": {
-      "Type": "String"
     }
   },
   "Conditions": {
@@ -54,12 +51,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "RefundPayment",
+            "AutomaticJobsDeletion",
             {
               "Fn::Join": [
                 "",
                 [
-                  "RefundPayment",
+                  "AutomaticJobsDeletion",
                   "-",
                   {
                     "Ref": "env"
@@ -105,9 +102,6 @@
             },
             "API_WHILEYOUREOUT_GRAPHQLAPIIDOUTPUT": {
               "Ref": "apiWhileYoureOutGraphQLAPIIdOutput"
-            },
-            "STRIPE_KEY": {
-              "Ref": "stripeKey"
             }
           }
         },
@@ -128,12 +122,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "whileyoureoutLambdaRole2b12df40",
+            "whileyoureoutLambdaRolec0db171f",
             {
               "Fn::Join": [
                 "",
                 [
-                  "whileyoureoutLambdaRole2b12df40",
+                  "whileyoureoutLambdaRolec0db171f",
                   "-",
                   {
                     "Ref": "env"
@@ -229,7 +223,8 @@
                 "dynamodb:Scan",
                 "dynamodb:Query",
                 "dynamodb:Update*",
-                "dynamodb:RestoreTable*"
+                "dynamodb:RestoreTable*",
+                "dynamodb:Delete*"
               ],
               "Resource": [
                 {
@@ -280,6 +275,45 @@
           ]
         }
       }
+    },
+    "CloudWatchEvent": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Schedule rule for Lambda",
+        "ScheduleExpression": {
+          "Ref": "CloudWatchRule"
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "LambdaFunction",
+                "Arn"
+              ]
+            },
+            "Id": {
+              "Ref": "LambdaFunction"
+            }
+          }
+        ]
+      }
+    },
+    "PermissionForEventsToInvokeLambda": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "LambdaFunction"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "CloudWatchEvent",
+            "Arn"
+          ]
+        }
+      }
     }
   },
   "Outputs": {
@@ -304,6 +338,11 @@
     "LambdaExecutionRole": {
       "Value": {
         "Ref": "LambdaExecutionRole"
+      }
+    },
+    "CloudWatchEventRule": {
+      "Value": {
+        "Ref": "CloudWatchEvent"
       }
     }
   }

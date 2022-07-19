@@ -155,6 +155,20 @@ export const schema = {
                     "attributes": [],
                     "isArrayNullable": true
                 },
+                "markedToRemove": {
+                    "name": "markedToRemove",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "isRated": {
+                    "name": "isRated",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -357,6 +371,14 @@ export const schema = {
                         "connectionType": "HAS_MANY",
                         "associatedWith": "mainProvider"
                     }
+                },
+                "reviews": {
+                    "name": "reviews",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": true
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -803,5 +825,5 @@ export const schema = {
             }
         }
     },
-    "version": "4cf790f56bc444a760c79131d0118a23"
+    "version": "885d51f2d5b46711eda1fe72e515cf8d"
 };

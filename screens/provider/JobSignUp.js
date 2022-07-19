@@ -21,6 +21,7 @@ import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
 import Moment from "moment";
 import { extendMoment } from "moment-range";
 import { createProviderReminder, sendNotificationToUser } from "../../notifications";
+import { sendProviderJobSignupEmail } from "../../common/functions";
 
 const moment = extendMoment(Moment);
 
@@ -28,7 +29,7 @@ const moment = extendMoment(Moment);
 const JobSignUp = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { activeJobs } = useSelector((state) => state.providerJobs);
-  const { jobInfo, distance } = route.params;
+  const { jobInfo } = route.params;
   const [mainProvider, setMainProvider] = useState("");
   const [backupProviders, setBackupProviders] = useState([]);
   const [canSignUp, setCanSignUp] = useState(true);
@@ -36,7 +37,7 @@ const JobSignUp = ({ route, navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [startSignUp, setStartSignUp] = useState(false);
   const [role, setRole] = useState("Main Provider");
-  const { userInfo } = useSelector((state) => state.auth);
+  const { authUser, userInfo } = useSelector((state) => state.auth);
   const [date, setDate] = useState()
   const [time, setTime] = useState()
   const [ownerName, setOwnerName] = useState('')
@@ -117,10 +118,12 @@ const JobSignUp = ({ route, navigation }) => {
           message: `${userInfo.firstName} has accepted your job request as a main provider for your ${jobInfo.jobTitle} job`
         }
         await sendNotificationToUser(original.requestOwner, messageInfo)
+        //send email
+        await sendProviderJobSignupEmail(jobInfo, userInfo.firstName, authUser.email, ownerName)
         dispatch(addOrRemoveJob({ type: "ADD_ACTIVE_JOB", jobInfo }));
         setTimeout(() => {
           createToast(
-            "You have successfully signed up as a main provider for the job. If you wish to cancel please do so 3 days before the job date"
+            "You have successfully signed up as a main provider for the job. If you wish to cancel please do so at least 3 days before the job date"
           );
           setStartSignUp(false);
           dispatch(reinitialize());

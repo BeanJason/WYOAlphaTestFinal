@@ -6,27 +6,6 @@ import { Platform } from "react-native"
 import { cancelNotificationByID, sendNotificationToProvider, sendNotificationToUser } from "../notifications"
 import { sendEmail } from "../src/graphql/mutations"
 
-export const getUnacceptedJobs = (activeJobs) => {
-    //get requested jobs
-    let jobsToReturn = []
-    if(activeJobs.length == 0){
-        return jobsToReturn
-    }
-    //check date
-    let today = new Date()
-    let requestDate
-    for(let job of activeJobs){
-        requestDate = new Date(job.requestDateTime)
-        if(today.toLocaleDateString() >= requestDate.toLocaleDateString()){
-            //check if two hours or less
-            if((today.getHours() - requestDate.getHours()) <= 2){
-                jobsToReturn.push(job)
-            }
-        }
-    }
-    return jobsToReturn
-}
-
 
 
 //fire employee
@@ -333,7 +312,7 @@ export const sendProviderAcceptedEmail = async (user, email) => {
 
     await API.graphql(graphqlOperation(sendEmail, {
         userEmail: email,
-        subject: 'Refund Confirmation',
+        subject: 'Provider Registration',
         message: html
     }))
 
@@ -359,7 +338,7 @@ export const sendProviderRejectEmail = async (user, email) => {
 
     await API.graphql(graphqlOperation(sendEmail, {
         userEmail: email,
-        subject: 'Refund Confirmation',
+        subject: 'Provider Registration',
         message: html
     }))
 }
@@ -409,7 +388,7 @@ export const sendBanStatusEmail = async (user, email, status) => {
 
     await API.graphql(graphqlOperation(sendEmail, {
         userEmail: email,
-        subject: 'Refund Confirmation',
+        subject: 'Ban Status',
         message: html
     }))
 }
@@ -435,7 +414,46 @@ export const sendProviderFiredEmail = async (user, email) => {
 
     await API.graphql(graphqlOperation(sendEmail, {
         userEmail: email,
-        subject: 'Refund Confirmation',
+        subject: 'Termination',
         message: html
     }))
+}
+
+export const sendProviderJobSignupEmail = async (jobInfo, user, email, owner) => {
+    let date = new Date(jobInfo.requestDateTime)
+    let total = (jobInfo.price + jobInfo.tip) / 100
+    total = total.toFixed(2)
+    
+    let html = 
+    `<html>
+        <head>
+            <h1>
+                WYO Job Sign-Up,
+            </h1>
+            <body>
+                <p>
+                    Hello ${user},
+                </p>
+                <p>
+                    This email confirms you have signed up for the job titled ${jobInfo.jobTitle} that was requested by ${owner}. 
+                    This job is scheduled on ${date.toLocaleDateString()} at ${date.toLocaleTimeString()}. Please remember to check 
+                    in on the WYO App as soon as you arrive at the job location.
+                </p>
+                <p>
+                    If you wish to cancel your services for this job, please do so at least 3 days before the job date. Failure to 
+                    do so will result in an offense added to your account.
+                </p>
+                <p>
+                    Thank you.
+                </p>
+            </body>
+        </head>
+    </html>`
+
+    await API.graphql(graphqlOperation(sendEmail, {
+        userEmail: email,
+        subject: 'Job Sign Up',
+        message: html
+    }))
+
 }

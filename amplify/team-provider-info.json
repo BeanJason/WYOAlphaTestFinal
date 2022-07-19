@@ -28,7 +28,7 @@
         },
         "RefundPayment": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/RefundPayment-4d6b5757624c4d337676-build.zip",
+          "s3Key": "amplify-builds/RefundPayment-704c6248565776443834-build.zip",
           "stripeKey": "sk_test_51LAbv7GUC6WuR4axUGkVtdHlrVZ5Ms8z8X96wwhsS84Vbp7ESV19nH7YBBCS2wwZNWMbRvkc9oCd2iJDCEU00yEf71IGp"
         },
         "ResizeFunction": {
@@ -37,7 +37,7 @@
         },
         "AutomaticRefunds": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/AutomaticRefunds-36624c6e326e56463973-build.zip"
+          "s3Key": "amplify-builds/AutomaticRefunds-373538376b7765384e72-build.zip"
         },
         "SendNotification": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
@@ -49,6 +49,10 @@
           "service": "Gmail",
           "email": "kassimballout@gmail.com",
           "password": "fmtrwjtgwwdphamr"
+        },
+        "AutomaticJobsDeletion": {
+          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
+          "s3Key": "amplify-builds/AutomaticJobsDeletion-3271714c546e75703154-build.zip"
         }
       }
     }

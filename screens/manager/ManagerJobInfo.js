@@ -101,11 +101,7 @@ const ManagerJobInfo = ({ route, navigation }) => {
   }
 
   const refreshLocation = async() => {
-    // setRefresh(true)
-    let filter = {
-      ID: {eq: jobInfo.mainProvider}
-   }
-   
+    setRefresh(true)
     let prov = await API.graphql({
       query: queries.getProvider, 
       variables: {id: jobInfo.mainProvider}})

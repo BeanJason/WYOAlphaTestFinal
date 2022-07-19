@@ -39,6 +39,8 @@ type Job @model @auth(rules: [{allow: public}]) {
   tip: Int,
   userNotificationID: [String!],
   providerNotificationID: [String!]
+  markedToRemove: String
+  isRated: String
 }
 
 type Provider @model @auth(rules: [{allow: public}]) {
@@ -61,6 +63,7 @@ type Provider @model @auth(rules: [{allow: public}]) {
   isBan: Boolean!
   currentLocation: String
   jobs: [Job] @hasMany(indexName: "byProvider", fields: ["id"])
+  reviews: [String!]
 }
 
 type User @model @auth(rules: [{allow: public}]) {

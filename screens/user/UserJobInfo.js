@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob } from "../../redux/jobsReducer";
 import { decrementZipCodeCount, sendRefundEmail } from "../../common/functions";
 import ProfilePicture from "../../common/components/ProfilePicture";
+import { cancelNotificationByID, sendNotificationToProvider } from "../../notifications";
 
 //Login screen
 const UserJobInfo = ({ route, navigation }) => {
@@ -98,6 +99,26 @@ const UserJobInfo = ({ route, navigation }) => {
         )
         if(refundStatus){
           await decrementZipCodeCount({zipCode: jobInfo.zipCode})
+          //cancel reminders
+          if(jobInfo.userNotificationID.length != 0){
+            await cancelNotificationByID(jobInfo.userNotificationID[0])
+            await cancelNotificationByID(jobInfo.userNotificationID[1])
+          }
+          //notify the providers
+          if(jobInfo.mainProvider){
+            let date = new Date(jobInfo.requestDateTime)
+            let messageInfo = {
+              title: 'Job Cancelled',
+              message: `The job titled ${jobInfo.jobTitle} that was scheduled on ${date.toLocaleDateString()} at ${date.toLocaleTimeString()} has been cancelled`,
+              data: {jobID: jobInfo.id}
+            }
+            await sendNotificationToProvider(jobInfo.mainProvider, messageInfo)
+            if(jobInfo.backupProviders.length != 0){
+              for(let next of jobInfo.backupProviders){
+                await sendNotificationToProvider(next, messageInfo)
+              }
+            }
+          }
           dispatch(addOrRemoveJob({type: 'REMOVE_ACTIVE_JOB', jobInfo}))
           setTimeout(() => {
             setStartCancel(false)

@@ -69,6 +69,8 @@ export const createJob = /* GraphQL */ `
       tip
       userNotificationID
       providerNotificationID
+      markedToRemove
+      isRated
       createdAt
       updatedAt
       _version
@@ -104,6 +106,8 @@ export const updateJob = /* GraphQL */ `
       tip
       userNotificationID
       providerNotificationID
+      markedToRemove
+      isRated
       createdAt
       updatedAt
       _version
@@ -139,6 +143,8 @@ export const deleteJob = /* GraphQL */ `
       tip
       userNotificationID
       providerNotificationID
+      markedToRemove
+      isRated
       createdAt
       updatedAt
       _version
@@ -175,6 +181,7 @@ export const createProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
+      reviews
       createdAt
       updatedAt
       _version
@@ -211,6 +218,7 @@ export const updateProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
+      reviews
       createdAt
       updatedAt
       _version
@@ -247,6 +255,7 @@ export const deleteProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
+      reviews
       createdAt
       updatedAt
       _version

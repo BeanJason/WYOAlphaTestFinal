@@ -46,6 +46,7 @@ const ManagerHome = ({ navigation }) => {
       let filter = {
         and: [
           { _deleted: {ne: true} },
+          {markedToRemove: {eq: ""}},
           { currentStatus: {ne: 'COMPLETED'} },
         ]
       }
@@ -66,7 +67,7 @@ const ManagerHome = ({ navigation }) => {
     if(checkedBtn == 'jobsToday'){
       setFilteredJobList(jobList.filter(job => {
         nextDate = new Date(job.requestDateTime)
-        return today.toLocaleDateString() == nextDate.toLocaleDateString()
+        return today.toDateString() == nextDate.toDateString()
       }))
     }
     else if(checkedBtn == 'ongoingJobs'){

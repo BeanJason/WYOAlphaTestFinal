@@ -3,7 +3,7 @@
     "storage": {
       "Job:@model(appsync)": [
         "read",
-        "delete"
+        "update"
       ]
     }
   },

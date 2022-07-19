@@ -59,6 +59,8 @@ export declare class Job {
   readonly tip?: number | null;
   readonly userNotificationID?: string[] | null;
   readonly providerNotificationID?: string[] | null;
+  readonly markedToRemove?: string | null;
+  readonly isRated?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Job, JobMetaData>);
@@ -85,6 +87,7 @@ export declare class Provider {
   readonly isBan: boolean;
   readonly currentLocation?: string | null;
   readonly jobs?: (Job | null)[] | null;
+  readonly reviews?: string[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Provider, ProviderMetaData>);

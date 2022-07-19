@@ -111,29 +111,6 @@ TaskManager.defineTask('BACKGROUND_LOCATION', async ({data, error}) => {
       }
 })
 
-//Notification
-// TaskManager.defineTask("NOTIFICATION_TASK", async ({data, error}) => {
-//   console.log('background notification');
-//   if(error){
-//     console.log(error);
-//     return;
-//   }
-//   console.log(data);
-//   // if(data.request.content.title == 'New Provider'){
-//   //   let data = data.request.content.data
-//   //   try {
-//   //     let original = await DataStore.query(Job, data.jobID)
-//   //     let ids = await createProviderReminder(original)
-//   //     await DataStore.save(Job.copyOf(original, (updated) => {
-//   //       updated.providerNotificationID.push(ids[0])
-//   //       updated.providerNotificationID.push(ids[1])
-//   //     }))
-//   //   } catch (error) {
-//   //     console.log(error);
-//   //   }
-//   // }
-// })
-
 
 
 
@@ -185,10 +162,9 @@ export default function App() {
   }
 
   let loadAllResources = async () => {
-    await DataStore.clear()
+    await DataStore.stop()
     await loadAssetsAsync()
     setImagesLoaded(true)
-    //await Notifications.registerTaskAsync('NOTIFICATION_TASK')
     loadDataStore()
   }
 

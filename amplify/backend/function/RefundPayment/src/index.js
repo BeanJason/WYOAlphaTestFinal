@@ -23,9 +23,10 @@ async function getItem(id) {
       "#Amount": "price",
       "#PayID": "paymentID",
       "#Status": "currentStatus",
+      "#Date": "requestDateTime"
     },
     Select: "SPECIFIC_ATTRIBUTES",
-    ProjectionExpression: "#Amount, #PayID, #Status",
+    ProjectionExpression: "#Amount, #PayID, #Status, #Date",
   };
   try {
     return await docClient.get(params).promise();
@@ -34,15 +35,23 @@ async function getItem(id) {
   }
 }
 
-async function deleteItem(id) {
+async function updateJob(id, date) {
   let params = {
     TableName: tableName,
     Key: {
       id: id,
     },
+    UpdateExpression: "set #markedToRemove = :markedToRemove",
+    ExpressionAttributeNames: {
+      "#markedToRemove": "markedToRemove",
+    },
+    ExpressionAttributeValues: {
+      ":markedToRemove": date,
+    },
   };
+
   try {
-    await docClient.delete(params).promise();
+    return await docClient.update(params).promise();
   } catch (err) {
     return err;
   }
@@ -78,7 +87,9 @@ exports.handler = async (event) => {
         })
         if(refund.status == 'succeeded'){
           try {
-            await deleteItem(arguments.jobID);
+            let date = new Date(jobInfo.Item.requestDateTime)
+            date.setDate(date.getDate() - 2)
+            await updateJob(arguments.jobID, date.toString());
             return true;
           } catch (error) {
             console.log(error);
@@ -95,7 +106,9 @@ exports.handler = async (event) => {
           })
           if(refund.status == 'succeeded'){
             try {
-              await deleteItem(arguments.jobID);
+              let date = new Date(jobInfo.Item.requestDateTime)
+              date.setDate(date.getDate() - 2)
+              await updateJob(arguments.jobID, date.toString());
               return true;
             } catch (error) {
               console.log(error);

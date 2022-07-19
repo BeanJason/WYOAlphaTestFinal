@@ -25,6 +25,8 @@ export const getJob = /* GraphQL */ `
       tip
       userNotificationID
       providerNotificationID
+      markedToRemove
+      isRated
       createdAt
       updatedAt
       _version
@@ -62,6 +64,8 @@ export const listJobs = /* GraphQL */ `
         tip
         userNotificationID
         providerNotificationID
+        markedToRemove
+        isRated
         createdAt
         updatedAt
         _version
@@ -108,6 +112,8 @@ export const syncJobs = /* GraphQL */ `
         tip
         userNotificationID
         providerNotificationID
+        markedToRemove
+        isRated
         createdAt
         updatedAt
         _version
@@ -144,6 +150,7 @@ export const getProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
+      reviews
       createdAt
       updatedAt
       _version
@@ -178,6 +185,7 @@ export const listProviders = /* GraphQL */ `
         ratingCount
         isBan
         currentLocation
+        reviews
         createdAt
         updatedAt
         _version
@@ -221,6 +229,7 @@ export const syncProviders = /* GraphQL */ `
         ratingCount
         isBan
         currentLocation
+        reviews
         createdAt
         updatedAt
         _version

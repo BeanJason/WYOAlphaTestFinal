@@ -20,11 +20,12 @@ import {RadioButton} from "react-native-paper"
 import ProfilePicture from "../../common/components/ProfilePicture";
 import * as Notifications from "expo-notifications"
 import * as Location from "expo-location"
-import { DataStore } from "aws-amplify";
+import { API, DataStore } from "aws-amplify";
 import { Blacklist } from "../../src/models";
 import { logout } from "../../redux/authReducer";
 import { useIsFocused } from "@react-navigation/native";
 import * as TaskManager from "expo-task-manager"
+import * as queries from "../../src/graphql/queries";
 
 
 
@@ -76,8 +77,10 @@ const ProviderHome = ({ navigation }) => {
 
 
   const checkIfDisabled = async() => {
-    let check = await DataStore.query(Blacklist, person => person.subID('eq', authUser.sub))
-    if(check.length != 0){
+    const response = await API.graphql({query: queries.listBlacklists})
+    let list = response.data.listBlacklists.items
+    list = list.filter(user => user.subID == authUser.sub)
+    if(list.length != 0){
       dispatch(logout())
       setLoading(false)
     }

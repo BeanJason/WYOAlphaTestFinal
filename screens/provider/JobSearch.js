@@ -30,7 +30,6 @@ const JobSearch = ({ navigation }) => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true);
   const [filteredJobList, setFilteredJobList] = useState([]);
-  const [sortDirection, setSortDirection] = useState('ascend')
   const [startingLocation, setStartingLocation] = useState()
 
 
@@ -98,6 +97,7 @@ const JobSearch = ({ navigation }) => {
           let filter = {
             and: [
               { _deleted: {ne: true} },
+              {markedToRemove : {eq: ""}},
               {mainProvider: {ne: userInfo.userID}},
               {backupProviders: {notContains: userInfo.userID}},
               {zipCode: {eq: zip}},
