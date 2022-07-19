@@ -14,6 +14,8 @@ import {
   import { Auth } from "aws-amplify";
   import { changeUserStatus } from "../../redux/authReducer";
   import { checkCredentials } from "../../credentials";
+  import { useState } from "react";
+  import Spinner from "../../common/components/Spinner";
 
   //Login screen
   const VerifyAccount = ({ navigation }) => {
@@ -27,9 +29,11 @@ import {
 
     const { authUser } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false)
     
     //Submit the user input
     const submitForm = async (data) => {
+      setLoading(true)
      try {
         await Auth.signIn({username: authUser.email, password: data.password})
         const newData = await checkCredentials();
@@ -38,6 +42,9 @@ import {
         }
         if(authUser['custom:type'] == 'Provider'){
           navigation.navigate('EditAccountProvider',{name: 'EditAccountProvider'})
+        }
+        else if(authUser['custom:type'] == 'Manager'){
+          navigation.navigate('EditAccountManager',{name: 'EditAccountManager'})
         }
         else{
           navigation.navigate('EditAccountUser',{name: 'EditAccountUser'})
@@ -48,8 +55,7 @@ import {
         message: "Incorrect username or password",
       });
      }
-     
-    
+     setLoading(false)
     };
 
     return (
@@ -78,13 +84,15 @@ import {
               </View>
           </View>
 
-          <View style={{alignItems: 'center'}}>
+          <View style={{alignItems: 'center', marginTop: 10}}>
+          {loading ? <Spinner color={'green'} /> : (
             <TouchableOpacity
               onPress={handleSubmit(submitForm)}
               style={styles.button}
             >
               <Text style={styles.btnText}>Submit</Text>
             </TouchableOpacity>
+          )}
           </View>
 
         </SafeAreaView>

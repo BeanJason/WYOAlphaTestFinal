@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Auth } from "aws-amplify";
 import { DataStore } from "aws-amplify";
 import { checkCredentials } from "../credentials";
-import {User, Provider} from "../src/models"
+import {User, Provider, Manager} from "../src/models"
 
 //Initial values
 const initialState = {
@@ -146,11 +146,34 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
 );
 
 //Logout
-export const logout = createAsyncThunk("auth/logout", async () => {
+export const logout = createAsyncThunk("auth/logout", async (data) => {
+  if(data.type == 'Manager'){
+    let original = await DataStore.query(Manager, data.id);
+        await DataStore.save(Manager.copyOf(original, (updated) => {
+          updated.expoToken = ""
+    }))
+  } 
+  else if(data.type == 'Provider'){
+      let original = await DataStore.query(Provider, data.id);
+      await DataStore.save(Provider.copyOf(original, (updated) => {
+        updated.expoToken = ""
+    } ))
+  } 
+  else{
+    let original = await DataStore.query(User, data.id);
+        await DataStore.save(User.copyOf(original, (updated) => {
+          updated.expoToken = ""
+    }))
+  }
   try {
+    process.on('unhandledRejection', (error) => {
+      console.log('error caught');
+      console.log(error);
+    })
       await Auth.signOut();
       await DataStore.clear();
       await DataStore.start();
+      process.on('')
   } catch (error) {
       console.log('error signing out');
   }
@@ -201,6 +224,7 @@ export const authReducer = createSlice({
         state.message = action.payload;
         state.authUser = null;
         state.userInfo = null;
+        state.isSuccess = false;
       })
 
       //Login is loading

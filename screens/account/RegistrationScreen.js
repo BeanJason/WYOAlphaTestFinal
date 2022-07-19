@@ -15,9 +15,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 //Main registration screen to choose to sign up as a provider or user
 const RegistrationScreen = ({ navigation }) => {
   return (
-    <KeyboardAwareScrollView>
       <ImageBackground
-        style={[commonStyles.background, {height: 700}]}
+        style={[commonStyles.background, {height: 1000}]}
         source={require("../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
@@ -95,7 +94,6 @@ const RegistrationScreen = ({ navigation }) => {
           
         </SafeAreaView>
       </ImageBackground>
-    </KeyboardAwareScrollView>
   );
 };
 

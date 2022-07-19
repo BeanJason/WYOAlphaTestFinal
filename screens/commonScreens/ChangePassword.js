@@ -14,6 +14,7 @@ import {
   import { Auth } from "aws-amplify";
   import { changeUserStatus } from "../../redux/authReducer";
   import { checkCredentials } from "../../credentials";
+import { sendChangePasswordEmail } from "../../common/functions";
 
 
   const ChangePassword = ({ navigation }) => {
@@ -26,7 +27,7 @@ import {
       setError
     } = useForm();
 
-    const { authUser } = useSelector((state) => state.auth);
+    const { authUser, userInfo } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const pwd = watch("newPassword");
     
@@ -37,9 +38,14 @@ import {
       })
         .then(data => {
           if(authUser['custom:type'] == 'Provider'){
+            sendChangePasswordEmail(authUser.email, userInfo.firstName)
             navigation.navigate('EditAccountProvider',{name: 'EditAccountProvider'})
+          } else if(authUser['custom:type'] == 'Manager'){
+            sendChangePasswordEmail(authUser.email, userInfo.firstName)
+            navigation.navigate('EditAccountManager',{name: 'EditAccountManager'})
           }
           else{
+            sendChangePasswordEmail(authUser.email, userInfo.firstName)
             navigation.navigate('EditAccountUser',{name: 'EditAccountUser'})
           }
         }).catch(error => {

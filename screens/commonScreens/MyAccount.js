@@ -25,26 +25,8 @@ const MyAccount = ({ navigation }) => {
     const {authUser, userInfo} = useSelector((state) => state.auth)
 
     const resetAndLogout = async() => {
-      if(authUser['custom:type'] == 'Manager'){
-        let original = await DataStore.query(Manager, userInfo.userID);
-        await DataStore.save(Manager.copyOf(original, (updated) => {
-          updated.expoToken = ""
-        }))
-      }
-      else if(authUser['custom:type'] == 'Provider'){
-        let original = await DataStore.query(Provider, userInfo.userID);
-        await DataStore.save(Provider.copyOf(original, (updated) => {
-          updated.expoToken = ""
-        }))
-      }
-      else{
-        let original = await DataStore.query(User, userInfo.userID);
-        await DataStore.save(User.copyOf(original, (updated) => {
-          updated.expoToken = ""
-        }))
-      }
       dispatch(resetState())
-      dispatch(logout())
+      dispatch(logout({type: authUser['custom:type'], id: userInfo.userID}))
     }
 
   return (
@@ -67,7 +49,7 @@ const MyAccount = ({ navigation }) => {
               </TouchableOpacity>
 
             
-              <TouchableOpacity onPress={resetAndLogout}>
+              <TouchableOpacity onPress={() => resetAndLogout()}>
                 <View style={styles.button}>
                   <Text style={styles.btnText}>Logout</Text>
                   <MaterialIcons name="logout" size={25} style={{color: 'white', marginLeft: 10}} />

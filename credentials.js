@@ -125,7 +125,8 @@ const getManagerData = async(attributes) => {
              userID: userData[0].id,
              firstName: userData[0].firstName,
              lastName: userData[0].lastName,
-             expoToken: userData[0].expoToken
+             expoToken: userData[0].expoToken,
+             phoneNumber: userData[0].phoneNumber
         }
         let token = await getNotificationToken();
        if(userInfo.expoToken != token){

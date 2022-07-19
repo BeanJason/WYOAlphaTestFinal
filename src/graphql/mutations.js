@@ -42,6 +42,15 @@ export const sendEmail = /* GraphQL */ `
     sendEmail(userEmail: $userEmail, subject: $subject, message: $message)
   }
 `;
+export const disableProvider = /* GraphQL */ `
+  mutation DisableProvider(
+    $manager: String!
+    $userSub: String!
+    $email: String!
+  ) {
+    disableProvider(manager: $manager, userSub: $userSub, email: $email)
+  }
+`;
 export const createJob = /* GraphQL */ `
   mutation CreateJob(
     $input: CreateJobInput!

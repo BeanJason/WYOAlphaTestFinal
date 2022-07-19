@@ -16,7 +16,7 @@ import { commonStyles } from "../../../common/styles";
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Job, Provider } from "../../../src/models";
-import { removeJobsFromProvider } from "../../../common/functions";
+import { removeJobsFromProvider, sendProviderAcceptedEmail, sendProviderRejectEmail } from "../../../common/functions";
 import { createToast } from "../../../common/components/Toast";
 
 
@@ -74,11 +74,14 @@ const ApplicantsInfo = ({ navigation, route }) => {
         console.log(error);
     }
     setOperation(false)
+    sendProviderAcceptedEmail(original.firstName, original.email)
     navigation.reset({ routes: [{name: 'Applicants'}]})
     navigation.navigate('NewApplicants', {name: 'NewApplicants'})
   }
 
   const rejectProvider = async() => {
+    //add to blacklist
+    sendProviderRejectEmail(employeeInfo.firstName, employeeInfo.email)
     setOperation(true)
   }
 

@@ -279,3 +279,163 @@ export const sendProviderEmail = async (email) => {
     }))
 
 }
+
+export const sendChangePasswordEmail = async (email, user = "") => {
+    let html = 
+    `<html>
+        <head>
+            <h1>
+                WYO Password Change
+            </h1>
+            <body>
+                <p>
+                   Hello ${user},
+                </p>
+                <p>
+                    This email confirms that you have successfully changed your password. 
+                </p>
+                <p>
+                    Thank you, we hope to hear from you soon!
+                </p>
+            </body>
+        </head>
+    </html>`
+
+    await API.graphql(graphqlOperation(sendEmail, {
+        userEmail: email,
+        subject: 'WYO Password Change',
+        message: html
+    }))
+
+}
+
+export const sendProviderAcceptedEmail = async (user, email) => {
+    let html = 
+    `<html>
+        <head>
+            <h1>
+                WYO Provider Acceptance
+            </h1>
+            <body>
+                <p>
+                    Hello ${user},
+                </p>
+                <p>
+                    You have been accepted as a WYO Provider. You may now begin searching for jobs and accepting requests.
+                    Please make sure to read the terms and conditions of providers before you start.
+                </p>
+                <p>
+                    Welcome!
+                </p>
+            </body>
+        </head>
+    </html>`
+
+    await API.graphql(graphqlOperation(sendEmail, {
+        userEmail: email,
+        subject: 'Refund Confirmation',
+        message: html
+    }))
+
+}
+
+export const sendProviderRejectEmail = async (user, email) => {
+    let html = 
+    `<html>
+        <head>
+            <h1>
+                WYO Provider Rejected
+            </h1>
+            <body>
+                <p>
+                    Hello ${user},
+                </p>
+                <p>
+                    We are sorry to inform you that you have not been accepted as a WYO service Provider. Thank you for applying.
+                </p>
+            </body>
+        </head>
+    </html>`
+
+    await API.graphql(graphqlOperation(sendEmail, {
+        userEmail: email,
+        subject: 'Refund Confirmation',
+        message: html
+    }))
+}
+
+export const sendBanStatusEmail = async (user, email, status) => {
+    let html
+    if(status == 'ban'){
+        html = `<html>
+        <head>
+            <h1>
+                WYO Provider Ban
+            </h1>
+            <body>
+                <p>
+                    Hello ${user},
+                </p>
+                <p>
+                    You have just been banned from your services as a WYO Provider. During this time you will not be able
+                    to search for or accept job requests. Please review the terms and conditions in the meantime. You will 
+                    receive an email once the ban has been lifted.
+                </p>
+            </body>
+        </head>
+    </html>`
+    } else{
+        html = `<html>
+        <head>
+            <h1>
+                WYO Provider Unban
+            </h1>
+            <body>
+                <p>
+                    Hello ${user},
+                </p>
+                <p>
+                    You are now unbanned and can continue your services as a WYO Provider. Please follow the terms and 
+                    conditions for being a provider carefully in the future.
+                </p>
+                <p>
+                    Thank you.
+                </p>
+            </body>
+        </head>
+    </html>`
+    }
+    
+
+    await API.graphql(graphqlOperation(sendEmail, {
+        userEmail: email,
+        subject: 'Refund Confirmation',
+        message: html
+    }))
+}
+
+export const sendProviderFiredEmail = async (user, email) => {
+    let html = 
+    `<html>
+        <head>
+            <h1>
+                WYO Provider Termination
+            </h1>
+            <body>
+                <p>
+                    Hello ${user},
+                </p>
+                <p>
+                    As of this moment you can no longer continue your services as a WYO Provider. All your job requests
+                    have been removed and your account is currently terminated.
+                </p>
+            </body>
+        </head>
+    </html>`
+
+    await API.graphql(graphqlOperation(sendEmail, {
+        userEmail: email,
+        subject: 'Refund Confirmation',
+        message: html
+    }))
+}

@@ -67,6 +67,7 @@ import EmployeeInfo from "./screens/manager/employee/EmployeeInfo";
 import EmployeeJobs from "./screens/manager/employee/EmployeeJobs";
 import NewApplicants from "./screens/manager/applicants/NewApplicants";
 import ApplicantsInfo from "./screens/manager/applicants/ApplicantsInfo";
+import EditAccountManager from "./screens/manager/EditAccountManager";
 
 
 //Common screens
@@ -141,6 +142,7 @@ TaskManager.defineTask('BACKGROUND_LOCATION', async ({data, error}) => {
 Amplify.configure(awsconfig);
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
 
 export default function App() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -539,6 +541,12 @@ const ManagerAccountTab = () => {
     <Stack.Navigator screenOptions={{unmountOnBlur: true}}>
       <Stack.Screen options={{ headerShown: false }} name="MyAccount" component={MyAccount}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="VerifyAccount" component={VerifyAccount}/>
+      <Stack.Screen options={{ title: 'Change Password' }} name="ChangePassword" component={ChangePassword}/>
+      <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountManager" component={EditAccountManager}/>
+      <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
+      <Stack.Screen options={{title: 'About Users'}} name="AboutUsers" component={AboutUsers} />
+      <Stack.Screen options={{title: 'About Providers'}} name="AboutProviders" component={AboutProviders} />
+      <Stack.Screen options={{title: 'Contact Us'}} name="ContactUs" component={ContactUs} />
     </Stack.Navigator>
   )
 }
