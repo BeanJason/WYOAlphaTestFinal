@@ -25,6 +25,7 @@ import * as TaskManager from "expo-task-manager"
 import * as Location from "expo-location"
 import isPointWithinRadius from 'geolib/es/isPointWithinRadius';
 import { Ionicons } from '@expo/vector-icons';
+import { decrementZipCodeCount } from "../../common/functions";
 
 //Login screen
 const ServiceView = ({ route, navigation }) => {
@@ -175,6 +176,7 @@ const ServiceView = ({ route, navigation }) => {
       newJobInfo.checkInTime = today.toString()
       dispatch(addOrRemoveJob({ type: "REMOVE_ACTIVE_JOB", jobInfo }));
       dispatch(addOrRemoveJob({ type: "ADD_COMPLETED_JOB", jobInfo: newJobInfo }));
+      await decrementZipCodeCount({zipCode: jobInfo.zipCode})
       let managers = await DataStore.query(Manager)
       let messageInfo = {
         title: 'Checked Out',

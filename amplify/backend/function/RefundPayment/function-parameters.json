@@ -4,6 +4,10 @@
       "Job:@model(appsync)": [
         "read",
         "update"
+      ],
+      "Code:@model(appsync)": [
+        "read",
+        "update"
       ]
     }
   },

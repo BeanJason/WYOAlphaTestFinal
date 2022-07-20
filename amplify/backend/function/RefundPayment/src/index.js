@@ -1,4 +1,6 @@
 /* Amplify Params - DO NOT EDIT
+	API_WHILEYOUREOUT_CODETABLE_ARN
+	API_WHILEYOUREOUT_CODETABLE_NAME
 	API_WHILEYOUREOUT_GRAPHQLAPIIDOUTPUT
 	API_WHILEYOUREOUT_JOBTABLE_ARN
 	API_WHILEYOUREOUT_JOBTABLE_NAME
@@ -10,8 +12,11 @@ const AWS = require("aws-sdk");
 const stripe = require("stripe")(process.env.STRIPE_KEY)
 const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.API_WHILEYOUREOUT_JOBTABLE_NAME;
+const codeTable = process.env.API_WHILEYOUREOUT_CODETABLE_NAME;
 const region = process.env.REGION;
 AWS.config.update({ region: region });
+
+
 
 async function getItem(id) {
   let params = {
@@ -23,10 +28,11 @@ async function getItem(id) {
       "#Amount": "price",
       "#PayID": "paymentID",
       "#Status": "currentStatus",
-      "#Date": "requestDateTime"
+      "#Date": "requestDateTime",
+      "#Zip": "zipCode"
     },
     Select: "SPECIFIC_ATTRIBUTES",
-    ProjectionExpression: "#Amount, #PayID, #Status, #Date",
+    ProjectionExpression: "#Amount, #PayID, #Status, #Date, #Zip",
   };
   try {
     return await docClient.get(params).promise();
@@ -47,6 +53,46 @@ async function updateJob(id, date) {
     },
     ExpressionAttributeValues: {
       ":markedToRemove": date,
+    },
+  };
+
+  try {
+    return await docClient.update(params).promise();
+  } catch (err) {
+    return err;
+  }
+}
+
+
+
+async function getCode(zipCode) {
+  let params = {
+    TableName: codeTable,
+    ExpressionAttributeValues: {
+      ":zip": zipCode,
+    },
+    FilterExpression: "zipCode = :zip",
+    ProjectExpression: "id"
+  };
+  try {
+    return await docClient.scan(params).promise();
+  } catch (err) {
+    return err;
+  }
+}
+
+async function updateCode(id, count) {
+  let params = {
+    TableName: codeTable,
+    Key: {
+      id: id,
+    },
+    UpdateExpression: "set #zipCount = :zipCount",
+    ExpressionAttributeNames: {
+      "#zipCount": "count",
+    },
+    ExpressionAttributeValues: {
+      ":zipCount": count,
     },
   };
 
@@ -90,6 +136,12 @@ exports.handler = async (event) => {
             let date = new Date(jobInfo.Item.requestDateTime)
             date.setDate(date.getDate() - 2)
             await updateJob(arguments.jobID, date.toString());
+            let {Items} = await getCode(jobInfo.zipCode)
+            if(Items.length != 0){
+              if(Items[0].count != 0){
+                await updateCode(Items[0].id, Items[0].count - 1)
+              }
+            }
             return true;
           } catch (error) {
             console.log(error);
@@ -109,6 +161,12 @@ exports.handler = async (event) => {
               let date = new Date(jobInfo.Item.requestDateTime)
               date.setDate(date.getDate() - 2)
               await updateJob(arguments.jobID, date.toString());
+              let {Items} = await getCode(jobInfo.zipCode)
+              if(Items.length != 0){
+                if(Items[0].count != 0){
+                  await updateCode(Items[0].id, Items[0].count - 1)
+                }
+              }
               return true;
             } catch (error) {
               console.log(error);

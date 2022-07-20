@@ -104,7 +104,9 @@ export const decrementZipCodeCount = async(code) => {
     if(code.id){
         let original = await DataStore.query(Code, code.id)
         let count = original.count
-        count--;
+        if(count != 0){
+            count--;
+        }
         await DataStore.save(Code.copyOf(original, updated => {
             updated.count = count
         }))
@@ -112,7 +114,9 @@ export const decrementZipCodeCount = async(code) => {
     else if (code.zipCode) {
         let original = await DataStore.query(Code, c => c.zipCode("eq", code.zipCode))
         let count = original[0].count
-        count--;
+        if(count != 0){
+            count--;
+        }
         await DataStore.save(Code.copyOf(original[0], updated => {
             updated.count = count
         }))
