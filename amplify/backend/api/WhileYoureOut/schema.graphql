@@ -59,7 +59,6 @@ type Provider @model @auth(rules: [{allow: public}]) {
   employeeID: String!
   offenses: Int!
   overallRating: Float!
-  ratingCount: Int!
   isBan: Boolean!
   currentLocation: String
   jobs: [Job] @hasMany(indexName: "byProvider", fields: ["id"])

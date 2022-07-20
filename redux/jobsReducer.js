@@ -16,7 +16,7 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
     const {userID} = data;
     try {
         let response = await DataStore.query(Job, job => job.requestOwner("eq", userID))
-        let jobsToBeRemoved = response.filter(job => job.markedToRemove != "")
+        let jobsToBeRemoved = response.filter(job => job.markedToRemove)
         if(jobsToBeRemoved.length != 0){
             for(let next of jobsToBeRemoved){
                 if(next.userNotificationID.length != 0){
@@ -28,7 +28,7 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
                 }
             }
         }
-        let validJobs = response.filter(job => job.markedToRemove == "")
+        let validJobs = response.filter(job => !job.markedToRemove)
         return {allJobs: validJobs}
     } catch (error) {
         return thunkAPI.rejectWithValue('Error getting job list ' + error.message)
@@ -48,6 +48,9 @@ export const jobsReducer = createSlice({
                 case 'REMOVE_ACTIVE_JOB':
                     state.activeJobs = state.activeJobs.filter(job => job.id != action.payload.jobInfo.id)
                     console.log('removed');
+                    break;
+                case 'REMOVE_OLD_JOB' :
+                    state.jobHistory = state.jobHistory.filter(job => job.id != action.payload.jobInfo.id)
                     break;
                 case 'ADD_OLD_JOB' :
                     state.jobHistory.push(action.payload.jobInfo)

@@ -129,7 +129,7 @@ const ServiceView = ({ route, navigation }) => {
         updated.currentStatus = 'IN_SERVICE'
       }))
       createToast('You have checked in. Please do not forget to check out after the job is complete')
-      let newJobInfo = Object.create(jobInfo)
+      let newJobInfo = {...jobInfo}
       newJobInfo.checkInTime = today.toString()
       console.log('set job');
       dispatch(addOrRemoveJob({ type: "REMOVE_ACTIVE_JOB", jobInfo }));
@@ -171,7 +171,7 @@ const ServiceView = ({ route, navigation }) => {
         updated.currentStatus = 'COMPLETED'
       }))
       createToast('You have successfully checked out of the job')
-      let newJobInfo = Object.create(jobInfo)
+      let newJobInfo = {...jobInfo}
       newJobInfo.checkInTime = today.toString()
       dispatch(addOrRemoveJob({ type: "REMOVE_ACTIVE_JOB", jobInfo }));
       dispatch(addOrRemoveJob({ type: "ADD_COMPLETED_JOB", jobInfo: newJobInfo }));

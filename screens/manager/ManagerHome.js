@@ -46,12 +46,12 @@ const ManagerHome = ({ navigation }) => {
       let filter = {
         and: [
           { _deleted: {ne: true} },
-          {markedToRemove: {eq: ""}},
           { currentStatus: {ne: 'COMPLETED'} },
         ]
       }
       const response = await API.graphql({query: queries.listJobs, variables: {filter: filter}})
       let all = response.data.listJobs.items
+      all = all.filter(job => !job.markedToRemove)
       setJobList(all)
       setLoading(false)
   }

@@ -16,10 +16,9 @@ async function getJobs() {
     let params = {
       TableName: jobTable,
       ExpressionAttributeValues: {
-        ":markedToRemove": "",
+        ":check": "COMPLETED",
       },
-      FilterExpression: "markedToRemove <> :markedToRemove",
-      ProjectExpression: "id"
+      FilterExpression: "currentStatus <> :check",
     };
     try {
       return await docClient.scan(params).promise();
@@ -30,7 +29,7 @@ async function getJobs() {
 
   async function deleteItem(id) {
     let params = {
-      TableName: tableName,
+      TableName: jobTable,
       Key: {
         id: id,
       },
@@ -47,7 +46,7 @@ async function getJobs() {
  */
 exports.handler = async (event) => {
     let {Items} = await getJobs();
-    Items = Items.filter(item => item._deleted != true)
+    Items = Items.filter(item => item._deleted != true && item.markedToRemove)
     if(Items.length != 0){
         let today = new Date()
         let requestDate

@@ -69,6 +69,7 @@ const ApplicantsInfo = ({ navigation, route }) => {
     try {
         await DataStore.save(Provider.copyOf(original, (updated) => {
             updated.employeeID = "200"
+            updated.backgroundCheckStatus = true
         }))
     } catch (error) {
         console.log(error);
@@ -83,6 +84,7 @@ const ApplicantsInfo = ({ navigation, route }) => {
     let original = await DataStore.query(Provider, employeeInfo.id)
     await DataStore.save(Provider.copyOf(original, (updated) => {
       updated.isBan = true
+      updated.backgroundCheckStatus = true
     }))
     //add to blacklist
     await DataStore.save(new Blacklist({

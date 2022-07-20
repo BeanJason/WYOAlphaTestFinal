@@ -44,6 +44,7 @@ import JobCreation1 from "./screens/user/JobCreation1"
 import JobCreationPayment from "./screens/user/JobCreationPayment"
 import UserJobInfo from "./screens/user/UserJobInfo"
 import UserJobHistory from "./screens/user/UserJobHistory"
+import UserReview from "./screens/user/UserReview";
 //USER FUNCTIONS
 import { resetState } from "./redux/jobsReducer";
 import { checkUnverifiedJob } from "./common/functions";
@@ -342,6 +343,7 @@ const UserHistoryTab = () => {
     <Stack.Navigator>
       <Stack.Screen options={{headerShown: false }} name="UserJobHistory" component={UserJobHistory}/>
       <Stack.Screen options={{ title: 'Job Information' }} name="UserJobInfo" component={UserJobInfo}/>
+      <Stack.Screen options={{ title: 'Write a Review' }} name="UserReview" component={UserReview}/>
     </Stack.Navigator>
   )
 }

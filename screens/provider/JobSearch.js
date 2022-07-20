@@ -97,7 +97,6 @@ const JobSearch = ({ navigation }) => {
           let filter = {
             and: [
               { _deleted: {ne: true} },
-              {markedToRemove : {eq: ""}},
               {mainProvider: {ne: userInfo.userID}},
               {backupProviders: {notContains: userInfo.userID}},
               {zipCode: {eq: zip}},
@@ -111,6 +110,7 @@ const JobSearch = ({ navigation }) => {
           }
           const response = await API.graphql({query: queries.listJobs, variables: {filter: filter}})
           let all = response.data.listJobs.items
+          all = all.filter(job => !job.markedToRemove)
           all = getDistanceToJob(all)
           all.sort((a, b) => a.distance - b.distance)
           setFilteredJobList(all)

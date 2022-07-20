@@ -52,7 +52,7 @@
         },
         "AutomaticJobsDeletion": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/AutomaticJobsDeletion-3271714c546e75703154-build.zip"
+          "s3Key": "amplify-builds/AutomaticJobsDeletion-6c79744e614c32373958-build.zip"
         }
       }
     }

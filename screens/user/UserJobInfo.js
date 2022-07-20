@@ -37,6 +37,7 @@ const UserJobInfo = ({ route, navigation }) => {
   const [startCancel, setStartCancel] = useState(false)
   const [date, setDate] = useState()
   const [time, setTime] = useState()
+  const [isRated, setIsRated] = useState(true)
 
   const getDateFormat = () => {
     let formatDate = new Date(jobInfo.requestDateTime)
@@ -216,8 +217,16 @@ const UserJobInfo = ({ route, navigation }) => {
                   >
                   <Text style={styles.btnText}>Cancel Job</Text> 
                 </TouchableOpacity>
-              : <></>
-              }
+              : !jobInfo.isRated ? (
+                <View>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('UserReview', {name: 'UserReview', jobInfo, mainProvider})}
+                    style={[styles.button, {width: 140}]}
+                    >
+                    <Text style={styles.btnText}>Write a review</Text> 
+                  </TouchableOpacity>
+                </View>
+              ): <></>}
             </View>
             <Text style={styles.title}>{jobInfo.jobTitle}</Text>
             <Text style={styles.generalText}>Duration: {jobInfo.duration}</Text>

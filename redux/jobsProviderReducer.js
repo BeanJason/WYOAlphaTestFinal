@@ -19,7 +19,7 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
     if(userID){
         try {
             let response = await DataStore.query(Job, job =>  job.or(job => job.mainProvider("eq", userID).backupProviders("contains", userID)))
-            let jobsToBeRemoved = response.filter(job => job.markedToRemove != "")
+            let jobsToBeRemoved = response.filter(job => job.markedToRemove)
             if(jobsToBeRemoved.length != 0){
                 for(let next of jobsToBeRemoved){
                     if(next.providerNotificationID.length != 0){
@@ -29,7 +29,7 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
                     await DataStore.delete(Job, next.id)
                 }
             }
-            let validJobs = response.filter(job => job.markedToRemove == "")
+            let validJobs = response.filter(job => !job.markedToRemove)
             return {allJobs: validJobs, userID: userID}
         } catch (error) {
             return thunkAPI.rejectWithValue('Error getting job list ' + error.message)

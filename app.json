@@ -27,8 +27,7 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "location",
-          "fetch",
-          "remote-notification"
+          "fetch"
         ]
       }
     },
