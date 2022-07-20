@@ -175,8 +175,8 @@ const LoginScreen = ({ navigation }) => {
                 <TouchableOpacity
                   onPress={() =>
                     // TODO: NAVIGATE TO FORGOT PASSWORD SCREEN
-                    navigation.navigate("AboutUs", {
-                      name: "About Us",
+                    navigation.navigate("ContactUs", {
+                      name: "Contact Us",
                     })
                   }
                 >

@@ -53,6 +53,11 @@
         "AutomaticJobsDeletion": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
           "s3Key": "amplify-builds/AutomaticJobsDeletion-6c79744e614c32373958-build.zip"
+        },
+        "ContactUsFunction": {
+          "sesEmail": "info@wyoservices.com",
+          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
+          "s3Key": "amplify-builds/ContactUsFunction-6133536e51646b485959-build.zip"
         }
       }
     }

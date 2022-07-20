@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { DataStore } from "aws-amplify";
-import { cancelNotificationByID } from "../notifications";
+import { cancelNotificationByID, createProviderReminder } from "../notifications";
 import { Job } from "../src/models";
 
 
@@ -30,6 +30,13 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
                 }
             }
             let validJobs = response.filter(job => !job.markedToRemove)
+            //check if all active jobs for provider contain reminders
+            let active = validJobs.filter(job => job.currentStatus != "COMPLETED")
+            for(let next of active){
+                if(!next.providerNotificationID || next.providerNotificationID.length == 0){
+                    await createProviderReminder(next)
+                }
+            }
             return {allJobs: validJobs, userID: userID}
         } catch (error) {
             return thunkAPI.rejectWithValue('Error getting job list ' + error.message)

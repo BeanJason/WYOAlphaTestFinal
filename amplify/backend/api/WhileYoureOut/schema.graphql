@@ -8,6 +8,7 @@ type Mutation {
   refundPayment(isCancel: Boolean!, jobID: String!): Boolean! @function(name: "RefundPayment-${env}")
   sendNotification(token: String!, title: String!, message: String!, data: String): Boolean! @function(name: "SendNotification-${env}")
   sendEmail(userEmail: String!, subject: String!, message: String! ): String! @function(name: "SendEmail-${env}")
+  contactUsFunction(name: String!, email: String!, message: String! ): String! @function(name: "ContactUsFunction-${env}")
 }
 
 enum JOBSTATUS {

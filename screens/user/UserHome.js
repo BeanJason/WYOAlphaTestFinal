@@ -36,6 +36,9 @@ const UserHome = ({ navigation }) => {
     await Notifications.cancelAllScheduledNotificationsAsync()
   }
 
+  const reloadJobs = async() => {
+    
+  }
   
 
   const onRefresh = React.useCallback(async () => {

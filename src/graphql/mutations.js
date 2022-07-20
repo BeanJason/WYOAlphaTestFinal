@@ -42,6 +42,15 @@ export const sendEmail = /* GraphQL */ `
     sendEmail(userEmail: $userEmail, subject: $subject, message: $message)
   }
 `;
+export const contactUsFunction = /* GraphQL */ `
+  mutation ContactUsFunction(
+    $name: String!
+    $email: String!
+    $message: String!
+  ) {
+    contactUsFunction(name: $name, email: $email, message: $message)
+  }
+`;
 export const createJob = /* GraphQL */ `
   mutation CreateJob(
     $input: CreateJobInput!
