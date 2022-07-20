@@ -55,7 +55,7 @@
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "StripeWebhook",
+          "resourceName": "StripeWebhookAPI",
           "attributes": [
             "Name",
             "Arn"
@@ -69,20 +69,6 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
-    },
-    "StripeWebhook": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "api",
-          "resourceName": "WhileYoureOut",
-          "attributes": [
-            "GraphQLAPIIdOutput"
-          ]
-        }
-      ]
     },
     "RefundPayment": {
       "build": true,
@@ -159,6 +145,20 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "StripeWebhookAPI": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "api",
+          "resourceName": "WhileYoureOut",
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ]
+        }
+      ]
     }
   },
   "storage": {

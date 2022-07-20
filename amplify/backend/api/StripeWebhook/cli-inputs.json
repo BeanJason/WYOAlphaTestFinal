@@ -3,7 +3,7 @@
   "paths": {
     "/stripe-webhook": {
       "name": "/stripe-webhook",
-      "lambdaFunction": "StripeWebhook",
+      "lambdaFunction": "StripeWebhookAPI",
       "permissions": {
         "setting": "open"
       }

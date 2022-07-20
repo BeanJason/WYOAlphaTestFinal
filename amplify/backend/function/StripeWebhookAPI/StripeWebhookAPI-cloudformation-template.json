@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"9.0.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"9.1.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -51,12 +51,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "StripeWebhook",
+            "StripeWebhookAPI",
             {
               "Fn::Join": [
                 "",
                 [
-                  "StripeWebhook",
+                  "StripeWebhookAPI",
                   "-",
                   {
                     "Ref": "env"
@@ -122,12 +122,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "whileyoureoutLambdaRolef1878331",
+            "whileyoureoutLambdaRole10764575",
             {
               "Fn::Join": [
                 "",
                 [
-                  "whileyoureoutLambdaRolef1878331",
+                  "whileyoureoutLambdaRole10764575",
                   "-",
                   {
                     "Ref": "env"
@@ -216,9 +216,6 @@
             {
               "Effect": "Allow",
               "Action": [
-                "dynamodb:Put*",
-                "dynamodb:Create*",
-                "dynamodb:BatchWriteItem",
                 "dynamodb:Get*",
                 "dynamodb:BatchGetItem",
                 "dynamodb:List*",

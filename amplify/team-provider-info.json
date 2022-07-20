@@ -22,10 +22,6 @@
           "s3Key": "amplify-builds/CreatePaymentIntent-3750376d534f62713268-build.zip",
           "stripeKey": "sk_test_51LAbv7GUC6WuR4axUGk966Vt9d0HlrVZ5Ms8z8X96wwhsS84Vbp7ESV19nH7YBBCS2wwZNWMbRvkc9oCd2iJDCEU00yEf71IGp"
         },
-        "StripeWebhook": {
-          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/StripeWebhook-74795955694d4957346c-build.zip"
-        },
         "RefundPayment": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
           "s3Key": "amplify-builds/RefundPayment-704c6248565776443834-build.zip",
@@ -57,7 +53,11 @@
         "ContactUsFunction": {
           "sesEmail": "info@wyoservices.com",
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/ContactUsFunction-6133536e51646b485959-build.zip"
+          "s3Key": "amplify-builds/ContactUsFunction-48556669536a4a6b2b6b-build.zip"
+        },
+        "StripeWebhookAPI": {
+          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
+          "s3Key": "amplify-builds/StripeWebhookAPI-5757482b4c643154506d-build.zip"
         }
       }
     }

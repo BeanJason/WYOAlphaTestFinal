@@ -29,12 +29,6 @@ export type AmplifyDependentResourcesAttributes = {
             "Region": "string",
             "LambdaExecutionRole": "string"
         },
-        "StripeWebhook": {
-            "Name": "string",
-            "Arn": "string",
-            "Region": "string",
-            "LambdaExecutionRole": "string"
-        },
         "RefundPayment": {
             "Name": "string",
             "Arn": "string",
@@ -74,6 +68,12 @@ export type AmplifyDependentResourcesAttributes = {
             "CloudWatchEventRule": "string"
         },
         "ContactUsFunction": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
+        },
+        "StripeWebhookAPI": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",

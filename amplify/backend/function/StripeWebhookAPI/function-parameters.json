@@ -2,7 +2,6 @@
   "permissions": {
     "storage": {
       "Job:@model(appsync)": [
-        "create",
         "read",
         "update"
       ]
