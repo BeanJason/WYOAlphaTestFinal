@@ -363,8 +363,8 @@ const ProviderRegistration = ({ navigation }) => {
                 rules={{ 
                     required: "Biography is required",
                     maxLength:{
-                        value: 250,
-                        message: 'Biography must be 250 words or less'
+                        value: 500,
+                        message: 'Biography must be 500 characters or less'
                     } 
                   }}
                 placeholder={"Biography"}

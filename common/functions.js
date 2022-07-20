@@ -33,7 +33,7 @@ export const removeJobsFromProvider = async(employee) => {
                         updated.backupProviders = updated.backupProviders.filter(id => id != newMain)
                         updated.providerNotificationID = []
                     }))
-                    success = true
+                    var success = true
                     //send notification to new main provider
                     let request = new Date(next.requestDateTime);
                     let hour = request.getHours() % 12 || 12;
