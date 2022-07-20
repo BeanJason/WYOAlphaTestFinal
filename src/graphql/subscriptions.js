@@ -121,7 +121,6 @@ export const onCreateProvider = /* GraphQL */ `
       employeeID
       offenses
       overallRating
-      ratingCount
       isBan
       currentLocation
       jobs {
@@ -155,7 +154,6 @@ export const onUpdateProvider = /* GraphQL */ `
       employeeID
       offenses
       overallRating
-      ratingCount
       isBan
       currentLocation
       jobs {
@@ -189,7 +187,6 @@ export const onDeleteProvider = /* GraphQL */ `
       employeeID
       offenses
       overallRating
-      ratingCount
       isBan
       currentLocation
       jobs {

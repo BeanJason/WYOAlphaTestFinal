@@ -51,6 +51,8 @@ const UserReview = ({ navigation, route }) => {
       newRating = parseFloat(newRating.toFixed(2))
       let review = {
         jobID: jobInfo.id,
+        jobDate: jobInfo.requestDateTime,
+        jobTitle: jobInfo.jobTitle,
         comment: data.review || "",
         rating: rate
       }

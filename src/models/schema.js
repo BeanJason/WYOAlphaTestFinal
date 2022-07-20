@@ -337,13 +337,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "ratingCount": {
-                    "name": "ratingCount",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "isBan": {
                     "name": "isBan",
                     "isArray": false,
@@ -825,5 +818,5 @@ export const schema = {
             }
         }
     },
-    "version": "885d51f2d5b46711eda1fe72e515cf8d"
+    "version": "ebfa5158e586de6c42ca2a312f3d4f06"
 };

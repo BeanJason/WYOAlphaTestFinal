@@ -236,19 +236,26 @@ const EmployeeInfo = ({ navigation, route }) => {
               <ProfilePicture imageUrl={providerImage} name={employeeInfo.firstName + ' ' + employeeInfo.lastName} size={130}/>
               <View>
                 <View style={{flexDirection:'row', justifyContent: 'center', marginTop: 10}}>
-                  <MaterialIcons name={1 > roundedOverall ? 'star-outline' : 1.5 == roundedOverall ? 'star-half' : 'star'} size={25} color={'yellow'}/>
-                  <MaterialIcons name={2 > roundedOverall ? 'star-outline' : 2.5 == roundedOverall ? 'star-half' : 'star'} size={25} color={'yellow'}/>
-                  <MaterialIcons name={3 > roundedOverall ? 'star-outline' : 3.5 == roundedOverall ? 'star-half' : 'star'} size={25} color={'yellow'}/>
-                  <MaterialIcons name={4 > roundedOverall ? 'star-outline' : 4.5 == roundedOverall ? 'star-half' : 'star'} size={25} color={'yellow'}/>
-                  <MaterialIcons name={5 > roundedOverall ? 'star-outline' : 'star'} size={25} color={'yellow'}/>
-                  <Text style={[styles.generalText, {alignContent:'center'}]}>{employeeInfo.overallRating}/5</Text>
+                <MaterialIcons name={0.5 == roundedOverall ? 'star-half' : 1 > roundedOverall ? 'star-outline' : 'star'} size={25} color={'yellow'}/>
+                  <MaterialIcons name={1.5 == roundedOverall ? 'star-half' : 2 > roundedOverall ? 'star-outline' : 'star'} size={25} color={'yellow'}/>
+                  <MaterialIcons name={2.5 == roundedOverall ? 'star-half' : 3 > roundedOverall ? 'star-outline' : 'star'} size={25} color={'yellow'}/>
+                  <MaterialIcons name={3.5 == roundedOverall ? 'star-half' : 4 > roundedOverall ? 'star-outline' : 'star'} size={25} color={'yellow'}/>
+                  <MaterialIcons name={4.5 == roundedOverall ? 'star-half' : 5 > roundedOverall ? 'star-outline' : 'star'} size={25} color={'yellow'}/>
+                  <Text style={[styles.generalText, {alignContent:'center'}]}>{roundedOverall}/5</Text>
                 </View>
                 <Text style={[styles.subtitle, {marginTop: 10, marginLeft: 10}]}>Offenses: {employeeInfo.offenses}</Text>
-                <TouchableOpacity onPress={() => {navigation.navigate('EmployeeJobs', {name: "EmployeeJobs", employeeInfo})}} style={{marginTop: 10}}>
-                  <View style={styles.button}>
-                    <Text style={styles.btnText}>Jobs/History</Text>
-                  </View>
-                </TouchableOpacity>
+                <View style={{flexDirection: "row"}}>
+                  <TouchableOpacity onPress={() => {navigation.navigate('EmployeeJobs', {name: "EmployeeJobs", employeeInfo})}} style={{marginTop: 10}}>
+                    <View style={styles.button}>
+                      <Text style={styles.btnText}>Jobs/History</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => {navigation.navigate('EmployeeReviews', {name: "EmployeeReviews", employeeInfo})}} style={{marginTop: 10, marginLeft: 10}}>
+                    <View style={[styles.button, {width: 80}]}>
+                      <Text style={styles.btnText}>Reviews</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
               <View style={{marginLeft: 10, marginTop: 10}}>

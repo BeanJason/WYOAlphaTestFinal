@@ -143,7 +143,6 @@ export const getProvider = /* GraphQL */ `
       employeeID
       offenses
       overallRating
-      ratingCount
       isBan
       currentLocation
       jobs {
@@ -182,7 +181,6 @@ export const listProviders = /* GraphQL */ `
         employeeID
         offenses
         overallRating
-        ratingCount
         isBan
         currentLocation
         reviews
@@ -226,7 +224,6 @@ export const syncProviders = /* GraphQL */ `
         employeeID
         offenses
         overallRating
-        ratingCount
         isBan
         currentLocation
         reviews

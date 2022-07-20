@@ -264,3 +264,68 @@ export const getManyProviders = () => {
 
     return employees
 }
+
+
+export const getManyReviews = () => {
+    let date = new Date()
+    let reviews = [
+        {
+            comment: 'Great work',
+            jobDate: date.toString(),
+            jobID: '1ajfhi13fjen',
+            jobTitle: 'Cable',
+            rating: 4.5
+        },
+        {
+            comment: 'Must have again',
+            jobDate: date.toString(),
+            jobID: '1ajfhi13fjasdsen',
+            jobTitle: 'Cable',
+            rating: 4.5
+        },
+        {
+            comment: 'strong worker',
+            jobDate: date.toString(),
+            jobID: '1ajfhi13fja1e31en',
+            jobTitle: 'Cable',
+            rating: 5
+        },
+        {
+            comment: 'decent',
+            jobDate: date.toString(),
+            jobID: '1ajfhi13fj90en',
+            jobTitle: 'Cable',
+            rating: 3.5
+        },
+        {
+            comment: 'okay',
+            jobDate: date.toString(),
+            jobID: '1ajfhi13fjen9009',
+            jobTitle: 'Cable',
+            rating: 3
+        },
+        {
+            comment: 'Great work',
+            jobDate: date.toString(),
+            jobID: '1ajfhi13fjesfasd2wn',
+            jobTitle: 'Cable',
+            rating: 4.5
+        },
+        {
+            comment: 'Great work',
+            jobDate: date.toString(),
+            jobID: '1ajfhi13fjf2u4hf82hfen',
+            jobTitle: 'Cable',
+            rating: 4.5
+        },
+        {
+            comment: 'Great work',
+            jobDate: date.toString(),
+            jobID: '1ajfhi13fjijsfn2f24f2en',
+            jobTitle: 'Cable',
+            rating: 5
+        },
+    ]
+
+    return reviews
+}

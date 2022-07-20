@@ -69,6 +69,7 @@ import EmployeeJobs from "./screens/manager/employee/EmployeeJobs";
 import NewApplicants from "./screens/manager/applicants/NewApplicants";
 import ApplicantsInfo from "./screens/manager/applicants/ApplicantsInfo";
 import EditAccountManager from "./screens/manager/EditAccountManager";
+import EmployeeReviews from "./screens/manager/employee/EmployeeReviews";
 
 
 //Common screens
@@ -505,6 +506,7 @@ const EmployeeTab = () => {
     <Stack.Screen options={{title: 'Employee Information' }} name="EmployeeInfo" component={EmployeeInfo}/>
     <Stack.Screen options={{title: 'Employee Jobs' }} name="EmployeeJobs" component={EmployeeJobs}/>
     <Stack.Screen options={{ title: 'Job Information' }} name="ManagerJobInfo" component={ManagerJobInfo}/>
+    <Stack.Screen options={{ title: 'Employee Reviews' }} name="EmployeeReviews" component={EmployeeReviews}/>
   </Stack.Navigator>
   )
 }

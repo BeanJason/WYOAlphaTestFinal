@@ -83,7 +83,6 @@ export declare class Provider {
   readonly employeeID: string;
   readonly offenses: number;
   readonly overallRating: number;
-  readonly ratingCount: number;
   readonly isBan: boolean;
   readonly currentLocation?: string | null;
   readonly jobs?: (Job | null)[] | null;
