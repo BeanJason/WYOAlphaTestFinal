@@ -239,7 +239,10 @@ const ManagerJobInfo = ({ route, navigation }) => {
             <Text style={styles.generalText}>Job Address: {jobInfo.address} {jobInfo.city} {jobInfo.zipCode}</Text>
             <Text style={styles.generalText}>Duration: {jobInfo.duration} Hours</Text>
             <Text style={styles.generalText}>Scheduled for {date}</Text>
-            <Text style={[styles.generalText, {marginBottom: 30}]}>{time}</Text>
+            <Text style={[styles.generalText, {marginBottom: 15}]}>{time}</Text>
+            <Text style={[styles.generalText, {alignSelf: 'flex-end'}]}>Price: ${((jobInfo.price) / 100).toFixed(2)}</Text>
+            <Text style={[styles.generalText, {alignSelf: 'flex-end', borderBottomWidth: 1}]}>Tip: ${((jobInfo.tip) / 100).toFixed(2)}</Text>
+            <Text style={{fontSize: 16, fontFamily: 'Montserrat-Bold', marginTop: 5, alignSelf: 'flex-end'}}>Total: ${((jobInfo.tip + (jobInfo.price)) / 100).toFixed(2)}</Text>
             {jobInfo.jobDescription ? 
             <View>
               <Text style={[styles.subtitle, {borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Job Description</Text> 
