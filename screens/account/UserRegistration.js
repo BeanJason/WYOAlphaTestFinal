@@ -21,6 +21,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import {GOOGLE_API} from "@env"
 import { PhoneNumberUtil } from "google-libphonenumber";
+import { getEmailRegex } from "../../common/functions";
 
 //User registration page
 const UserRegistration = ({ navigation }) => {
@@ -229,8 +230,8 @@ const UserRegistration = ({ navigation }) => {
                 name="email"
                 rules={{
                   required: "Email is Required",
-                  pattern: {
-                    value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
+                  pattern: { 
+                    value: getEmailRegex(),
                     message: "Email must be valid address",
                   },
                 }}

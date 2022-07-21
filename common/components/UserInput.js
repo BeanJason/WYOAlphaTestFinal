@@ -84,6 +84,7 @@ export default function UserInput({control, name, rules = {}, placeholder, style
               onBlur={onBlur}
               placeholder={placeholder}
               secureTextEntry = {secureTextEntry ? (isSecureEntry): false}
+              autoCapitalize = {secureTextEntry ? 'none': 'sentences'}
               multiline={multiline}
               maxLength={maxLength ? (maxLength): 100}
               onKeyPress={onKeyPress ? ((event) => formatPhoneNumber(event)): null}

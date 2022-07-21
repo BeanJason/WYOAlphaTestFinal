@@ -3,7 +3,9 @@ import { Code, Job } from "../src/models"
 import { cancelNotificationByID, sendNotificationToProvider, sendNotificationToUser } from "../notifications"
 import { sendEmail } from "../src/graphql/mutations"
 
-
+export const getEmailRegex = () => {
+    return new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+}
 
 //fire employee
 export const removeJobsFromProvider = async(employee) => {

@@ -12,11 +12,13 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useForm } from "react-hook-form";
 import UserInput from "../../common/components/UserInput";
 import { createToast } from "../../common/components/Toast";
-import { Auth } from "aws-amplify";
+import { Auth, DataStore } from "aws-amplify";
 import { sendProviderEmail } from "../../common/functions";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { resetState } from "../../redux/authReducer";
+import { sendNotificationToManager } from "../../notifications";
+import { Manager } from "../../src/models";
 
 //Email verification screen after successful registration or if not verified yet
 const ConfirmEmail = ({ navigation, route }) => {
@@ -39,7 +41,19 @@ const ConfirmEmail = ({ navigation, route }) => {
       await Auth.confirmSignUp(data.email.trim(), data.confirmationCode)
       if(type == 'Provider'){
         await sendProviderEmail(email)
-        createToast("Your email has been verified, an email was sent to you with further instructions");
+        createToast("Your email has been verified");
+        let allManagers = await DataStore.query(Manager)
+        if(allManagers.length != 0){
+          let messageInfo = {
+            title: 'New Applicant',
+            message: `A new applicant has just signed up as a provider. They should be sending their background check soon.`
+          }
+          for(let next of allManagers){
+            if(next.expoToken){
+              await sendNotificationToManager(next.expoToken, messageInfo)
+            }
+          }
+        }
         navigation.navigate('LoginScreen', {name: 'LoginScreen'})
       }
       else{

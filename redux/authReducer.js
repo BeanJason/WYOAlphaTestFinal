@@ -71,36 +71,7 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
           }
           //If success
           if(userData != undefined){
-            if(data.type == 'Provider'){
-              userInfo = {
-                userID: userData.id,
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                address: userData.address,
-                phoneNumber: userData.phoneNumber,
-                biography: userData.biography,
-                backgroundCheck: userData.backgroundCheckStatus,
-                profilePicture: userData.profilePictureURL,
-                isBan: data.isBan,
-                employeeID: data.employeeID
-              }
-            }
-            else{
-              userInfo = {
-                userID: userData.id,
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                address: userData.address,
-                phoneNumber: userData.phoneNumber,
-                contactMethod: userData.contactMethod,
-              }
-            }
-            let attr = {
-              email: authUser.email,
-              sub: authUser.userSub,
-              'custom:type': data.type,
-            }
-            return {authUser: attr , userInfo}
+            return
           }
           else{
             message = 'Error saving user';
@@ -171,16 +142,13 @@ export const logout = createAsyncThunk("auth/logout", async (data) => {
     }))
   }
   try {
-    process.on('unhandledRejection', (error) => {
-      console.log('error caught');
-      console.log(error);
-    })
       await Auth.signOut();
-      await DataStore.clear();
+      await DataStore.stop()
       await DataStore.start();
-      process.on('')
+      return
   } catch (error) {
       console.log('error signing out');
+      return thunkAPI.rejectWithValue('error signing out');
   }
 }
 );
@@ -218,8 +186,6 @@ export const authReducer = createSlice({
         console.log("successful register");
         state.isLoading = false;
         state.isSuccess = true;
-        state.authUser = action.payload.authUser;
-        state.userInfo = action.payload.userInfo;
       })
       //Failed register
       .addCase(register.rejected, (state, action) => {

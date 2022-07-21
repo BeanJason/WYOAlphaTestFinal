@@ -23,6 +23,8 @@ import {GOOGLE_API} from "@env"
 import { PhoneNumberUtil } from "google-libphonenumber";
 import { DataStore } from "aws-amplify";
 import { Blacklist } from "../../src/models";
+import { getEmailRegex } from "../../common/functions";
+
 
 //Provider registration page
 const ProviderRegistration = ({ navigation }) => {
@@ -108,7 +110,7 @@ const ProviderRegistration = ({ navigation }) => {
         if(check.length != 0){
           setError('email', {
             type: 'validate',
-            message: 'This account has been disabled'
+            message: 'You cannot register with this account'
           })
         }
         else{
@@ -237,7 +239,7 @@ const ProviderRegistration = ({ navigation }) => {
                 rules={{
                   required: "Email is Required",
                   pattern: {
-                    value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
+                    value: getEmailRegex(),
                     message: "Email must be valid address",
                   },
                 }}
