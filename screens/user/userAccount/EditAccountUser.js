@@ -16,11 +16,9 @@ import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
-import { checkCredentials } from "../../../credentials";
 import { DataStore } from "aws-amplify";
 import { User } from "../../../src/models";
 import { changeUserInfo } from "../../../redux/authReducer";
-import { changeUserStatus } from "../../../redux/authReducer";
 import { RadioButton } from "react-native-paper"
 import {createToast} from "../../../common/components/Toast"
 import { PhoneNumberUtil } from "google-libphonenumber";

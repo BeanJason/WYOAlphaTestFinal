@@ -1,25 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
-  View,
-  TextInput,
   StyleSheet,
   Text,
   SafeAreaView,
   ImageBackground,
-  Modal,
 } from "react-native";
 import { TouchableOpacity } from "react-native";
-import UserInput from "../../common/components/UserInput";
-import Spinner from "../../common/components/Spinner";
 import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useForm } from "react-hook-form";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { useSelector, useDispatch } from "react-redux";
-import { register, resetState } from "../../redux/authReducer";
-import { FontAwesome } from "@expo/vector-icons";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { getNotificationToken } from "../../notifications";
 import { Auth } from "aws-amplify";
 import { DataStore } from "aws-amplify";
 import { Manager } from "../../src/models";

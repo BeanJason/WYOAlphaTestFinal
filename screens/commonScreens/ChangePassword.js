@@ -12,9 +12,7 @@ import {
   import { useForm } from "react-hook-form";
   import { useDispatch, useSelector } from "react-redux";
   import { Auth } from "aws-amplify";
-  import { changeUserStatus } from "../../redux/authReducer";
-  import { checkCredentials } from "../../credentials";
-import { sendChangePasswordEmail } from "../../common/functions";
+  import { sendChangePasswordEmail } from "../../common/functions";
 
 
   const ChangePassword = ({ navigation }) => {

@@ -9,11 +9,10 @@ import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch, Provider } from "react-redux";
-import { loggedIn } from "./redux/authReducer"
-import {Amplify, Auth, DataStore, Hub } from "aws-amplify"
+import {Amplify, DataStore, Hub } from "aws-amplify"
 import {Provider as ProviderModel} from "./src/models"
 import { checkCredentials } from "./credentials";
-import { changeUserStatus, logout, changeExpoToken } from "./redux/authReducer";
+import { changeUserStatus } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from "expo-asset"
@@ -78,11 +77,7 @@ import VerifyAccount from "./screens/commonScreens/VerifyAccount";
 
 
 import { config } from "./common/styles";
-import { getProvider, getUser } from "./testData";
-import notifications from "./notifications"
 import * as TaskManager from "expo-task-manager"
-import * as Notifications from "expo-notifications"
-import CreateManager from "./screens/account/CreateManager";
 import { updateLocation } from "./redux/jobsProviderReducer";
 
 //BACKGROUND TASKS

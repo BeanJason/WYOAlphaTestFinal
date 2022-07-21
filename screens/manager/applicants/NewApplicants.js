@@ -7,15 +7,12 @@ import {
   SafeAreaView,
   View,
   FlatList,
-  RefreshControl,
-  TextInput
+  RefreshControl
 } from "react-native";
 import Employee from "../../../common/components/Employee";
 import Spinner from "../../../common/components/Spinner";
 import { commonStyles } from "../../../common/styles";
 import * as queries from "../../../src/graphql/queries"
-import { FontAwesome } from "@expo/vector-icons"
-import { getManyProviders } from "../../../testData";
 
 
 

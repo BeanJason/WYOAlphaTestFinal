@@ -12,12 +12,11 @@ import Spinner from "../../common/components/Spinner";
 import { commonStyles } from "../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useEffect, useState } from "react";
-import { API, DataStore, graphqlOperation } from "aws-amplify";
-import { refundPayment } from "../../src/graphql/mutations";
+import { DataStore } from "aws-amplify";
 import { Job, Provider, User } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch, useSelector } from "react-redux";
-import { addOrRemoveJob, reinitialize } from "../../redux/jobsProviderReducer";
+import { addOrRemoveJob } from "../../redux/jobsProviderReducer";
 
 //Login screen
 const ProviderJobInfo = ({ route, navigation }) => {

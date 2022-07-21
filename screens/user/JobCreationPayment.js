@@ -19,7 +19,6 @@ import {
   import { createPaymentIntent } from "../../src/graphql/mutations";
   import { addOrRemoveJob, storeNewJobID } from "../../redux/jobsReducer";
   import * as queries from "../../src/graphql/queries"
-  import * as mutations from "../../src/graphql/mutations"
   import { createUserReminder } from "../../notifications";
 import { sendPaymentEmail } from "../../common/functions";
   

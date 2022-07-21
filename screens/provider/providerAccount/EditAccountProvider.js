@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   Text,
-  Image,
   View,
   ImageBackground,
   SafeAreaView,
@@ -13,13 +12,12 @@ import { commonStyles } from "../../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
-import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
-import { checkCredentials } from "../../../credentials";
-import { changeUserStatus, changeUserInfo } from "../../../redux/authReducer";
+import { useState } from "react";
+import { FontAwesome } from "@expo/vector-icons";
+import { changeUserInfo } from "../../../redux/authReducer";
 import { Provider } from "../../../src/models";
 import { createToast } from "../../../common/components/Toast";
-import { DataStore, JS, Storage } from "aws-amplify";
+import { DataStore, Storage } from "aws-amplify";
 import * as ImagePicker from "expo-image-picker"
 import ProfilePicture from "../../../common/components/ProfilePicture";
 import { PhoneNumberUtil } from "google-libphonenumber";

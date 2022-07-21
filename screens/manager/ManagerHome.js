@@ -6,15 +6,12 @@ import {
   Text,
   SafeAreaView,
   FlatList,
-  RefreshControl,
-  TouchableOpacity
+  RefreshControl
 } from "react-native";
 import { commonStyles } from "../../common/styles";
 import { useDispatch, useSelector } from "react-redux";
 import JobCard from "../../common/components/JobCard";
 import Spinner from "../../common/components/Spinner";
-import { get1Job, getManyJobs } from "../../testData";
-import { initializeJobs } from "../../redux/jobsProviderReducer";
 import {RadioButton} from "react-native-paper"
 import { API } from "aws-amplify";
 import * as queries from "../../src/graphql/queries"

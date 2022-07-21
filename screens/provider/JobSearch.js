@@ -5,20 +5,15 @@ import {
   ImageBackground,
   SafeAreaView,
   FlatList,
-  TextInput,
   TouchableOpacity
 } from "react-native";
 import Spinner from "../../common/components/Spinner";
 import { commonStyles } from "../../common/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { FontAwesome } from "@expo/vector-icons"
 import JobCard from "../../common/components/JobCard";
 import DropDownPicker from "react-native-dropdown-picker";
-import { getJobHistory } from "../../testData";
-import { initializeJobs } from "../../redux/jobsReducer";
-import { API, DataStore, graphqlOperation } from "aws-amplify";
-import { Global, Job } from "../../src/models";
+import { API } from "aws-amplify";
 import * as queries from "../../src/graphql/queries"
 import haversine from "haversine"
 import { createToast } from "../../common/components/Toast";

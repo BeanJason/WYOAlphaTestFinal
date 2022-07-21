@@ -6,10 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-import UserInput from "../../../common/components/UserInput";
 import { commonStyles } from "../../../common/styles";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { DataStore } from "aws-amplify";
 import { User } from "../../../src/models";

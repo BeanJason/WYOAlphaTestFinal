@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   Text,
-  Image,
   View,
   ImageBackground,
   SafeAreaView,
@@ -14,8 +13,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/authReducer";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { resetState } from "../../redux/jobsReducer";
-import { DataStore } from "aws-amplify";
-import { Manager, Provider, User } from "../../src/models";
 
 
 

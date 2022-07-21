@@ -1,5 +1,5 @@
 import { DataStore, Auth, Storage } from "aws-amplify"
-import { getNotificationToken, updateExpoToken } from "./notifications";
+import { getNotificationToken } from "./notifications";
 import {User, Provider, Manager, Blacklist} from "./src/models"
 
 export async function checkCredentials(){

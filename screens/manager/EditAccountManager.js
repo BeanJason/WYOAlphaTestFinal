@@ -4,19 +4,16 @@ import {
     View,
     ImageBackground,
     SafeAreaView,
-    FlatList,
-    Modal,
     Dimensions,
     TouchableOpacity
   } from "react-native";
   import UserInput from "../../common/components/UserInput";
-  import Spinner from "../../common/components/Spinner";
   import { commonStyles } from "../../common/styles";
   import { useForm } from "react-hook-form";
   import { useSelector, useDispatch } from "react-redux";
-  import { useEffect, useState } from "react";
+  import { useState } from "react";
   import { DataStore } from "aws-amplify";
-  import { Manager, User } from "../../src/models";
+  import { Manager } from "../../src/models";
   import { changeUserInfo } from "../../redux/authReducer";
   import {createToast} from "../../common/components/Toast"
   import { PhoneNumberUtil } from "google-libphonenumber";

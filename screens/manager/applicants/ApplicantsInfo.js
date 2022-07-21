@@ -1,4 +1,4 @@
-import { Auth, DataStore, Storage } from "aws-amplify";
+import { DataStore, Storage } from "aws-amplify";
 import React, { useEffect, useState } from "react";
 import {
   ImageBackground,
@@ -13,11 +13,9 @@ import {
 import ProfilePicture from "../../../common/components/ProfilePicture";
 import Spinner from "../../../common/components/Spinner";
 import { commonStyles } from "../../../common/styles";
-import { MaterialIcons } from '@expo/vector-icons'; 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Job, Provider, Blacklist } from "../../../src/models";
-import { removeJobsFromProvider, sendProviderAcceptedEmail, sendProviderRejectEmail } from "../../../common/functions";
-import { createToast } from "../../../common/components/Toast";
+import { Provider, Blacklist } from "../../../src/models";
+import { sendProviderAcceptedEmail, sendProviderRejectEmail } from "../../../common/functions";
 
 
 

@@ -13,18 +13,13 @@ import { commonStyles } from "../../common/styles";
 import { useDispatch, useSelector } from "react-redux";
 import JobCard from "../../common/components/JobCard";
 import Spinner from "../../common/components/Spinner";
-import { get1Job, getManyJobs } from "../../testData";
 import { initializeJobs } from "../../redux/jobsProviderReducer";
-import { Ionicons } from '@expo/vector-icons'; 
 import {RadioButton} from "react-native-paper"
 import ProfilePicture from "../../common/components/ProfilePicture";
 import * as Notifications from "expo-notifications"
-import * as Location from "expo-location"
-import { API, DataStore } from "aws-amplify";
-import { Blacklist } from "../../src/models";
+import { API } from "aws-amplify";
 import { logout } from "../../redux/authReducer";
 import { useIsFocused } from "@react-navigation/native";
-import * as TaskManager from "expo-task-manager"
 import * as queries from "../../src/graphql/queries";
 
 

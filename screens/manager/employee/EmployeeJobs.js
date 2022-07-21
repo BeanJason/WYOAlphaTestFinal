@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Text,
   SafeAreaView,
-  Switch,
   View,
   FlatList,
   RefreshControl

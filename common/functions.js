@@ -1,8 +1,5 @@
 import { API, DataStore, graphqlOperation } from "aws-amplify"
-import * as Device from "expo-device"
-import { Code, Job, Provider, User } from "../src/models"
-import * as Notifications from "expo-notifications"
-import { Platform } from "react-native"
+import { Code, Job } from "../src/models"
 import { cancelNotificationByID, sendNotificationToProvider, sendNotificationToUser } from "../notifications"
 import { sendEmail } from "../src/graphql/mutations"
 

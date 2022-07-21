@@ -15,7 +15,7 @@ import { createToast } from "../../common/components/Toast";
 import { Auth } from "aws-amplify";
 import { sendProviderEmail } from "../../common/functions";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { resetState } from "../../redux/authReducer";
 
 //Email verification screen after successful registration or if not verified yet

@@ -1,10 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import { DataStore } from "aws-amplify";
 import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Dimensions, Pressable } from "react-native";
-import { useSelector } from "react-redux";
-import { Job, User } from "../../src/models";
-import haversine from "haversine"
 import { Fontisto, FontAwesome } from '@expo/vector-icons'; 
 
 

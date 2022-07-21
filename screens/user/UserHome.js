@@ -13,10 +13,8 @@ import { commonStyles } from "../../common/styles";
 import { useDispatch, useSelector } from "react-redux";
 import JobCard from "../../common/components/JobCard";
 import Spinner from "../../common/components/Spinner";
-import { get1Job, getManyJobs } from "../../testData";
 import { initializeJobs } from "../../redux/jobsReducer";
 import * as Notifications from "expo-notifications"
-import { createUserReminder } from "../../notifications";
 
 const UserHome = ({ navigation }) => {
   const { userInfo } = useSelector((state) => state.auth);

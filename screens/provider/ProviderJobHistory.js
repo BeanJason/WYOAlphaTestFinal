@@ -14,7 +14,6 @@ import {
   import { useEffect, useState } from "react";
   import { FontAwesome } from "@expo/vector-icons"
   import JobCard from "../../common/components/JobCard";
-  import { getJobHistory } from "../../testData";
   import { initializeJobs } from "../../redux/jobsProviderReducer";
 
   

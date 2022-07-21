@@ -19,7 +19,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { register, resetState } from "../../redux/authReducer";
 import { FontAwesome } from "@expo/vector-icons";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { getNotificationToken } from "../../notifications";
 import {GOOGLE_API} from "@env"
 import { PhoneNumberUtil } from "google-libphonenumber";
 
