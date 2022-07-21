@@ -26,13 +26,14 @@ async function getItem(id) {
     },
     ExpressionAttributeNames: {
       "#Amount": "price",
+      "#Tip": "tip",
       "#PayID": "paymentID",
       "#Status": "currentStatus",
       "#Date": "requestDateTime",
       "#Zip": "zipCode"
     },
     Select: "SPECIFIC_ATTRIBUTES",
-    ProjectionExpression: "#Amount, #PayID, #Status, #Date, #Zip",
+    ProjectionExpression: "#Amount, #PayID, #Status, #Date, #Zip, #Tip",
   };
   try {
     return await docClient.get(params).promise();
@@ -107,26 +108,24 @@ async function updateCode(id, count) {
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 exports.handler = async (event) => {
-  const { arguments } = event;
-  if (arguments?.isCancel == null) {
+  if (event.arguments?.isCancel == null) {
     throw new Error("Cancellation check is required");
   }
-  if (!arguments?.jobID) {
+  if (!event.arguments?.jobID) {
     throw new Error("jobID is required");
   }
 
   let jobInfo;
   try {
-    jobInfo = await getItem(arguments?.jobID);
+    jobInfo = await getItem(event.arguments.jobID);
   } catch (error) {
     console.log(error);
   }
-  console.log(jobInfo);
   if (jobInfo) {
     //if cancelled
-    if (arguments.isCancel == true) {
+    if (event.arguments.isCancel == true) {
         //refund
-        let amount = jobInfo.Item.price - 250;
+        let amount = (jobInfo.Item.price + jobInfo.Item.tip) - 250;
         const refund = await stripe.refunds.create({
             payment_intent: jobInfo.Item.paymentID,
             amount: amount
@@ -135,8 +134,8 @@ exports.handler = async (event) => {
           try {
             let date = new Date(jobInfo.Item.requestDateTime)
             date.setDate(date.getDate() - 2)
-            await updateJob(arguments.jobID, date.toString());
-            let {Items} = await getCode(jobInfo.zipCode)
+            await updateJob(event.arguments.jobID, date.toString());
+            let {Items} = await getCode(jobInfo.Item.zipCode)
             if(Items.length != 0){
               if(Items[0].count != 0){
                 await updateCode(Items[0].id, Items[0].count - 1)
@@ -160,8 +159,8 @@ exports.handler = async (event) => {
             try {
               let date = new Date(jobInfo.Item.requestDateTime)
               date.setDate(date.getDate() - 2)
-              await updateJob(arguments.jobID, date.toString());
-              let {Items} = await getCode(jobInfo.zipCode)
+              await updateJob(event.arguments.jobID, date.toString());
+              let {Items} = await getCode(jobInfo.Item.zipCode)
               if(Items.length != 0){
                 if(Items[0].count != 0){
                   await updateCode(Items[0].id, Items[0].count - 1)

@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { DataStore} from "aws-amplify";
+import { API, DataStore} from "aws-amplify";
+import { cancelNotificationByID } from "../notifications";
 import { Job } from "../src/models";
+import * as queries from "../src/graphql/queries"
 
 
 const initialState = {
@@ -15,7 +17,14 @@ const initialState = {
 export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, thunkAPI) => {
     const {userID} = data;
     try {
-        let response = await DataStore.query(Job, job => job.requestOwner("eq", userID))
+        let filter = {
+            and: [
+              { _deleted: {ne: true} },
+              {requestOwner: {eq: userID}},
+            ]
+          }
+        const all = await API.graphql({query: queries.listJobs, variables: {filter: filter}})
+        let response = all.data.listJobs.items
         let jobsToBeRemoved = response.filter(job => job.markedToRemove)
         if(jobsToBeRemoved.length != 0){
             for(let next of jobsToBeRemoved){

@@ -14,11 +14,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useEffect, useState } from "react";
 import { API, DataStore, graphqlOperation, Storage } from "aws-amplify";
 import { refundPayment } from "../../src/graphql/mutations";
-import { Provider } from "../../src/models";
+import { Job, Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob } from "../../redux/jobsReducer";
-import { decrementZipCodeCount, sendRefundEmail } from "../../common/functions";
+import { sendRefundEmail } from "../../common/functions";
 import ProfilePicture from "../../common/components/ProfilePicture";
 import { cancelNotificationByID, sendNotificationToProvider } from "../../notifications";
 
@@ -37,7 +37,6 @@ const UserJobInfo = ({ route, navigation }) => {
   const [startCancel, setStartCancel] = useState(false)
   const [date, setDate] = useState()
   const [time, setTime] = useState()
-  const [isRated, setIsRated] = useState(true)
 
   const getDateFormat = () => {
     let formatDate = new Date(jobInfo.requestDateTime)
@@ -99,12 +98,16 @@ const UserJobInfo = ({ route, navigation }) => {
         })
         )
         if(refundStatus){
-          await decrementZipCodeCount({zipCode: jobInfo.zipCode})
           //cancel reminders
           if(jobInfo.userNotificationID.length != 0){
             await cancelNotificationByID(jobInfo.userNotificationID[0])
             await cancelNotificationByID(jobInfo.userNotificationID[1])
           }
+          let original = await DataStore.query(Job, jobInfo.id)
+          await DataStore.save(Job.copyOf(original, (updated) => {
+            updated.userNotificationID = []
+            updated.markedToRemove = new Date().toString()
+          }))
           //notify the providers
           if(jobInfo.mainProvider){
             let date = new Date(jobInfo.requestDateTime)
@@ -168,9 +171,8 @@ const UserJobInfo = ({ route, navigation }) => {
             {canCancel ? (
               <View style={styles.warningModal}>
                 <Text style={styles.modalTitle}>Warning</Text>
-                <Text style={styles.modalText}> Cancellation Policy: From time of booking you have 24 hours to cancel service for a full refund minus the service fee.
-                After cancellation of this job you will be refunded through your original payment method. Are you sure you want to cancel this job?
-                </Text>
+                <Text style={styles.modalText}> After cancellation of this job you will be refunded through your original payment method. Are you sure you want to cancel this job?</Text>
+                <Text style={[styles.noteText, {marginTop: 15, textAlign: 'center'}]}>Cancellation Policy: From time of booking you have 24 hours to cancel service for a full refund minus the service fee.</Text>
                 {startCancel ?  <Spinner color={'black'}/> : (
                   //Buttons
                   <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 40}}>
@@ -192,9 +194,8 @@ const UserJobInfo = ({ route, navigation }) => {
             ):
               <View style={styles.warningModal}>
                 <Text style={styles.modalTitle}>Cancellation</Text>
-                <Text style={styles.modalText}>The cancellation of this job cannot be processed due to the refund policy.
-                Cancellation Policy: From time of booking you have 24 hours to cancel service for a full refund minus the service fee. Thank you.
-                </Text>
+                <Text style={styles.modalText}>The cancellation of this job cannot be processed due to the refund policy.</Text>
+                <Text style={[styles.noteText, {marginTop: 15, textAlign: 'center'}]}>Cancellation Policy: From time of booking you have 24 hours to cancel service for a full refund minus the service fee.</Text>
                 <TouchableOpacity
                     onPress={() => setShowModal(false)}
                     style={[styles.button, {alignSelf: 'center', marginTop: 10}]}
@@ -349,7 +350,11 @@ const styles = StyleSheet.create({
   subtitle:{
     fontFamily: 'Montserrat-Bold',
     fontSize: 18,
-  }
+  },
+  noteText: {
+    fontFamily: "Montserrat-Italic",
+    fontSize: 14,
+  },
 });
 
 export default UserJobInfo;

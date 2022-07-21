@@ -7,25 +7,25 @@ exports.handler = async (event) => {
     throw new Error("Request is not a mutation");
   }
 
-  if (!arguments?.amount) {
+  if (!event.arguments?.amount) {
     throw new Error("Amount is required");
   }
-  if (!arguments?.email) {
+  if (!event.arguments?.email) {
     throw new Error("Email is required");
   }
-  if (!arguments?.jobID) {
+  if (!event.arguments?.jobID) {
     throw new Error("jobID is required");
   }
 
 
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: arguments.amount,
+    amount: event.arguments.amount,
     currency: "usd",
-    metadata: { Email: arguments.email, Job: arguments.jobID },
+    metadata: { Email: event.arguments.email, Job: event.arguments.jobID },
   });
 
   return {
     clientSecret: paymentIntent.client_secret,
-    id: arguments.jobID
+    id: event.arguments.jobID
   };
 };

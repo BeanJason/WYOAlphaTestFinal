@@ -5,29 +5,28 @@ let expo = new Expo();
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 exports.handler = async (event) => {
-  const { arguments } = event;
-
-  if (!arguments?.token) {
+  
+  if (!event.arguments?.token) {
     throw new Error("Token is required");
   }
-  if (!arguments?.message) {
+  if (!event.arguments?.message) {
     throw new Error("Message is required");
   }
-  if (!arguments?.title) {
+  if (!event.arguments?.title) {
     throw new Error("Title is required");
   }
 
-  if (!Expo.isExpoPushToken(arguments?.token)) {
+  if (!Expo.isExpoPushToken(event.arguments.token)) {
     throw new Error("Token is invalid");
   }
 
   let messages = [];
   messages.push({
-    to: arguments?.token,
+    to: event.arguments.token,
     sound: "default",
-    title: arguments?.title,
-    body: arguments?.message,
-    data: arguments?.data || {},
+    title: event.arguments.title,
+    body: event.arguments.message,
+    data: event.arguments.data || {},
     "content-available": "1",
   });
   let chunks = expo.chunkPushNotifications(messages);
