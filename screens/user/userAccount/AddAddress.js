@@ -95,14 +95,16 @@ const AddAddress = ({ navigation }) => {
               placeholder="Address"
               fetchDetails={true}
               onPress={(data, details = null) => {
+                let address = details.address_components.filter(part => part.types[0] == 'street_number')[0].long_name
+                let street = details.address_components.filter(part => part.types[0] == 'route')[0].long_name
                 setAddress(
-                  `${details.address_components[0].long_name} ${details.address_components[1].long_name}`
+                  `${address} ${street}`
                 );
-                setCity(details.address_components[2].long_name);
-                setZipCode(details.address_components[6].long_name);
-                setState(details.address_components[4].long_name)
-                setLat(details.geometry.location.lat);
-                setLng(details.geometry.location.lng);
+                setCity(details.address_components.filter(part => part.types[0] == 'locality')[0].long_name)
+                setState(details.address_components.filter(part => part.types[0] == 'administrative_area_level_1')[0].long_name)
+                setZipCode(details.address_components.filter(part => part.types[0] == 'postal_code')[0].long_name)
+                setLat(details.geometry.location.lat)
+                setLng(details.geometry.location.lng)
                 setChanged(true);
               }}
               query={{

@@ -511,7 +511,7 @@ const ServiceView = ({ route, navigation }) => {
               )}
                 <Text style={styles.title}>{jobInfo.jobTitle}</Text>
                 <Text style={styles.generalText}>Request Owner: {owner.firstName + " " + owner.lastName}</Text>
-                <Text style={styles.generalText}>Contact: {owner.phoneNumber}</Text>:
+                <Text style={styles.generalText}>Contact: {owner.phoneNumber}</Text>
                 <Text style={styles.generalText}>Duration: {jobInfo.duration} Hours</Text>
                 <Text style={styles.generalText}>Address: {jobInfo.address}</Text>
                 <Text style={styles.generalText}>City: {jobInfo.city} {jobInfo.zipCode}</Text>

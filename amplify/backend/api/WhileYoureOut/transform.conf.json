@@ -4,6 +4,20 @@
         "project": {
             "ConflictHandler": "AUTOMERGE",
             "ConflictDetection": "VERSION"
+        },
+        "models": {
+            "Job": {
+                "ConflictHandler": "AUTOMERGE",
+                "ConflictDetection": "VERSION"
+            },
+            "Provider": {
+                "ConflictHandler": "AUTOMERGE",
+                "ConflictDetection": "VERSION"
+            },
+            "User": {
+                "ConflictHandler": "AUTOMERGE",
+                "ConflictDetection": "VERSION"
+            }
         }
     }
 }

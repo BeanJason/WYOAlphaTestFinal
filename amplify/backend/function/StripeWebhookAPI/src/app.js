@@ -23,7 +23,7 @@ const stripe = require('stripe')(process.env.STRIPE_KEY)
 // declare a new express app
 const app = express()
 app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf }}));
-app.use(express.json({limit: '50mb'}))
+app.use(express.json({limit: '10mb'}))
 app.use(bodyParser.json())
 app.use(awsServerlessExpressMiddleware.eventContext())
 
@@ -110,8 +110,7 @@ app.post('/stripe-webhook', async function(req, res) {
       if (actualPrice == event.data.object.amount_received) {
         try {
           console.log('update payment id')
-          let res = await updatePaymentID(jobID, event.data.object.id);
-          console.log(res);
+          await updatePaymentID(jobID, event.data.object.id);
         } catch (error) {
           console.log(error);
         }

@@ -166,16 +166,11 @@ const ProviderRegistration = ({ navigation }) => {
                       placeholder="Address"
                       fetchDetails={true}
                       onPress={(data, details = null) => {
-                        let city = details.address_components.filter(part => part.types[0] == 'locality')
-                        let state = details.address_components.filter(part => part.types[0] == 'administrative_area_level_1')
-                        let address = details.address_components.filter(part => part.types[0] == 'street_number')
-                        let street = details.address_components.filter(part => part.types[0] == 'route')
-                        let zip = details.address_components.filter(part => part.types[0] == 'postal_code')
-                        setAddress(address[0].long_name)
-                        setStreet(street[0].long_name)
-                        setCity(city[0].long_name)
-                        setZipCode(zip[0].long_name)
-                        setState(state[0].long_name)
+                        setCity(details.address_components.filter(part => part.types[0] == 'locality')[0].long_name)
+                        setState(details.address_components.filter(part => part.types[0] == 'administrative_area_level_1')[0].long_name)
+                        setAddress(details.address_components.filter(part => part.types[0] == 'street_number')[0].long_name)
+                        setStreet(details.address_components.filter(part => part.types[0] == 'route')[0].long_name)
+                        setZipCode(details.address_components.filter(part => part.types[0] == 'postal_code')[0].long_name)
                         setLat(details.geometry.location.lat)
                         setLng(details.geometry.location.lng)
                       }}

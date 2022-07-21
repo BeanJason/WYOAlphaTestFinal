@@ -17,7 +17,27 @@
     "conflictResolution": {
       "defaultResolutionStrategy": {
         "type": "AUTOMERGE"
-      }
+      },
+      "perModelResolutionStrategy": [
+        {
+          "resolutionStrategy": {
+            "type": "AUTOMERGE"
+          },
+          "entityName": "Job"
+        },
+        {
+          "resolutionStrategy": {
+            "type": "AUTOMERGE"
+          },
+          "entityName": "Provider"
+        },
+        {
+          "resolutionStrategy": {
+            "type": "AUTOMERGE"
+          },
+          "entityName": "User"
+        }
+      ]
     }
   }
 }
