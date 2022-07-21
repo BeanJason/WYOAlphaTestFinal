@@ -16,6 +16,7 @@ import { commonStyles } from "../../../common/styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Provider, Blacklist } from "../../../src/models";
 import { sendProviderAcceptedEmail, sendProviderRejectEmail } from "../../../common/functions";
+import { createToast } from "../../../common/components/Toast";
 
 
 
@@ -30,6 +31,7 @@ const ApplicantsInfo = ({ navigation, route }) => {
   const [showModal, setShowModal] = useState(false)
   const [chosenModal, setChosenModal] = useState('')
   const [operation, setOperation] = useState(false)
+  const [backCheck, setBackCheck] = useState(false)
 
   const getProviderImage = async() => {
     if(employeeInfo.profilePictureURL){
@@ -51,6 +53,10 @@ const ApplicantsInfo = ({ navigation, route }) => {
     //address
     let address = JSON.parse(employeeInfo.address)
     setAddress(address)
+    //background check
+    if(employeeInfo.backgroundCheckStatus){
+      setBackCheck(true)
+    }
     //profile picture
     getProviderImage()
   },[])
@@ -61,28 +67,41 @@ const ApplicantsInfo = ({ navigation, route }) => {
     )
   }
 
+  const acceptBackgroundCheck = async() => {
+    let original = await DataStore.query(Provider, employeeInfo.id)
+    try {
+        await DataStore.save(Provider.copyOf(original, (updated) => {
+          updated.backgroundCheckStatus = true
+        }))
+        setBackCheck(true)
+        createToast('Applicant background check has been marked as received')
+    } catch (error) {
+        console.log(error);
+    }
+  }
+
   const hireProvider = async() => {
     setOperation(true)
     let original = await DataStore.query(Provider, employeeInfo.id)
     try {
         await DataStore.save(Provider.copyOf(original, (updated) => {
             updated.employeeID = "200"
-            updated.backgroundCheckStatus = true
         }))
     } catch (error) {
         console.log(error);
     }
+    await sendProviderAcceptedEmail(original.firstName, original.email)
     setOperation(false)
-    sendProviderAcceptedEmail(original.firstName, original.email)
-    navigation.reset({ routes: [{name: 'Applicants'}]})
+    navigation.reset({ routes: [{name: 'NewApplicants'}]})
     navigation.navigate('NewApplicants', {name: 'NewApplicants'})
   }
 
   const rejectProvider = async() => {
+    setOperation(true)
     let original = await DataStore.query(Provider, employeeInfo.id)
     await DataStore.save(Provider.copyOf(original, (updated) => {
       updated.isBan = true
-      updated.backgroundCheckStatus = true
+      updated.employeeID = -200
     }))
     //add to blacklist
     await DataStore.save(new Blacklist({
@@ -90,8 +109,11 @@ const ApplicantsInfo = ({ navigation, route }) => {
       "email": employeeInfo.email,
       "phoneNumber": employeeInfo.phoneNumber
     }))
-    sendProviderRejectEmail(employeeInfo.firstName, employeeInfo.email)
-    setOperation(true)
+    await sendProviderRejectEmail(employeeInfo.firstName, employeeInfo.email)
+    setOperation(false)
+    navigation.reset({ routes: [{name: 'NewApplicants'}]})
+    navigation.navigate('NewApplicants', {name: 'NewApplicants'})
+   
   }
 
 
@@ -181,20 +203,28 @@ const ApplicantsInfo = ({ navigation, route }) => {
               </View>
               <Text style={[styles.subtitle, {marginTop: 5}]}>Biography</Text>
               <Text style={styles.generalText}>{employeeInfo.biography}</Text>
-
+              
               {/* Buttons */}
-              <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 30}}>
-                <TouchableOpacity onPress={() => {setChosenModal('hire'); setShowModal(true)}}>
-                    <View style={styles.hireButton}>
-                      <Text style={styles.btnText}>Hire</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => {setChosenModal('reject'); setShowModal(true)}}>
-                    <View style={styles.fireButton}>
-                      <Text style={styles.btnText}>Reject</Text>
-                    </View>
-                </TouchableOpacity>
-              </View>
+              {!backCheck ? (
+                <TouchableOpacity onPress={() => acceptBackgroundCheck()}>
+                      <View style={[styles.button, {width: 200, height: 45, alignSelf: 'center', marginTop: 20}]}>
+                        <Text style={styles.btnText}>Mark Background Check Received</Text>
+                      </View>
+                  </TouchableOpacity>
+              ): (
+                <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 30}}>
+                  <TouchableOpacity onPress={() => {setChosenModal('hire'); setShowModal(true)}}>
+                      <View style={[styles.button, {backgroundColor: 'green'}]}>
+                        <Text style={styles.btnText}>Hire</Text>
+                      </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => {setChosenModal('reject'); setShowModal(true)}}>
+                      <View style={[styles.button, {backgroundColor: 'red'}]}>
+                        <Text style={styles.btnText}>Reject</Text>
+                      </View>
+                  </TouchableOpacity>
+                </View>
+              )}
           </View>
           
       </SafeAreaView>
@@ -241,26 +271,11 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     borderRadius: 10,
   },
-  fireButton: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 125,
-    height: 40,
-    backgroundColor: "red",
-    borderRadius: 10,
-  },
-  hireButton: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 125,
-    height: 40,
-    backgroundColor: "green",
-    borderRadius: 10,
-  },
   btnText: {
     color: "white",
     fontFamily: "Montserrat-Bold",
     fontSize: 18,
+    textAlign: 'center'
   },
   generalText: {
     fontFamily: 'Montserrat-Regular',

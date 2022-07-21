@@ -116,7 +116,7 @@ const JobSearch = ({ navigation }) => {
   },[zipCodeSelected])
 
 
-  if(userInfo.employeeID == "-1"){
+  if(userInfo.employeeID == "-1" || !userInfo.backgroundCheck){
     return(
       <ImageBackground
       style={[commonStyles.background, {flex: 1}]}
