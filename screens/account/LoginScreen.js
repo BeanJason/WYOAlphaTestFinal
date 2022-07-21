@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-// import { TouchableOpacity } from "react-native-gesture-handler";
+
 import UserInput from "../../common/components/UserInput";
 import Spinner from "../../common/components/Spinner";
 import { commonStyles } from "../../common/styles";

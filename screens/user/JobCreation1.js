@@ -150,13 +150,6 @@ const JobCreation1 = ({ navigation }) => {
   const onTipChange = (value, priceChange = false) => {
     let result = price
     switch (value){
-      default:
-        if(otherTip){
-          setTip(otherTip * 100)
-        }
-        setIsPress('-1')
-        setShowModal(false)
-        break;
       case 10:
         if(isPress == '10%' && !priceChange){
           setTip(0)
@@ -187,6 +180,13 @@ const JobCreation1 = ({ navigation }) => {
           setIsPress('20%')
           setTip(result)
         }
+        break;
+        default:
+        if(otherTip){
+          setTip(otherTip * 100)
+        }
+        setIsPress('-1')
+        setShowModal(false)
         break;
     }
   }
@@ -239,7 +239,7 @@ const JobCreation1 = ({ navigation }) => {
           data.address = addr.street
           data.city = addr.city
           data.zipCode = addr.zipCode
-          data.lat = addr.lat.toString(),
+          data.lat = addr.lat.toString()
           data.lng = addr.lng.toString()
           break;
         }

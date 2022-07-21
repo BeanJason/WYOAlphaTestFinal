@@ -58,8 +58,6 @@ const ManagerHome = ({ navigation }) => {
 
   //Get all current jobs
   useEffect(() => {
-    //TESTING
-    // setJobList(getManyJobs())
     setup()
   }, []);
 

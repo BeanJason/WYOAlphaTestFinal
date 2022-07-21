@@ -110,15 +110,13 @@ async function getJobs() {
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
-exports.handler = async (event) => {
+exports.handler = async (_event) => {
     let {Items} = await getJobs();
     Items = Items.filter(item => item._deleted != true)
     if(Items.length != 0){
       let today = new Date()
       let requestDate , data, res
       for(let job of Items){
-        // console.log('check')
-        // console.log(job)
         res = {}
         requestDate = new Date(job.requestDateTime)
         data = {arguments: {isCancel: false, jobID: job.id}}

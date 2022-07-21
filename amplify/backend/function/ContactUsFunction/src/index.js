@@ -59,7 +59,7 @@ let params = {
 let sendPromise = ses.sendEmail(params).promise();
 
 await sendPromise.then(
-    function(data) {
+    function() {
         return 'Successful'
     }).catch(
         function(err){

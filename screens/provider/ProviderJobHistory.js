@@ -36,9 +36,6 @@ import {
         dispatch(initializeJobs(userInfo.userID))
       }    
 
-      //TESTING
-      // setJobList(getJobHistory())
-      // setFilteredJobList(getJobHistory())
       setJobList(jobHistory)
       setLoading(false)
     }, []);

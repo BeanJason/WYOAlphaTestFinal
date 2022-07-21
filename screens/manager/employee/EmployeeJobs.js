@@ -16,11 +16,6 @@ import * as queries from "../../../src/graphql/queries"
 import {RadioButton} from "react-native-paper"
 import JobCard from "../../../common/components/JobCard";
 
-
-
-
-
-
 const EmployeeJobs = ({ navigation, route }) => {
   const {employeeInfo} = route.params
   const [jobList, setJobList] = useState([])
@@ -156,7 +151,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontFamily: 'Montserrat-Bold',
     textAlign: 'center',
-    alignSelf: 'center',
     borderBottomWidth: 1
   },
 });
