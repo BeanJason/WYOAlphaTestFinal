@@ -31,6 +31,7 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
                 if(next.userNotificationID.length != 0){
                     await cancelNotificationByID(next.userNotificationID[0])
                     await cancelNotificationByID(next.userNotificationID[1])
+                    await cancelNotificationByID(next.userNotificationID[2])
                 }
                 if(next.providerNotificationID.length == 0){
                     await DataStore.delete(Job, next.id)

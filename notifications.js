@@ -162,26 +162,35 @@ export const getNotificationToken = async () => {
 
 //create notifications
 export const createUserReminder = async (job) => {
-  let request = new Date(job.requestDateTime);
-  let hour = request.getHours() % 12 || 12;
-  let min = (request.getMinutes() < 10 ? "0" : "") + request.getMinutes();
+  let dayBeforeTime = new Date(job.requestDateTime);
+  let hour = dayBeforeTime.getHours() % 12 || 12;
+  let min = (dayBeforeTime.getMinutes() < 10 ? "0" : "") + dayBeforeTime.getMinutes();
   let amOrPm = "AM";
-  if (request.getHours() >= 12) {
+  if (dayBeforeTime.getHours() >= 12) {
     amOrPm = "PM";
   }
 
+  let threeHrsTime = new Date(job.requestDateTime);
+  let completeTime = new Date(job.requestDateTime);
+  dayBeforeTime.setHours(dayBeforeTime.getHours() - 24)
+  threeHrsTime.setHours(threeHrsTime.getHours() - 3)
+  completeTime.setHours(completeTime.getHours() + job.duration)
+
+  
+
+  
   //a day before
   let dayBeforeReminder = await Notifications.scheduleNotificationAsync({
     content: {
       title: "Job Reminder",
-      body: `Reminder: Your job request is scheduled for ${request.toLocaleDateString()} at ${hour}:${min}${amOrPm}`,
+      body: `Reminder: Your job request is scheduled for ${dayBeforeTime.toLocaleDateString()} at ${hour}:${min}${amOrPm}`,
       data: {
         jobID: job.id,
         owner: job.requestOwner
       }
     },
     trigger: {
-      date: request.setHours(request.getHours() - 24),
+      date: dayBeforeTime,
     },
   });
 
@@ -196,37 +205,56 @@ export const createUserReminder = async (job) => {
       }
     },
     trigger: {
-      date: request.setHours(request.getHours() - 3),
+      date: threeHrsTime
+    },
+  });
+
+  //completed reminder
+  let completedReminder = await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Job Complete",
+      body: `Your job request titled ${job.jobTitle} has been completed`,
+      data: {
+        jobID: job.id,
+        owner: job.requestOwner
+      }
+    },
+    trigger: {
+      date: completeTime,
     },
   });
 
   let ids = [];
   ids.push(dayBeforeReminder);
   ids.push(threeHourReminder);
+  ids.push(completedReminder)
   return ids;
 };
 
 export const createProviderReminder = async (jobInfo) => {
-  let request = new Date(jobInfo.requestDateTime);
-  let hour = request.getHours() % 12 || 12;
-  let min = (request.getMinutes() < 10 ? "0" : "") + request.getMinutes();
+  let dayBefore = new Date(jobInfo.requestDateTime);
+  let hour = dayBefore.getHours() % 12 || 12;
+  let min = (dayBefore.getMinutes() < 10 ? "0" : "") + dayBefore.getMinutes();
   let amOrPm = "AM";
-  if (request.getHours() >= 12) {
+  if (dayBefore.getHours() >= 12) {
     amOrPm = "PM";
   }
+  let threeHrsTime = new Date(jobInfo.requestDateTime);
+  dayBefore.setHours(dayBefore.getHours() - 24)
+  threeHrsTime.setHours(threeHrsTime.getHours() - 3)
 
   //a day before
   let dayBeforeReminder = await Notifications.scheduleNotificationAsync({
     content: {
       title: "Job Reminder: " + jobInfo.jobTitle,
-      body: `Reminder: You have a job scheduled for ${request.toLocaleDateString()} at ${hour}:${min}${amOrPm}`,
+      body: `Reminder: You have a job scheduled for ${dayBefore.toLocaleDateString()} at ${hour}:${min}${amOrPm}`,
       data: {
         jobID: jobInfo.id,
         owner: jobInfo.requestOwner
       }
     },
     trigger: {
-      date: request.setHours(request.getHours() - 24),
+      date: dayBefore,
     },
   });
 
@@ -241,7 +269,7 @@ export const createProviderReminder = async (jobInfo) => {
       }
     },
     trigger: {
-      date: request.setHours(request.getHours() - 3),
+      date: threeHrsTime,
     },
   });
 

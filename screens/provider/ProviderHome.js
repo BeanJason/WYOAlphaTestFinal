@@ -79,7 +79,9 @@ const ProviderHome = ({ navigation }) => {
       dispatch(logout())
       setLoading(false)
     }
-    setLoading(false)
+    else{
+      setLoading(false)
+    }
   }
 
   //Get all current jobs

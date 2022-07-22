@@ -102,6 +102,7 @@ const UserJobInfo = ({ route, navigation }) => {
           if(jobInfo.userNotificationID.length != 0){
             await cancelNotificationByID(jobInfo.userNotificationID[0])
             await cancelNotificationByID(jobInfo.userNotificationID[1])
+            await cancelNotificationByID(jobInfo.userNotificationID[2])
           }
           let original = await DataStore.query(Job, jobInfo.id)
           await DataStore.save(Job.copyOf(original, (updated) => {
