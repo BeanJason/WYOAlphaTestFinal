@@ -49,7 +49,7 @@
         }
       }
     },
-    "StripeWebhook": {
+    "stripeAPI": {
       "service": "API Gateway",
       "providerPlugin": "awscloudformation",
       "dependsOn": [

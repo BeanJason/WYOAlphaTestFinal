@@ -84,7 +84,7 @@ async function updatePaymentID(id, paymentID) {
 }
 
 
-app.post('/stripe-webhook', async function(req, res) {
+app.post('/stripeWebhook', async function(req, res) {
   // Add your code here
   const sig = req.headers['stripe-signature'];
   let event

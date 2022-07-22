@@ -16,7 +16,7 @@ export type AmplifyDependentResourcesAttributes = {
             "GraphQLAPIIdOutput": "string",
             "GraphQLAPIEndpointOutput": "string"
         },
-        "StripeWebhook": {
+        "stripeAPI": {
             "RootUrl": "string",
             "ApiName": "string",
             "ApiId": "string"

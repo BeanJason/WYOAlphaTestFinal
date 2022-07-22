@@ -1,7 +1,7 @@
 const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 exports.handler = async (event) => {
-  const { typeName, arguments } = event;
+  const { typeName } = event;
 
   if (typeName != "Mutation") {
     throw new Error("Request is not a mutation");
