@@ -16,7 +16,7 @@ import { changeUserStatus } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from "expo-asset"
-import { LogBox } from 'react-native';
+import { LogBox, Platform } from 'react-native';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import {STRIPE_KEY} from "@env"
 
@@ -108,6 +108,10 @@ TaskManager.defineTask('BACKGROUND_LOCATION', async ({data, error}) => {
       }
 })
 
+let height = 70;
+if(Platform.OS == 'ios'){
+  height = 100;
+}
 
 
 
@@ -273,6 +277,7 @@ const AuthNavigation = () => {
 
 //USER NAVIGATION
 const UserNavigation = () => {
+
   return (
     <Tab.Navigator 
       initialRouteName="userHome"
@@ -281,7 +286,9 @@ const UserNavigation = () => {
         tabBarActiveTintColor: 'blue',
         tabBarInactiveTintColor: 'grey',  
         tabBarLabelStyle: {paddingBottom: 10, fontSize: 15, fontFamily: 'Montserrat-Bold'},
-        tabBarStyle:{padding: 10, height: 70},
+        tabBarStyle:{padding: 10, height: height},
+        tabBarShowLabel: true,
+        
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
           let name = route.route.name
@@ -375,7 +382,7 @@ const ProviderNavigation = () => {
         tabBarActiveTintColor: 'blue',
         tabBarInactiveTintColor: 'grey',  
         tabBarLabelStyle: {paddingBottom: 10, fontSize: 15, fontFamily: 'Montserrat-Bold'},
-        tabBarStyle:{padding: 10, height: 70},
+        tabBarStyle:{padding: 10, height: height},
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
           let name = route.route.name
@@ -459,7 +466,7 @@ const ManagerNavigation = () => {
         tabBarActiveTintColor: 'blue',
         tabBarInactiveTintColor: 'grey',  
         tabBarLabelStyle: {paddingBottom: 5, fontSize: 15, fontFamily: 'Montserrat-Bold'},
-        tabBarStyle:{padding: 10, height: 70},
+        tabBarStyle:{padding: 10, height: height},
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
           let name = route.route.name
