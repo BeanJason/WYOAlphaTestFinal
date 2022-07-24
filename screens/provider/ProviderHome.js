@@ -86,13 +86,13 @@ const ProviderHome = ({ navigation }) => {
 
   //Get all current jobs
   useEffect(() => {
+    checkIfDisabled()
     //Get provider's current jobs
     if(!initialized){
       dispatch(initializeJobs({userID: userInfo.userID}))
     }
     //TESTING
     // setJobList(getManyJobs())
-    checkIfDisabled()
   }, [isFocused]);
 
   useEffect(() => {

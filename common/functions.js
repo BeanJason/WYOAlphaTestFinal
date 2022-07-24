@@ -2,9 +2,15 @@ import { API, DataStore, graphqlOperation } from "aws-amplify"
 import { Code, Job } from "../src/models"
 import { cancelNotificationByID, sendNotificationToProvider, sendNotificationToUser } from "../notifications"
 import { sendEmail } from "../src/graphql/mutations"
+import * as queries from "../src/graphql/queries"
 
 export const getEmailRegex = () => {
     return new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+}
+
+export const checkIfBanned = async (id) => {
+    let response = await API.graphql(graphqlOperation(queries.getProvider, {id: id}))
+    return response.data.getProvider.isBan
 }
 
 //fire employee

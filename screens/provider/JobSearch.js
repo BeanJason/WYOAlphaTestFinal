@@ -17,6 +17,7 @@ import { API } from "aws-amplify";
 import * as queries from "../../src/graphql/queries"
 import haversine from "haversine"
 import { createToast } from "../../common/components/Toast";
+import { checkIfBanned } from "../../common/functions";
 
 
 
@@ -61,17 +62,21 @@ const JobSearch = ({ navigation }) => {
     }
     setZipCodesList(items)
   }
-  
-  useEffect(() => {
-    if(userInfo.isBan){
+
+  const checkProvider = async() => {
+    const res = await checkIfBanned(userInfo.userID)
+    if(res == true){
       createToast('You cannot search for a job because your account is suspended')
       navigation.navigate('Home')
-    }
-    else{
+    } else{
       initLocation()
       setup()
       setLoading(false)
     }
+  }
+  
+  useEffect(() => {
+    checkProvider();
   }, []);
 
   const getDistanceToJob = (jobList) => {
