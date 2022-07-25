@@ -118,6 +118,7 @@ export const onCreateProvider = /* GraphQL */ `
       biography
       profilePictureURL
       backgroundCheckStatus
+      backgroundCheckDate
       employeeID
       offenses
       overallRating
@@ -127,12 +128,21 @@ export const onCreateProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
-      reviews
+      review {
+        id
+        reviews
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      providerReviewId
     }
   }
 `;
@@ -151,6 +161,7 @@ export const onUpdateProvider = /* GraphQL */ `
       biography
       profilePictureURL
       backgroundCheckStatus
+      backgroundCheckDate
       employeeID
       offenses
       overallRating
@@ -160,12 +171,21 @@ export const onUpdateProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
-      reviews
+      review {
+        id
+        reviews
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      providerReviewId
     }
   }
 `;
@@ -184,6 +204,7 @@ export const onDeleteProvider = /* GraphQL */ `
       biography
       profilePictureURL
       backgroundCheckStatus
+      backgroundCheckDate
       employeeID
       offenses
       overallRating
@@ -193,6 +214,54 @@ export const onDeleteProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
+      review {
+        id
+        reviews
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      providerReviewId
+    }
+  }
+`;
+export const onCreateReview = /* GraphQL */ `
+  subscription OnCreateReview {
+    onCreateReview {
+      id
+      reviews
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateReview = /* GraphQL */ `
+  subscription OnUpdateReview {
+    onUpdateReview {
+      id
+      reviews
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteReview = /* GraphQL */ `
+  subscription OnDeleteReview {
+    onDeleteReview {
+      id
       reviews
       createdAt
       updatedAt

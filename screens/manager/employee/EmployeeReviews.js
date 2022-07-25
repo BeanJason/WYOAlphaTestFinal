@@ -10,6 +10,8 @@ import {
 import { commonStyles } from "../../../common/styles";
 import { MaterialIcons } from '@expo/vector-icons'; 
 import ReviewCard from "../../../common/components/ReviewCard";
+import { DataStore } from "aws-amplify";
+import { Provider, Review } from "../../../src/models";
 
 
 
@@ -22,8 +24,11 @@ const EmployeeReviews = ({ navigation, route }) => {
 
   const setList = async() => {
     let list = [];
-    for (let next of employeeInfo.reviews) {
-      list.push(JSON.parse(next));
+    let reviews = await DataStore.query(Review, employeeInfo.providerReviewID)
+    if(reviews[0]){
+      for (let next of reviews[0].reviews) {
+        list.push(JSON.parse(next));
+      }
     }
     setReviews(list);
   }

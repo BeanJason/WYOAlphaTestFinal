@@ -76,6 +76,7 @@ const EditAccountProvider = ({ navigation }) => {
               phoneNumber: data.phoneNumber,
               biography: original.biography,
               backgroundCheck: original.backgroundCheckStatus,
+              backgroundCheckDate: original.backgroundCheckDate,
               profilePicture: original.profilePictureURL,
               isBan: original.isBan,
               employeeID: original.employeeID
@@ -109,6 +110,7 @@ const EditAccountProvider = ({ navigation }) => {
             phoneNumber: original.phoneNumber,
             biography: data.biography,
             backgroundCheck: original.backgroundCheckStatus,
+            backgroundCheckDate: original.backgroundCheckDate,
             profilePicture: original.profilePictureURL,
             isBan: original.isBan,
             employeeID: original.employeeID
@@ -188,6 +190,7 @@ const EditAccountProvider = ({ navigation }) => {
           phoneNumber: original.phoneNumber,
           biography: original.biography,
           backgroundCheck: original.backgroundCheckStatus,
+          backgroundCheckDate: original.backgroundCheckDate,
           profilePicture: newPicture,
           isBan: original.isBan,
           employeeID: original.employeeID

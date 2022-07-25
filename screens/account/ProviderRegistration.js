@@ -350,7 +350,7 @@ const ProviderRegistration = ({ navigation }) => {
               />
             </View>
             <View style={[styles.field, {flexGrow: 1}]}>
-            <Text style={{fontFamily: "Montserrat-Bold"}}>Please give us a short biography (maximum 250 words) of how you are active in your community</Text>
+            <Text style={{fontFamily: "Montserrat-Bold"}}>Please give us a short biography (maximum 250 words) of how you are active in your community and how long you lived in it</Text>
               {/* Biography */}
               <UserInput
                 style={[styles.input, {height: 100, textAlignVertical: 'top'}]}

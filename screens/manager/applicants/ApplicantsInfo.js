@@ -69,9 +69,12 @@ const ApplicantsInfo = ({ navigation, route }) => {
 
   const acceptBackgroundCheck = async() => {
     let original = await DataStore.query(Provider, employeeInfo.id)
+    let today = new Date()
+    today.setFullYear(today.getFullYear() + 1)
     try {
         await DataStore.save(Provider.copyOf(original, (updated) => {
           updated.backgroundCheckStatus = true
+          updated.backgroundCheckDate = today.toString()
         }))
         setBackCheck(true)
         createToast('Applicant background check has been marked as received')

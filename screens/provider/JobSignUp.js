@@ -219,7 +219,10 @@ const JobSignUp = ({ route, navigation }) => {
                     You are about to sign up for this job as a {role}. Are you
                     sure you want to continue?
                   </Text>
-                  <Text style={[styles.noteText, {textAlign: 'center',marginTop: 10}]}>Note: If you wish to cancel after signing up please do so at least 3 days before the job date. Failure to do so will result in an offense</Text>
+                  <Text style={[styles.generalText, {textAlign: 'center',marginTop: 10}]}>Note: Consequences for canceling or backing out of a job and not giving a 72 hour notice:</Text>
+                  <Text style={[styles.noteText, {textAlign: 'center',marginTop: 10}]}>1st offense- verbal warning and discussion regarding WYO policies </Text>
+                  <Text style={[styles.noteText, {textAlign: 'center',marginTop: 10}]}>2nd offense- your account will be terminated unless you can provide documentation for good cause.</Text>
+                  <Text style={[styles.generalText, {textAlign: 'center',marginTop: 10}]}>We hope you understand the importance of being committed to our clients we depend on you and they depend on us. Thank you, the admin team.</Text>
                   {startSignUp ? (
                     <Spinner color={"black"} />
                   ) : (
@@ -373,7 +376,7 @@ const styles = StyleSheet.create({
   },
   warningModal: {
     width: 350,
-    height: 300,
+    height: 410,
     backgroundColor: "white",
     borderWidth: 1,
     borderColor: "#000",

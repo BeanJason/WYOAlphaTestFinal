@@ -140,6 +140,7 @@ export const getProvider = /* GraphQL */ `
       biography
       profilePictureURL
       backgroundCheckStatus
+      backgroundCheckDate
       employeeID
       offenses
       overallRating
@@ -149,12 +150,21 @@ export const getProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
-      reviews
+      review {
+        id
+        reviews
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      providerReviewId
     }
   }
 `;
@@ -178,17 +188,18 @@ export const listProviders = /* GraphQL */ `
         biography
         profilePictureURL
         backgroundCheckStatus
+        backgroundCheckDate
         employeeID
         offenses
         overallRating
         isBan
         currentLocation
-        reviews
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        providerReviewId
       }
       nextToken
       startedAt
@@ -221,11 +232,73 @@ export const syncProviders = /* GraphQL */ `
         biography
         profilePictureURL
         backgroundCheckStatus
+        backgroundCheckDate
         employeeID
         offenses
         overallRating
         isBan
         currentLocation
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        providerReviewId
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getReview = /* GraphQL */ `
+  query GetReview($id: ID!) {
+    getReview(id: $id) {
+      id
+      reviews
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listReviews = /* GraphQL */ `
+  query ListReviews(
+    $filter: ModelReviewFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listReviews(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        reviews
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncReviews = /* GraphQL */ `
+  query SyncReviews(
+    $filter: ModelReviewFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncReviews(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
         reviews
         createdAt
         updatedAt

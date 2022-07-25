@@ -91,6 +91,13 @@ const getProviderData = async (attributes) => {
                 level: 'public',
             })
         }
+        //check if background check is expired
+        let date = new Date(userData[0].backgroundCheckStatus)
+        let today = new Date()
+        let backStatus = userData[0].backgroundCheckStatus
+        if(today.toDateString() >= date.toDateString()){
+            backStatus = false
+        }
         const userInfo = {
             userID: userData[0].id,
             firstName: userData[0].firstName,
@@ -98,7 +105,8 @@ const getProviderData = async (attributes) => {
             address: userData[0].address,
             phoneNumber: userData[0].phoneNumber,
             biography: userData[0].biography,
-            backgroundCheck: userData[0].backgroundCheckStatus,
+            backgroundCheck: backStatus,
+            backgroundCheckDate: userData[0].backgroundCheckDate,
             profilePicture: pictureUrl ? pictureUrl : '',
             expoToken: userData[0].expoToken,
             isBan: userData[0].isBan,

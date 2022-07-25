@@ -47,11 +47,14 @@ const JobSearch = ({ navigation }) => {
 
   const setup = async () => {
     let filter = {
-       count: {ne: 0}
+      and:[
+        {count: {ne: 0}},
+        {_deleted: {ne: true}}
+      ]
+
     }
     let global = await API.graphql({query: queries.listCodes, variables: {filter: filter}})
     let list = global.data.listCodes.items
-
     //set zip codes in search bar
     let items = []
     for(const area of list){
@@ -128,7 +131,11 @@ const JobSearch = ({ navigation }) => {
       source={require("../../assets/wyo_background.png")}
     >
       <SafeAreaView style={commonStyles.safeContainer}>
-       <Text style={[styles.name, {textAlign: 'center', marginTop: 100}]}>You have not been approved yet as a provider. Please wait until approval before searching for jobs</Text>
+      {userInfo.backgroundCheckDate ? (
+        <Text style={[styles.name, {textAlign: 'center', marginTop: 100}]}>Your background check has expired. You must submit another background check in order to continue as a WYO Provider. Please send your background check to info@wyoservices.com</Text>
+      ): (
+        <Text style={[styles.name, {textAlign: 'center', marginTop: 100}]}>You have not been approved yet as a provider. Please wait until approval before searching for jobs</Text>
+      )}
        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={[styles.button, {alignSelf: 'center', marginTop: 30}]}>
               <Text style={styles.btnText}>Back</Text>

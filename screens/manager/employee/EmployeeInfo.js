@@ -119,6 +119,7 @@ const EmployeeInfo = ({ navigation, route }) => {
     let original = await DataStore.query(Provider, employeeInfo.id)
     await DataStore.save(Provider.copyOf(original, (updated) => {
       updated.isBan = true
+      updated.employeeID = -200
     }))
     //add to blacklist
     await DataStore.save(new Blacklist({

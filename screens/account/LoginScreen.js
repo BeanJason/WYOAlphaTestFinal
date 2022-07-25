@@ -160,7 +160,6 @@ const LoginScreen = ({ navigation }) => {
                 {/* About us link */}
                 <TouchableOpacity
                   onPress={() =>
-                    // TODO: NAVIGATE TO FORGOT PASSWORD SCREEN
                     navigation.navigate("AboutUs", {
                       name: "About Us",
                     })
@@ -171,10 +170,22 @@ const LoginScreen = ({ navigation }) => {
                     About
                   </Text>
                 </TouchableOpacity>
+                {/* Terms link */}
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("Terms", {
+                      name: "Terms",
+                    })
+                  }
+                  style={{marginRight: 10}}
+                >
+                  <Text style={[{ color: "black" }, styles.regularText]}>
+                    Policies
+                  </Text>
+                </TouchableOpacity>
                 {/* Contact Us */}
                 <TouchableOpacity
                   onPress={() =>
-                    // TODO: NAVIGATE TO FORGOT PASSWORD SCREEN
                     navigation.navigate("ContactUs", {
                       name: "Contact Us",
                     })

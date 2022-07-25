@@ -230,7 +230,13 @@ import { sendPaymentEmail } from "../../common/functions";
 
           <View style={{alignItems: 'center', marginTop: 20, flex: 1}}>
             <Text style={[styles.generalText, {textAlign: 'center'}]}>Please verify all the information for your job request below</Text>
-            <Text style={[styles.generalText, {textAlign: 'center'}]}>Note: Refunds are only eligible within 24 hours of creating the job request</Text>
+            <Text style={styles.generalText}>Note: Refunds are only eligible within 24 hours of creating the job request</Text>
+            <View style={{flexDirection:'row'}}>
+              <Text style={styles.generalText}>By placing this job request, you understand and agree to abide by the user </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Terms')}>
+                <Text style={[styles.generalText, {color: 'blue'}]}>Terms</Text>
+              </TouchableOpacity>
+            </View>
             <View style={styles.jobContainer}>
               <Text style={styles.generalText}>Job Title: {data.jobTitle}</Text>
               <Text style={styles.generalText}>Address: {data.address} {data.city} {data.zipCode}</Text>
@@ -288,7 +294,7 @@ import { sendPaymentEmail } from "../../common/functions";
     },
     generalText: {
       fontFamily: "Montserrat-Regular",
-      fontSize: 20,
+      fontSize: 18,
       fontWeight: "800",
     },
     button: {

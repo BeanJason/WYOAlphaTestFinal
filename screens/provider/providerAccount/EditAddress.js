@@ -61,6 +61,7 @@ import {
                 phoneNumber: original.phoneNumber,
                 biography: original.biography,
                 backgroundCheck: original.backgroundCheckStatus,
+                backgroundCheckDate: original.backgroundCheckDate,
                 profilePicture: original.profilePictureURL,
                 isBan: original.isBan,
                 employeeID: original.employeeID

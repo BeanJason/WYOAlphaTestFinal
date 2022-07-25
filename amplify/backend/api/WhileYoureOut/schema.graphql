@@ -57,12 +57,18 @@ type Provider @model @auth(rules: [{allow: public}]) {
   biography: String!,
   profilePictureURL: String
   backgroundCheckStatus: Boolean!
+  backgroundCheckDate: String
   employeeID: String!
   offenses: Int!
   overallRating: Float!
   isBan: Boolean!
   currentLocation: String
   jobs: [Job] @hasMany(indexName: "byProvider", fields: ["id"])
+  review: Review @hasOne
+}
+
+type Review @model @auth(rules: [{allow: public}]){
+  id: ID!
   reviews: [String!]
 }
 

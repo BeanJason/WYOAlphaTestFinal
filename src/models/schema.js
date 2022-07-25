@@ -316,6 +316,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "backgroundCheckDate": {
+                    "name": "backgroundCheckDate",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "employeeID": {
                     "name": "employeeID",
                     "isArray": false,
@@ -365,6 +372,79 @@ export const schema = {
                         "associatedWith": "mainProvider"
                     }
                 },
+                "review": {
+                    "name": "review",
+                    "isArray": false,
+                    "type": {
+                        "model": "Review"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": "id",
+                        "targetName": "providerReviewId"
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "providerReviewId": {
+                    "name": "providerReviewId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "Providers",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Review": {
+            "name": "Review",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "reviews": {
                     "name": "reviews",
                     "isArray": true,
@@ -391,7 +471,7 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "Providers",
+            "pluralName": "Reviews",
             "attributes": [
                 {
                     "type": "model",
@@ -818,5 +898,5 @@ export const schema = {
             }
         }
     },
-    "version": "ebfa5158e586de6c42ca2a312f3d4f06"
+    "version": "131ece0e38a9d45dbd9eebe1cd290c8e"
 };

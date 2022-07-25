@@ -14,12 +14,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { Rating } from "react-native-ratings";
 import { DataStore } from "aws-amplify";
-import { Job, Provider } from "../../src/models";
+import { Job, Provider, Review } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { addOrRemoveJob } from "../../redux/jobsReducer";
 
 const UserReview = ({ navigation, route }) => {
-  const { jobHistory } = useSelector((state) => state.jobs);
   const dispatch = useDispatch()
   let { jobInfo, mainProvider } = route.params;
   const [rate, setRate] = useState(3.0)
@@ -35,9 +34,28 @@ const UserReview = ({ navigation, route }) => {
   //Submit the user input
   const submitForm = async (data) => {
     let original = await DataStore.query(Provider, jobInfo.mainProvider)
+    let revID = original.providerReviewId
+    let originalRev
+    let count = 0
+    //if first time
+    if(!revID){
+      originalRev = await DataStore.save(new Review({
+        "reviews": []
+      }))
+      await DataStore.save(Provider.copyOf(original, (updated) => {
+        updated.providerReviewId = originalRev.id
+      }))
+      revID = originalRev.id
+      count = 0
+    } else{
+      let res = await DataStore.query(Review, revID)
+      originalRev = res
+      count = originalRev.reviews.length
+    }
+
     let review
     let valid = true
-    for(let next of original.reviews){
+    for(let next of originalRev.reviews){
       review = JSON.parse(next)
       if(review.jobID == jobInfo.id){
         valid = false
@@ -45,7 +63,6 @@ const UserReview = ({ navigation, route }) => {
       }
     }
     if(valid){
-      let count = original.reviews.length
       count++
       let newRating = (original.overallRating + rate) / count
       newRating = parseFloat(newRating.toFixed(2))
@@ -56,11 +73,16 @@ const UserReview = ({ navigation, route }) => {
         comment: data.review || "",
         rating: rate
       }
+      //update rating
       await DataStore.save(Provider.copyOf(original, (updated) => {
-        updated.reviews.push(JSON.stringify(review))
         updated.overallRating = newRating
       }))
+      //update review
+      await DataStore.save(Review.copyOf(originalRev, (updated) => {
+        updated.reviews.push(JSON.stringify(review))
+      }))
     }
+
     let originalJob = await DataStore.query(Job, jobInfo.id)
     if(!originalJob.isRated){
       await DataStore.save(Job.copyOf(originalJob, (updated) => {

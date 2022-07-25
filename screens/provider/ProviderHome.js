@@ -72,15 +72,21 @@ const ProviderHome = ({ navigation }) => {
 
 
   const checkIfDisabled = async() => {
-    const response = await API.graphql({query: queries.listBlacklists})
-    let list = response.data.listBlacklists.items
-    list = list.filter(user => user.subID == authUser.sub)
-    if(list.length != 0){
+    if(userInfo.employeeID == -200){
       dispatch(logout())
       setLoading(false)
-    }
+    } 
     else{
-      setLoading(false)
+      const response = await API.graphql({query: queries.listBlacklists})
+      let list = response.data.listBlacklists.items
+      list = list.filter(user => user.subID == authUser.sub)
+      if(list.length != 0){
+        dispatch(logout())
+        setLoading(false)
+      }
+      else{
+        setLoading(false)
+      }
     }
   }
 

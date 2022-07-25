@@ -3,6 +3,7 @@ import { Code, Job } from "../src/models"
 import { cancelNotificationByID, sendNotificationToProvider, sendNotificationToUser } from "../notifications"
 import { sendEmail } from "../src/graphql/mutations"
 import * as queries from "../src/graphql/queries"
+import * as Notifications from "expo-notifications"
 
 export const getEmailRegex = () => {
     return new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
@@ -100,6 +101,10 @@ export const removeJobsFromProvider = async(employee) => {
                 }
             }
         }
+    }
+    let notifications = await Notifications.getAllScheduledNotificationsAsync()
+    if(notifications.length != 0){
+        await Notifications.cancelAllScheduledNotificationsAsync()
     }
     return true
 }
@@ -247,14 +252,14 @@ export const sendProviderEmail = async (email) => {
                 </p>
                 <p>
                     This email confirms that your application as a WYO Provider has been successfully sent in to be processed.
-                    The final step is to complete a background check at the following link:  
+                    The final step is to send a picture of your driver's license and complete a background check at the following link:  
                 </p>
                 <p>
-                    Please upload your background check form and a picture of your driver's license to info@wyoservices.com. Once
+                    Please upload your background check form and the picture of your driver's license to info@wyoservices.com. Once
                     accepted, you will then be able to search for jobs as a provider.
                 </p>
                 <p>
-                    Thank you, we hope to hear from you soon!
+                    Thank you, we will get back with you shortly. We are excited to possibly welcome you to the team of WYO’s!
                 </p>
             </body>
         </head>

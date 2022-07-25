@@ -79,6 +79,7 @@ import VerifyAccount from "./screens/commonScreens/VerifyAccount";
 import { config } from "./common/styles";
 import * as TaskManager from "expo-task-manager"
 import { updateLocation } from "./redux/jobsProviderReducer";
+import Terms from "./screens/aboutScreens/Terms";
 
 //BACKGROUND TASKS
 //Location
@@ -244,6 +245,7 @@ const GuestNavigation = () => {
       <Stack.Screen options={{title: 'Registration'}} name="RegistrationScreen" component={RegistrationScreen} />
       <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
       <Stack.Screen options={{title: 'About Users'}} name="AboutUsers" component={AboutUsers} />
+      <Stack.Screen options={{title: 'Terms'}} name="Terms" component={Terms} />
       <Stack.Screen options={{title: 'About Providers'}} name="AboutProviders" component={AboutProviders} />
       <Stack.Screen options={{ headerShown: false }} name="ConfirmEmail" component={ConfirmEmail}/>
       <Stack.Screen options={{title: 'Contact Us'}} name="ContactUs" component={ContactUs} />
@@ -337,6 +339,7 @@ const UserJobCreationTab = () => {
   <Stack.Navigator>
     <Stack.Screen options={{headerShown: false }} name="JobCreation1" component={JobCreation1}/>
     <Stack.Screen options={{ headerShown: false, headerLeft: null}} name="JobCreationPayment" component={JobCreationPayment}/>
+    <Stack.Screen options={{title: 'Terms'}} name="Terms" component={Terms} />
   </Stack.Navigator>
   )
 }
@@ -361,6 +364,7 @@ const UserAccountTab = () => {
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="AddAddress" component={AddAddress}/>
       <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
       <Stack.Screen options={{title: 'About Users'}} name="AboutUsers" component={AboutUsers} />
+      <Stack.Screen options={{title: 'Terms'}} name="Terms" component={Terms} />
       <Stack.Screen options={{title: 'About Providers'}} name="AboutProviders" component={AboutProviders} />
       <Stack.Screen options={{title: 'Contact Us'}} name="ContactUs" component={ContactUs} />
     </Stack.Navigator>

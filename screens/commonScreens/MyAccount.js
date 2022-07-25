@@ -54,20 +54,27 @@ const MyAccount = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
-            <View style={[styles.container, {marginTop: 20 }]}>
-              <Text style={[styles.subtitle, {borderBottomWidth: 1, alignSelf: 'flex-start', padding: 5}]}>Helpful Links</Text>
-                  <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('AboutUs')}}>
-                    <Text style={[styles.generalText, {color: 'blue'}]}>Information about the company</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('AboutUsers')}}>
-                    <Text style={[styles.generalText, {color: 'blue'}]}>About Users</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('AboutProviders')}}>
-                    <Text style={[styles.generalText, {color: 'blue'}]}>About Providers</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('ContactUs')}}>
-                    <Text style={[styles.generalText, {color: 'blue'}]}>Contact Us</Text>
-                  </TouchableOpacity>
+            <View style={[styles.container, {marginTop: 20, flexDirection: 'row' , justifyContent: 'space-between'}]}>
+                  <View>
+                  <Text style={[styles.subtitle, {borderBottomWidth: 1, alignSelf: 'flex-start', padding: 5, marginBottom: 10}]}>Helpful Links</Text>
+                    <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('AboutUs')}}>
+                      <Text style={[styles.generalText, {color: 'blue'}]}>Information about the company</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('ContactUs')}}>
+                      <Text style={[styles.generalText, {color: 'blue'}]}>Contact Us</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{marginTop: 20}}>
+                    <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('AboutUsers')}}>
+                      <Text style={[styles.generalText, {color: 'blue'}]}>About Users</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('Terms')}}>
+                      <Text style={[styles.generalText, {color: 'blue'}]}>User Policies</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('AboutProviders')}}>
+                      <Text style={[styles.generalText, {color: 'blue'}]}>About Providers</Text>
+                    </TouchableOpacity>
+                  </View>
             </View>
           </View>
 

@@ -180,6 +180,7 @@ export const createProvider = /* GraphQL */ `
       biography
       profilePictureURL
       backgroundCheckStatus
+      backgroundCheckDate
       employeeID
       offenses
       overallRating
@@ -189,12 +190,21 @@ export const createProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
-      reviews
+      review {
+        id
+        reviews
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      providerReviewId
     }
   }
 `;
@@ -216,6 +226,7 @@ export const updateProvider = /* GraphQL */ `
       biography
       profilePictureURL
       backgroundCheckStatus
+      backgroundCheckDate
       employeeID
       offenses
       overallRating
@@ -225,12 +236,21 @@ export const updateProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
-      reviews
+      review {
+        id
+        reviews
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      providerReviewId
     }
   }
 `;
@@ -252,6 +272,7 @@ export const deleteProvider = /* GraphQL */ `
       biography
       profilePictureURL
       backgroundCheckStatus
+      backgroundCheckDate
       employeeID
       offenses
       overallRating
@@ -261,6 +282,63 @@ export const deleteProvider = /* GraphQL */ `
         nextToken
         startedAt
       }
+      review {
+        id
+        reviews
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      providerReviewId
+    }
+  }
+`;
+export const createReview = /* GraphQL */ `
+  mutation CreateReview(
+    $input: CreateReviewInput!
+    $condition: ModelReviewConditionInput
+  ) {
+    createReview(input: $input, condition: $condition) {
+      id
+      reviews
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateReview = /* GraphQL */ `
+  mutation UpdateReview(
+    $input: UpdateReviewInput!
+    $condition: ModelReviewConditionInput
+  ) {
+    updateReview(input: $input, condition: $condition) {
+      id
+      reviews
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteReview = /* GraphQL */ `
+  mutation DeleteReview(
+    $input: DeleteReviewInput!
+    $condition: ModelReviewConditionInput
+  ) {
+    deleteReview(input: $input, condition: $condition) {
+      id
       reviews
       createdAt
       updatedAt

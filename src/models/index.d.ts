@@ -21,6 +21,10 @@ type ProviderMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
+type ReviewMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
@@ -80,17 +84,28 @@ export declare class Provider {
   readonly biography: string;
   readonly profilePictureURL?: string | null;
   readonly backgroundCheckStatus: boolean;
+  readonly backgroundCheckDate?: string | null;
   readonly employeeID: string;
   readonly offenses: number;
   readonly overallRating: number;
   readonly isBan: boolean;
   readonly currentLocation?: string | null;
   readonly jobs?: (Job | null)[] | null;
+  readonly review?: Review | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly providerReviewId?: string | null;
+  constructor(init: ModelInit<Provider, ProviderMetaData>);
+  static copyOf(source: Provider, mutator: (draft: MutableModel<Provider, ProviderMetaData>) => MutableModel<Provider, ProviderMetaData> | void): Provider;
+}
+
+export declare class Review {
+  readonly id: string;
   readonly reviews?: string[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<Provider, ProviderMetaData>);
-  static copyOf(source: Provider, mutator: (draft: MutableModel<Provider, ProviderMetaData>) => MutableModel<Provider, ProviderMetaData> | void): Provider;
+  constructor(init: ModelInit<Review, ReviewMetaData>);
+  static copyOf(source: Review, mutator: (draft: MutableModel<Review, ReviewMetaData>) => MutableModel<Review, ReviewMetaData> | void): Review;
 }
 
 export declare class User {
