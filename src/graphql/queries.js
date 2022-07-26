@@ -141,6 +141,7 @@ export const getProvider = /* GraphQL */ `
       profilePictureURL
       backgroundCheckStatus
       backgroundCheckDate
+      backgroundCheckReminders
       employeeID
       offenses
       overallRating
@@ -189,6 +190,7 @@ export const listProviders = /* GraphQL */ `
         profilePictureURL
         backgroundCheckStatus
         backgroundCheckDate
+        backgroundCheckReminders
         employeeID
         offenses
         overallRating
@@ -233,6 +235,7 @@ export const syncProviders = /* GraphQL */ `
         profilePictureURL
         backgroundCheckStatus
         backgroundCheckDate
+        backgroundCheckReminders
         employeeID
         offenses
         overallRating

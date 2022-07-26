@@ -22,6 +22,7 @@ import { logout } from "../../redux/authReducer";
 import { useIsFocused } from "@react-navigation/native";
 import * as queries from "../../src/graphql/queries";
 import * as TaskManager from "expo-task-manager"
+import { createBackgroundCheckReminders } from "../../notifications";
 
 
 
@@ -41,28 +42,17 @@ const ProviderHome = ({ navigation }) => {
   
 
   const getNotifications = async() => {
-    // let n = await Notifications.getAllScheduledNotificationsAsync()
-    // console.log(n);
+   
+    let n = await Notifications.getAllScheduledNotificationsAsync()
+    console.log(n);
   }
 
   const cancelNotifications = async ()=> {
-    // await Notifications.cancelAllScheduledNotificationsAsync()
+    await Notifications.cancelAllScheduledNotificationsAsync()
   }
 
   const testNotifications = async () => {
-    await Notifications.scheduleNotificationAsync({
-
-      content:{
-        title: 'test',
-        body: 'fake msg',
-        data: {
-          jobID: '12312312312'
-        }
-      },
-      trigger:{
-        seconds: 10
-      }
-    })
+    await createBackgroundCheckReminders(userInfo.backgroundCheckDate)
   }
 
   const onRefresh = React.useCallback(async () => {
@@ -123,7 +113,7 @@ const ProviderHome = ({ navigation }) => {
             <ProfilePicture imageUrl={profilePicture} name={`${userInfo.firstName} ${userInfo.lastName}`} size={50}/>
             <Text style={styles.name}>Welcome Provider {userInfo.firstName}</Text>
           </View>
-          <TouchableOpacity onPress={() => testNotifications()}>
+          <TouchableOpacity onPress={() => getNotifications()}>
           <Text>Get Notifications</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => cancelNotifications()}>

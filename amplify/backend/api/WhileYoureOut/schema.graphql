@@ -58,6 +58,7 @@ type Provider @model @auth(rules: [{allow: public}]) {
   profilePictureURL: String
   backgroundCheckStatus: Boolean!
   backgroundCheckDate: String
+  backgroundCheckReminders: [String!]
   employeeID: String!
   offenses: Int!
   overallRating: Float!

@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Auth } from "aws-amplify";
 import { DataStore } from "aws-amplify";
 import { checkCredentials, getProviderPicture } from "../credentials";
+import { cancelNotificationByID, createBackgroundCheckReminders } from "../notifications";
 import {User, Provider, Manager} from "../src/models"
 
 //Initial values
@@ -117,13 +118,21 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
       return thunkAPI.rejectWithValue(message);
     }
     else if(dataCheck.authUser != null && dataCheck.userInfo != null){
+      let userInfo = dataCheck.userInfo
       if(dataCheck.authUser['custom:type'] == 'Provider'){
-        let pic = await getProviderPicture(dataCheck.userInfo.profilePictureURL)
-        if(pic != ""){
-          changeProviderPicture(pic)
+        //update provider reminders for background checks
+        let ids = await createBackgroundCheckReminders(userInfo.backgroundCheckDate)
+        if(ids.length != 0){
+            userInfo = await DataStore.save(Provider.copyOf(dataCheck.userInfo, (updated) => {
+              updated.backgroundCheckReminders = ids
+            }))
         }
+        let pic = await getProviderPicture(userInfo.profilePictureURL)
+        return {authUser: dataCheck.authUser, userInfo: userInfo, profilePic: pic}
       }
-      return {authUser: dataCheck.authUser, userInfo: dataCheck.userInfo}
+      else{
+        return {authUser: dataCheck.authUser, userInfo: dataCheck.userInfo, profilePic: ""}
+      }
     }
 }
 );
@@ -138,8 +147,14 @@ export const logout = createAsyncThunk("auth/logout", async (data) => {
   } 
   else if(data.type == 'Provider'){
       let original = await DataStore.query(Provider, data.id);
+      if(original.backgroundCheckReminders && original.backgroundCheckReminders.length != 0){
+        for(let next of original.backgroundCheckReminders){
+          await cancelNotificationByID(next)
+        }
+      }
       await DataStore.save(Provider.copyOf(original, (updated) => {
         updated.expoToken = ""
+        updated.backgroundCheckReminders = []
     } ))
   } 
   else{
@@ -220,6 +235,7 @@ export const authReducer = createSlice({
         state.loggedIn = true;
         state.authUser = action.payload.authUser;
         state.userInfo = action.payload.userInfo;
+        state.profilePicture = action.payload.profilePic;
       })
       //Failed login
       .addCase(login.rejected, (state, action) => {

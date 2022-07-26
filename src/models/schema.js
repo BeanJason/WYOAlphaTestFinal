@@ -323,6 +323,14 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "backgroundCheckReminders": {
+                    "name": "backgroundCheckReminders",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
                 "employeeID": {
                     "name": "employeeID",
                     "isArray": false,
@@ -898,5 +906,5 @@ export const schema = {
             }
         }
     },
-    "version": "131ece0e38a9d45dbd9eebe1cd290c8e"
+    "version": "bfffaac085a91046d9f07154218ddd21"
 };

@@ -119,6 +119,7 @@ export const onCreateProvider = /* GraphQL */ `
       profilePictureURL
       backgroundCheckStatus
       backgroundCheckDate
+      backgroundCheckReminders
       employeeID
       offenses
       overallRating
@@ -162,6 +163,7 @@ export const onUpdateProvider = /* GraphQL */ `
       profilePictureURL
       backgroundCheckStatus
       backgroundCheckDate
+      backgroundCheckReminders
       employeeID
       offenses
       overallRating
@@ -205,6 +207,7 @@ export const onDeleteProvider = /* GraphQL */ `
       profilePictureURL
       backgroundCheckStatus
       backgroundCheckDate
+      backgroundCheckReminders
       employeeID
       offenses
       overallRating

@@ -279,6 +279,44 @@ export const createProviderReminder = async (jobInfo) => {
   return ids;
 };
 
+export const createBackgroundCheckReminders = async (expirationDate) => {
+  let ids = [];
+  if(!expirationDate){
+    return ids
+  }
+  let original = new Date(expirationDate)
+  original.setFullYear(original.getFullYear() + 1)
+  let oneMonth = new Date(original.toString())
+  let twoWeeks = new Date(original.toString())
+  oneMonth.setMonth(oneMonth.getMonth() - 1)
+  twoWeeks.setDate(twoWeeks.getDate() - 14)
+
+  let oneMonthReminder = await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Background Check",
+      body: `Reminder, your background check will expire one month from today on ${original.toDateString()}`,
+    },
+    trigger: {
+      date: oneMonth,
+    },
+  });
+
+  let twoWeeksReminder = await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Background Check",
+      body: `Reminder, your background check will expire 2 weeks from today on ${original.toDateString()}`,
+    },
+    trigger: {
+      date: oneMonth,
+    },
+  });
+
+  
+  ids.push(oneMonthReminder);
+  ids.push(twoWeeksReminder);
+  return ids;
+};
+
 export const sendNotificationToUser = async(userID, messageInfo) => {
   let user = await DataStore.query(User, userID)
   let token = user.expoToken

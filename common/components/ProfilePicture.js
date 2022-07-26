@@ -6,11 +6,16 @@ import { StyleSheet, View, Text, ActivityIndicator, ImageBackground } from "reac
 const ProfilePicture = ({imageUrl, name, size, loading = false}) => {
   const [image, setImage] = useState()
   const [initials, setInitials] = useState()
+ 
 
   useEffect(() => {
-    let arr = name.split(' ')
-    setInitials(arr[0].slice(0,1) + arr[1].slice(0,1))
-    setImage(imageUrl)
+    if(imageUrl != ""){
+      setImage(imageUrl)
+    }
+    else{
+      let arr = name.split(' ')
+      setInitials(arr[0].slice(0,1) + arr[1].slice(0,1))
+    }
   }, [imageUrl])
   
   return (

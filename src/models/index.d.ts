@@ -85,6 +85,7 @@ export declare class Provider {
   readonly profilePictureURL?: string | null;
   readonly backgroundCheckStatus: boolean;
   readonly backgroundCheckDate?: string | null;
+  readonly backgroundCheckReminders?: string[] | null;
   readonly employeeID: string;
   readonly offenses: number;
   readonly overallRating: number;
