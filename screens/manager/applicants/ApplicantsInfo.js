@@ -70,7 +70,6 @@ const ApplicantsInfo = ({ navigation, route }) => {
   const acceptBackgroundCheck = async() => {
     let original = await DataStore.query(Provider, employeeInfo.id)
     let today = new Date()
-    today.setFullYear(today.getFullYear() + 1)
     try {
         await DataStore.save(Provider.copyOf(original, (updated) => {
           updated.backgroundCheckStatus = true
@@ -94,9 +93,11 @@ const ApplicantsInfo = ({ navigation, route }) => {
         console.log(error);
     }
     await sendProviderAcceptedEmail(original.firstName, original.email)
-    setOperation(false)
-    navigation.reset({ routes: [{name: 'NewApplicants'}]})
-    navigation.navigate('NewApplicants', {name: 'NewApplicants'})
+    setTimeout(() => {
+      setOperation(false)
+      navigation.reset({ routes: [{name: 'NewApplicants'}]})
+      navigation.navigate('NewApplicants', {name: 'NewApplicants'})
+    }, 2000);
   }
 
   const rejectProvider = async() => {
@@ -104,7 +105,7 @@ const ApplicantsInfo = ({ navigation, route }) => {
     let original = await DataStore.query(Provider, employeeInfo.id)
     await DataStore.save(Provider.copyOf(original, (updated) => {
       updated.isBan = true
-      updated.employeeID = -200
+      updated.employeeID = "-200"
     }))
     //add to blacklist
     await DataStore.save(new Blacklist({
@@ -113,9 +114,11 @@ const ApplicantsInfo = ({ navigation, route }) => {
       "phoneNumber": employeeInfo.phoneNumber
     }))
     await sendProviderRejectEmail(employeeInfo.firstName, employeeInfo.email)
-    setOperation(false)
-    navigation.reset({ routes: [{name: 'NewApplicants'}]})
-    navigation.navigate('NewApplicants', {name: 'NewApplicants'})
+    setTimeout(() => {
+      setOperation(false)
+      navigation.reset({ routes: [{name: 'NewApplicants'}]})
+      navigation.navigate('NewApplicants', {name: 'NewApplicants'})
+    }, 2000);
    
   }
 

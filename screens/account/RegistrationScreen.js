@@ -10,10 +10,12 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { commonStyles } from "../../common/styles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 //Main registration screen to choose to sign up as a provider or user
 const RegistrationScreen = ({ navigation }) => {
   return (
+    <KeyboardAwareScrollView>
       <ImageBackground
         style={[commonStyles.background, {height: 1000}]}
         source={require("../../assets/wyo_background.png")}
@@ -93,6 +95,7 @@ const RegistrationScreen = ({ navigation }) => {
           
         </SafeAreaView>
       </ImageBackground>
+      </KeyboardAwareScrollView>
   );
 };
 

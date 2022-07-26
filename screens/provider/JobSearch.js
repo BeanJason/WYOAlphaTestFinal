@@ -67,7 +67,7 @@ const JobSearch = ({ navigation }) => {
   }
 
   const checkProvider = async() => {
-    const res = await checkIfBanned(userInfo.userID)
+    const res = await checkIfBanned(userInfo.id)
     if(res == true){
       createToast('You cannot search for a job because your account is suspended')
       navigation.navigate('Home')
@@ -100,8 +100,8 @@ const JobSearch = ({ navigation }) => {
           let filter = {
             and: [
               { _deleted: {ne: true} },
-              {mainProvider: {ne: userInfo.userID}},
-              {backupProviders: {notContains: userInfo.userID}},
+              {mainProvider: {ne: userInfo.id}},
+              {backupProviders: {notContains: userInfo.id}},
               {zipCode: {eq: zip}},
               {
                 or:[
@@ -124,7 +124,7 @@ const JobSearch = ({ navigation }) => {
   },[zipCodeSelected])
 
 
-  if(userInfo.employeeID == "-1" || !userInfo.backgroundCheck){
+  if(userInfo.employeeID == "-1" || !userInfo.backgroundCheckStatus){
     return(
       <ImageBackground
       style={[commonStyles.background, {flex: 1}]}

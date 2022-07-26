@@ -23,7 +23,7 @@ const MyAccount = ({ navigation }) => {
 
     const resetAndLogout = async() => {
       dispatch(resetState())
-      dispatch(logout({type: authUser['custom:type'], id: userInfo.userID}))
+      dispatch(logout({type: authUser['custom:type'], id: userInfo.id}))
     }
 
   return (
@@ -68,9 +68,11 @@ const MyAccount = ({ navigation }) => {
                     <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('AboutUsers')}}>
                       <Text style={[styles.generalText, {color: 'blue'}]}>About Users</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('Terms')}}>
-                      <Text style={[styles.generalText, {color: 'blue'}]}>User Policies</Text>
-                    </TouchableOpacity>
+                    {authUser['custom:type'] == 'User' || authUser['custom:type']  == 'Manager' ? (
+                      <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('Terms')}}>
+                        <Text style={[styles.generalText, {color: 'blue'}]}>User Policies</Text>
+                      </TouchableOpacity>
+                    ): <></>}
                     <TouchableOpacity style={{margin: 5}} onPress={() => {navigation.navigate('AboutProviders')}}>
                       <Text style={[styles.generalText, {color: 'blue'}]}>About Providers</Text>
                     </TouchableOpacity>

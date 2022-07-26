@@ -39,7 +39,7 @@ const UserHome = ({ navigation }) => {
     setLoading(true)
     setRefreshing(true);
     dispatch(initializeJobs({
-      userID: userInfo.userID
+      userID: userInfo.id
     }))
     setRefreshing(false);
     setLoading(false)
@@ -49,7 +49,7 @@ const UserHome = ({ navigation }) => {
   useEffect(() => {
     //Get user's current jobs
     if(!initialized){
-      dispatch(initializeJobs({userID: userInfo.userID}))
+      dispatch(initializeJobs({userID: userInfo.id}))
     }
     //TESTING
     // setJobList(getManyJobs())

@@ -46,7 +46,7 @@ const EditAccountUser = ({ navigation }) => {
   //change phone number
   const submitData = async (data) => {
     if(data.phoneNumber || checkedBtn != userInfo.contactMethod){
-      const original = await DataStore.query(User, userInfo.userID);
+      const original = await DataStore.query(User, userInfo.id);
       //only change phone
       if(data.phoneNumber && checkedBtn == userInfo.contactMethod){
         let isValid = phoneUtil.isValidNumber(phoneUtil.parse(data.phoneNumber, 'US'))
@@ -58,20 +58,11 @@ const EditAccountUser = ({ navigation }) => {
         }
         else{
           try {
-            await DataStore.save(
+            let newInfo = await DataStore.save(
               User.copyOf(original, (updated) => {
                 updated.phoneNumber = data.phoneNumber
               })
             );
-      
-            let newInfo = {
-              userID: original.id,
-              firstName: original.firstName,
-              lastName: original.lastName,
-              address: original.address,
-              phoneNumber: data.phoneNumber,
-              contactMethod: original.contactMethod
-            };
             dispatch(changeUserInfo({ userInfo: newInfo }));
             setphoneNumber(data.phoneNumber);
             createToast('Phone number has been changed')
@@ -86,20 +77,11 @@ const EditAccountUser = ({ navigation }) => {
       //only change contact
       if(!data.phoneNumber && checkedBtn != userInfo.contactMethod){
         try {
-          await DataStore.save(
+          let newInfo = await DataStore.save(
             User.copyOf(original, (updated) => {
               updated.contactMethod = checkedBtn
             })
           );
-    
-          let newInfo = {
-            userID: original.id,
-            firstName: original.firstName,
-            lastName: original.lastName,
-            address: original.address,
-            phoneNumber: original.phoneNumber,
-            contactMethod: checkedBtn
-          };
           dispatch(changeUserInfo({ userInfo: newInfo }));
           createToast('Method of contact has been changed')
         } catch (error) {
@@ -120,21 +102,12 @@ const EditAccountUser = ({ navigation }) => {
         }
         else{
           try {
-            await DataStore.save(
+            let newInfo = await DataStore.save(
               User.copyOf(original, (updated) => {
                 updated.phoneNumber = data.phoneNumber
                 updated.contactMethod = checkedBtn
               })
             );
-      
-            let newInfo = {
-              userID: original.id,
-              firstName: original.firstName,
-              lastName: original.lastName,
-              address: original.address,
-              phoneNumber: data.phoneNumber,
-              contactMethod: checkedBtn
-            };
             dispatch(changeUserInfo({ userInfo: newInfo }));
             setphoneNumber(data.phoneNumber);
             createToast('Phone number and method of contact has been changed')
@@ -177,7 +150,7 @@ const EditAccountUser = ({ navigation }) => {
   //Delete address
   const deleteAddress = async () => {
     setStartDelete(true);
-    const original = await DataStore.query(User, userInfo.userID);
+    const original = await DataStore.query(User, userInfo.id);
     let list = [];
 
     for (let next of original.address) {
@@ -264,16 +237,16 @@ const EditAccountUser = ({ navigation }) => {
           </View>
         </Modal>
 
-        <View style={styles.inputContainer}>
-            <Text style={styles.nameText}>{userInfo.firstName} {userInfo.lastName}</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("ChangePassword", {name: "ChangePassword"})} style={[styles.passwordBtn, {marginTop: 20}]}>
-                <Text style={styles.editText}>Change Password</Text>
-            </TouchableOpacity>
-        </View>
 
         <View style={[styles.inputContainer, {marginTop: 10}]}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15}}>
+            <Text style={styles.nameText}>{userInfo.firstName} {userInfo.lastName}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("ChangePassword", {name: "ChangePassword"})} style={[styles.passwordBtn]}>
+                <Text style={styles.editText}>Change Password</Text>
+            </TouchableOpacity>
+          </View>
           {/* phone number */}
-          <Text style={styles.generalText}>Edit your phone number below</Text>
+          <Text style={styles.generalText}>Edit your phone number below and click change</Text>
           <UserInput
             style={styles.input}
             name="phoneNumber"
@@ -285,8 +258,8 @@ const EditAccountUser = ({ navigation }) => {
             placeholder={phoneNumber}
             control={control}
           />
-          <Text style={[styles.generalText, {marginTop: 20, borderBottomWidth: 1, alignSelf: 'center'}]}>Preferred Method of Contact:</Text>
-          <View style={{flexDirection: "row", alignItems: 'center', justifyContent:'center'}}>
+          <Text style={[styles.generalText, {marginTop: 20, borderBottomWidth: 1, alignSelf: 'flex-start'}]}>Preferred Method of Contact:</Text>
+          <View style={{flexDirection: "row", alignItems: 'center'}}>
               <RadioButton
                 value="phone"
                 status={checkedBtn === 'phone' ? 'checked': 'unchecked'}
@@ -302,32 +275,29 @@ const EditAccountUser = ({ navigation }) => {
               />
               <Text style={styles.generalText}>Email</Text>
           </View>
-          <TouchableOpacity onPress={handleSubmit(submitData)} style={styles.button}>
+          <TouchableOpacity onPress={handleSubmit(submitData)} style={[styles.button, {alignSelf: 'flex-end', marginTop: -60}]}>
             <Text style={styles.btnText}>Change</Text>
           </TouchableOpacity>
         </View>
 
         {/* address */}
-        <Text style={[styles.generalText, styles.addressText]}>
-          Add or remove an address
-        </Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 15}}>
+          <Text style={[styles.generalText, styles.addressText, {marginLeft: 10}]}>Add or remove an address</Text>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("AddAddress", { name: "AddAddress" })
+            }
+            style={{marginRight: 10}}
+          >
+            <MaterialIcons name="add-circle" size={50} />
+          </TouchableOpacity>
+        </View>
         <View style={{ flex: 1 }}>
           <FlatList
             data={address}
             keyExtractor={(item) => item.street}
             renderItem={({ item }) => <GetAddress item={item} />}
           />
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("AddAddress", { name: "AddAddress" })
-            }
-            style={{ alignItems: "center", alignSelf: "center", marginTop: 20 }}
-          >
-            <MaterialIcons name="add-circle" size={50} />
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </ImageBackground>
@@ -348,7 +318,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   inputContainer: {
-    alignItems: "center",
+    // alignItems: "center",
     borderColor: "rgba(0,221,255,0.7)",
     borderWidth: 1,
     backgroundColor: "rgba(0,221,255,0.7)",
@@ -426,8 +396,6 @@ const styles = StyleSheet.create({
   nameText: {
     fontFamily: "Montserrat-Bold",
     fontSize: 25,
-    justifyContent: "center",
-    alignItems: "center",
   },
   passwordBtn: {
     justifyContent: "center",
@@ -436,7 +404,6 @@ const styles = StyleSheet.create({
     height: 35,
     backgroundColor: "black",
     borderRadius: 10,
-    marginVertical: 10,
   },
   editText: {
     color: "white",

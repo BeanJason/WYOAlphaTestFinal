@@ -32,7 +32,7 @@ import {
     useEffect(() => {
       //get old jobs
       if(!initialized){
-        dispatch(initializeJobs(userInfo.userID))
+        dispatch(initializeJobs(userInfo.id))
       }    
 
       setJobList(jobHistory)

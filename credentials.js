@@ -52,23 +52,14 @@ const getUserData = async (attributes) => {
        if(userData[0] == null || userData[0] == undefined){
         return null
        }
+       let userInfo = userData[0]
        console.log('found user');
-       const userInfo = {
-            userID: userData[0].id,
-            firstName: userData[0].firstName,
-            lastName: userData[0].lastName,
-            address: userData[0].address,
-            phoneNumber: userData[0].phoneNumber,
-            contactMethod: userData[0].contactMethod,
-            expoToken: userData[0].expoToken
-       }
        let token = await getNotificationToken();
        if(userInfo.expoToken != token){
         if(token != "" && token != null){
-            await DataStore.save(User.copyOf(userData[0], (updated) => {
+            userInfo = await DataStore.save(User.copyOf(userData[0], (updated) => {
                 updated.expoToken = token
             }))
-            userInfo.expoToken = token
         }
        }
        return userInfo
@@ -85,40 +76,22 @@ const getProviderData = async (attributes) => {
         if(userData[0] == null || userData[0] == undefined){
             return null
         }
-        let pictureUrl
-        if(userData[0].profilePictureURL != null && userData[0].profilePictureURL != ''){
-            pictureUrl = await Storage.get(userData[0].profilePictureURL, {
-                level: 'public',
-            })
-        }
+        let userInfo = userData[0]
         //check if background check is expired
-        let date = new Date(userData[0].backgroundCheckStatus)
+        let date = new Date(userInfo.backgroundCheckDate)
+        date.setFullYear(date.getFullYear() + 1)
         let today = new Date()
-        let backStatus = userData[0].backgroundCheckStatus
-        if(today.toDateString() >= date.toDateString()){
-            backStatus = false
-        }
-        const userInfo = {
-            userID: userData[0].id,
-            firstName: userData[0].firstName,
-            lastName: userData[0].lastName,
-            address: userData[0].address,
-            phoneNumber: userData[0].phoneNumber,
-            biography: userData[0].biography,
-            backgroundCheck: backStatus,
-            backgroundCheckDate: userData[0].backgroundCheckDate,
-            profilePicture: pictureUrl ? pictureUrl : '',
-            expoToken: userData[0].expoToken,
-            isBan: userData[0].isBan,
-            employeeID: userData[0].employeeID
+        if(userInfo.backgroundCheckStatus == true && (today.toDateString() >= date.toDateString())){
+            userInfo = await DataStore.save(Provider.copyOf(userData[0], (updated) => {
+                updated.backgroundCheckStatus = false
+            }))
         }
         let token = await getNotificationToken();
-       if(userInfo.expoToken != token){
+        if(userInfo.expoToken != token){
         if(token != "" && token != null){
-            await DataStore.save(Provider.copyOf(userData[0], (updated) => {
+           userInfo = await DataStore.save(Provider.copyOf(userData[0], (updated) => {
                 updated.expoToken = token
             }))
-            userInfo.expoToken = token
         }
        }
         return userInfo
@@ -128,27 +101,32 @@ const getProviderData = async (attributes) => {
      }
 }
 
+//get profile pic
+export const getProviderPicture = async(profilePictureURL) => {
+    //check profile picture
+    let pictureUrl = ""
+    if(profilePictureURL != null && profilePictureURL != ''){
+        pictureUrl = await Storage.get(profilePictureURL, {
+            level: 'public',
+        })
+    }
+    return pictureUrl
+}
+
 const getManagerData = async(attributes) => {
     try {
         const userData = await DataStore.query(Manager, user => user.subID("eq", attributes.sub))
         if(userData[0] == null || userData[0] == undefined){
          return null
         }
-        console.log('found user');
-        const userInfo = {
-             userID: userData[0].id,
-             firstName: userData[0].firstName,
-             lastName: userData[0].lastName,
-             expoToken: userData[0].expoToken,
-             phoneNumber: userData[0].phoneNumber
-        }
+        let userInfo = userData[0]
+
         let token = await getNotificationToken();
-       if(userInfo.expoToken != token){
+        if(userInfo.expoToken != token){
         if(token != "" && token != null){
-            await DataStore.save(Manager.copyOf(userData[0], (updated) => {
+            userInfo = await DataStore.save(Manager.copyOf(userData[0], (updated) => {
                 updated.expoToken = token
             }))
-            userInfo.expoToken = token
         }
        }
         return userInfo

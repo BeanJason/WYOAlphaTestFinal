@@ -39,7 +39,7 @@ import {
         }
         else{
           //Success
-          let original = await DataStore.query(Provider, userInfo.userID);
+          let original = await DataStore.query(Provider, userInfo.id);
   
           let addressArray = {
             street: address,
@@ -50,22 +50,9 @@ import {
           };
   
           try {
-              await DataStore.save(Provider.copyOf(original, updated => {
+              let newInfo = await DataStore.save(Provider.copyOf(original, updated => {
                   updated.address = JSON.stringify(addressArray)
               }))
-              let newInfo = {
-                userID: original.id,
-                firstName: original.firstName,
-                lastName: original.lastName,
-                address: JSON.stringify(addressArray),
-                phoneNumber: original.phoneNumber,
-                biography: original.biography,
-                backgroundCheck: original.backgroundCheckStatus,
-                backgroundCheckDate: original.backgroundCheckDate,
-                profilePicture: original.profilePictureURL,
-                isBan: original.isBan,
-                employeeID: original.employeeID
-            }
             dispatch(changeUserInfo({userInfo: newInfo}))
             navigation.reset({ routes: [{name: 'EditAccountProvider'}]})
             navigation.navigate('EditAccountProvider', {name: 'EditAccountProvider'})

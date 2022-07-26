@@ -69,7 +69,7 @@ const JobSignUp = ({ route, navigation }) => {
   const getProviders = async () => {
     //set main provider if available
     if (jobInfo.mainProvider) {
-      if (jobInfo.mainProvider == userInfo.userID) {
+      if (jobInfo.mainProvider == userInfo.id) {
         setMainProvider(`${userInfo.firstName} ${userInfo.lastName}`);
       } else {
         await DataStore.query(Provider, jobInfo.mainProvider).then((providerFound) => {
@@ -98,12 +98,12 @@ const JobSignUp = ({ route, navigation }) => {
     //sign up as main
     const original = await DataStore.query(Job, jobInfo.id);
     if (role == "Main Provider") {
-      jobInfo.mainProvider = userInfo.userID
+      jobInfo.mainProvider = userInfo.id
       let ids = await createProviderReminder(jobInfo)
       try {
         await DataStore.save(
           Job.copyOf(original, (updated) => {
-            updated.mainProvider = userInfo.userID;
+            updated.mainProvider = userInfo.id
             updated.currentStatus = 'ACCEPTED'
             updated.providerNotificationID?.push(ids[0])
             updated.providerNotificationID?.push(ids[1])
@@ -137,7 +137,7 @@ const JobSignUp = ({ route, navigation }) => {
       try {
         await DataStore.save(
           Job.copyOf(original, (updated) => {
-            updated.backupProviders.push(userInfo.userID);
+            updated.backupProviders.push(userInfo.id);
           })
         );
         //if success

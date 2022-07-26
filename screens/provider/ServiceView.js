@@ -51,6 +51,8 @@ const ServiceView = ({ route, navigation }) => {
   const [isServiceDay, setIsServiceDay] = useState(false)
   const [loadingLocation, setLoadingLocation] = useState(false)
   const [canCancel, setCanCancel] = useState(true)
+  const [checkInOutLoading, setCheckInOutLoading] = useState(false)
+  const [backLocationStarted, setBackLocationStarted] = useState(false)
 
   const getDateFormat = () => {
     let formatDate = new Date(jobInfo.requestDateTime)
@@ -70,7 +72,9 @@ const ServiceView = ({ route, navigation }) => {
 
     //check in btn?
     let today = new Date()
-    if(today.toDateString() == formatDate.toDateString()){
+    console.log('today: ' + today.toDateString());
+    console.log('request: ' + formatDate.toDateString());
+    if(today.getDate() == formatDate.getDate() && today.getMonth() == formatDate.getMonth() && today.getFullYear() == formatDate.getFullYear()){
       setIsServiceDay(true)
     } 
 
@@ -79,11 +83,15 @@ const ServiceView = ({ route, navigation }) => {
     if(today > formatDate){
       setIsCancelOffense(true)
     }
+
+    if(jobInfo.checkInTime){
+      setCanCancel(false)
+    }
   }
   const getProviders = async () => {
     //set main provider if available
     if(jobInfo.mainProvider){
-      if(jobInfo.mainProvider == userInfo.userID){
+      if(jobInfo.mainProvider == userInfo.id){
         setMainProvider(`${userInfo.firstName} ${userInfo.lastName}`);
       }
       else{
@@ -92,6 +100,7 @@ const ServiceView = ({ route, navigation }) => {
         });
       }
     }
+    setLoading(false)
   }
 
 
@@ -106,12 +115,15 @@ const ServiceView = ({ route, navigation }) => {
       let newLng = response.results[0].geometry.location.lng
       setLat(newLat)
       setLng(newLng)
-      setLoading(false)
     }
   }
 
   //recheck before checkin/out
   const recheck = async() => {
+    const hasStarted = await Location.hasStartedLocationUpdatesAsync('BACKGROUND_LOCATION')
+    if(!hasStarted){
+      await startBackgroundLocation()
+    }
     let current = await Location.getCurrentPositionAsync({})
     let check = isPointWithinRadius(
       {latitude: current.coords.latitude, longitude: current.coords.longitude},
@@ -121,7 +133,8 @@ const ServiceView = ({ route, navigation }) => {
   }
 
   //check in function
-  const checkIn = async () => {    
+  const checkIn = async () => { 
+    setCheckInOutLoading(true)   
     if(await recheck()){
       const original = await DataStore.query(Job, jobInfo.id)
       let today = new Date()
@@ -146,7 +159,7 @@ const ServiceView = ({ route, navigation }) => {
       let managers = await DataStore.query(Manager)
       let messageInfo2 = {
         title: 'Checked In',
-        message:  `Provider ${mainProvider} has just checked in to the job titled ${jobInfo.title} made by the client ${owner.firstName} ${owner.lastName}`,
+        message:  `Provider ${mainProvider} has just checked in to the job titled ${jobInfo.jobTitle} made by the client ${owner.firstName} ${owner.lastName}`,
         data: {jobID: jobInfo.id}
       }
       for(let next of managers){
@@ -160,10 +173,12 @@ const ServiceView = ({ route, navigation }) => {
     else{
       createToast('Check in failed! Please go to the job site to check in')
     }
+    setCheckInOutLoading(false)
   }
 
   //check out function
   const checkOut = async () => {
+    setCheckInOutLoading(true) 
     if(await recheck()){
       const original = await DataStore.query(Job, jobInfo.id)
       let today = new Date()
@@ -174,13 +189,14 @@ const ServiceView = ({ route, navigation }) => {
       createToast('You have successfully checked out of the job')
       let newJobInfo = {...jobInfo}
       newJobInfo.checkInTime = today.toString()
+      newJobInfo.currentStatus = 'COMPLETED'
       dispatch(addOrRemoveJob({ type: "REMOVE_ACTIVE_JOB", jobInfo }));
       dispatch(addOrRemoveJob({ type: "ADD_COMPLETED_JOB", jobInfo: newJobInfo }));
       await decrementZipCodeCount({zipCode: jobInfo.zipCode})
       let managers = await DataStore.query(Manager)
       let messageInfo = {
         title: 'Checked Out',
-        message:  `Provider ${mainProvider} has just checked out of their ${jobInfo.title} job request made by the client ${owner.firstName} ${owner.lastName}`,
+        message:  `Provider ${mainProvider} has just checked out of their ${jobInfo.jobTitle} job request made by the client ${owner.firstName} ${owner.lastName}`,
         data: {jobID: jobInfo.id}
       }
       for(let next of managers){
@@ -190,6 +206,7 @@ const ServiceView = ({ route, navigation }) => {
       }
       setAllowCheckIn(false)
       setAllowCheckOut(false)
+      setCanCancel(false)
       if(await TaskManager.isTaskRegisteredAsync('BACKGROUND_LOCATION')){
         await Location.stopLocationUpdatesAsync('BACKGROUND_LOCATION')
         console.log('turned off');
@@ -199,6 +216,7 @@ const ServiceView = ({ route, navigation }) => {
       setAllowCheckOut(false)
       createToast('Check out failed! Please go to the job site to check out')
     }
+    setCheckInOutLoading(false)
   }
 
   //cancel job function
@@ -214,7 +232,7 @@ const ServiceView = ({ route, navigation }) => {
 
     if(original){
       //if provider was the main get the next backup and set as main if available
-      if(original.mainProvider == userInfo.userID){
+      if(original.mainProvider == userInfo.id){
         if(original.backupProviders.length != 0){
           let newMain = original.backupProviders[0]
           //cancel notifications
@@ -249,12 +267,21 @@ const ServiceView = ({ route, navigation }) => {
             }
             await sendNotificationToUser(original.requestOwner, messageInfo2)
             if(isCancelOffense){
-              let providerOriginal = await DataStore.query(Provider, userInfo.userID)
+              let providerOriginal = await DataStore.query(Provider, userInfo.id)
               let count = providerOriginal.offenses
               count += 1
-              await DataStore.save(Provider.copyOf(providerOriginal, updated => {
-                updated.offenses = count
-              }))
+              if(count >= 2){
+                await DataStore.save(Provider.copyOf(providerOriginal, updated => {
+                  updated.isBan = true;
+                  updated.offenses = count
+                }))
+              }
+              else{
+                await DataStore.save(Provider.copyOf(providerOriginal, updated => {
+                  updated.offenses = count
+                }))
+              }
+              createToast('You have received an offense on your account')
             }
           } catch (error) {
               console.log(error);
@@ -281,12 +308,21 @@ const ServiceView = ({ route, navigation }) => {
             }
             await sendNotificationToUser(original.requestOwner, messageInfo)
             if(isCancelOffense){
-              let providerOriginal = await DataStore.query(Provider, userInfo.userID)
+              let providerOriginal = await DataStore.query(Provider, userInfo.id)
               let count = providerOriginal.offenses
               count += 1
-              await DataStore.save(Provider.copyOf(providerOriginal, updated => {
-                updated.offenses = count
-              }))
+              if(count >= 2){
+                await DataStore.save(Provider.copyOf(providerOriginal, updated => {
+                  updated.isBan = true;
+                  updated.offenses = count
+                }))
+              }
+              else{
+                await DataStore.save(Provider.copyOf(providerOriginal, updated => {
+                  updated.offenses = count
+                }))
+              }
+              createToast('You have received an offense on your account')
             }
           } catch (error) {
               console.log(error);
@@ -294,10 +330,10 @@ const ServiceView = ({ route, navigation }) => {
         }
       }
       //If provider was a backup
-      else if(original.backupProviders.includes(userInfo.userID)){
+      else if(original.backupProviders.includes(userInfo.id)){
         try {
           await DataStore.save(Job.copyOf(original, updated => {
-            updated.backupProviders = updated.backupProviders.filter(id => id != userInfo.userID)
+            updated.backupProviders = updated.backupProviders.filter(id => id != userInfo.id)
           }))
         } catch (error) {
             console.log(error);
@@ -325,7 +361,7 @@ const ServiceView = ({ route, navigation }) => {
       try {
         let current = await Location.getCurrentPositionAsync({})
         if(current){
-          let original = await DataStore.query(Provider, userInfo.userID)
+          let original = await DataStore.query(Provider, userInfo.id)
           try {
             await DataStore.save(Provider.copyOf(original, (updated) => {
               updated.currentLocation = JSON.stringify({latitude: current.coords.latitude, longitude: current.coords.longitude, dateUpdated: new Date().toString()})
@@ -395,9 +431,9 @@ const ServiceView = ({ route, navigation }) => {
             const hasStarted = await Location.hasStartedLocationUpdatesAsync('BACKGROUND_LOCATION')
             if(hasStarted){
               console.log('already started location tracking');
+              setBackLocationStarted(true);
             }
             else{
-              createToast('Please turn on your GPS before attempting to check in')
               console.log('starting track');
               await Location.startLocationUpdatesAsync('BACKGROUND_LOCATION', {
                 showsBackgroundLocationIndicator: true,
@@ -409,7 +445,7 @@ const ServiceView = ({ route, navigation }) => {
                 },
                 deferredUpdatesInterval: 600000,
               })
-              createToast('Your location is now being checked')
+              setBackLocationStarted(true);
             }
           }
         }
@@ -417,37 +453,34 @@ const ServiceView = ({ route, navigation }) => {
           createToast('You must enable background location permissions in order to check in')
         }
       }
-     
-      
-    
+      setLoading(false) 
   }
-
-
-
-
-  //whenever provider position changes 
-  useEffect(() => {
-    if(position != null){
-      checkProviderRadius()
-    }
-  },[position])
 
  
   useEffect(() => {
     dispatch(resetLocation())
+    setCoordinatesForMap()
     getDateFormat()
     getProviders()
-    if(jobInfo.checkInTime){
-      setCanCancel(false)
+  },[])
+
+   //whenever provider position changes 
+   useEffect(() => {
+    if(position != null){
+      if(backLocationStarted){
+        checkProviderRadius()
+      }
     }
+  },[position])
+
+  useEffect(()=> {
     if(isServiceDay && (!jobInfo.checkInTime || !jobInfo.checkOutTime)){
       checkBackgroundTask()
       getCurrentLocation()
       startBackgroundLocation()
-      createToast('Your location is now being marked')
+      createToast('Your location is now being checked')
     }
-    setCoordinatesForMap()
-  },[])
+  },[isServiceDay])
 
   return (
     <KeyboardAwareScrollView>
@@ -536,20 +569,28 @@ const ServiceView = ({ route, navigation }) => {
                 )}
                 <View style={{alignItems: 'flex-end'}}>
                 {allowCheckIn ? (
-                  <TouchableOpacity
-                  onPress={() => checkIn()}
-                  style={styles.button}
-                  >
-                  <Text style={styles.btnText}>Check In</Text> 
-                  </TouchableOpacity>
+                  <View>
+                    {checkInOutLoading ? <Spinner/> : (
+                      <TouchableOpacity
+                      onPress={() => checkIn()}
+                      style={styles.button}
+                      >
+                      <Text style={styles.btnText}>Check In</Text> 
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 ): <></>}
                 {allowCheckOut ? (
-                  <TouchableOpacity
-                  onPress={() => checkOut()}
-                  style={styles.button}
-                  >
-                  <Text style={styles.btnText}>Check Out</Text> 
-                  </TouchableOpacity>
+                  <View>
+                    {checkInOutLoading ? <Spinner/> : (
+                      <TouchableOpacity
+                      onPress={() => checkOut()}
+                      style={styles.button}
+                      >
+                      <Text style={styles.btnText}>Check Out</Text> 
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 ): <></>}
               </View>
 

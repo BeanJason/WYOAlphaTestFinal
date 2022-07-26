@@ -41,7 +41,9 @@ const EmployeeMain = ({ navigation }) => {
     let filter = {
       and : [
         {_deleted: {ne: true} },
-        {employeeID: {ne: "-1"}}
+        {employeeID: {ne: "-1"}},
+        {employeeID: {ne: "-200"}}
+
       ]
     }
     const response = await API.graphql({query: queries.listProviders , variables: {filter: filter}})

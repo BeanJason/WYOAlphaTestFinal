@@ -69,7 +69,7 @@ const ProviderJobInfo = ({ route, navigation }) => {
   const getProviders = async () => {
     //set main provider if available
     if(jobInfo.mainProvider){
-      if(jobInfo.mainProvider == userInfo.userID){
+      if(jobInfo.mainProvider == userInfo.id){
         setMainProvider(`${userInfo.firstName} ${userInfo.lastName}`);
       }
       else{
@@ -117,7 +117,7 @@ const ProviderJobInfo = ({ route, navigation }) => {
 
     if(original){
       //if provider was the main get the next backup and set as main if available
-      if(original.mainProvider == userInfo.userID){
+      if(original.mainProvider == userInfo.id){
         //if backups are available
         if(original.backupProviders.length != 0){
           let newMain = original.backupProviders[0]
@@ -153,12 +153,21 @@ const ProviderJobInfo = ({ route, navigation }) => {
             }
             await sendNotificationToUser(original.requestOwner, messageInfo2)
             if(isCancelOffense){
-              let providerOriginal = await DataStore.query(Provider, userInfo.userID)
+              let providerOriginal = await DataStore.query(Provider, userInfo.id)
               let count = providerOriginal.offenses
               count += 1
-              await DataStore.save(Provider.copyOf(providerOriginal, updated => {
-                updated.offenses = count
-              }))
+              if(count >= 2){
+                await DataStore.save(Provider.copyOf(providerOriginal, updated => {
+                  updated.isBan = true;
+                  updated.offenses = count
+                }))
+              }
+              else{
+                await DataStore.save(Provider.copyOf(providerOriginal, updated => {
+                  updated.offenses = count
+                }))
+              }
+              createToast('You have received an offense on your account')
             }
           } catch (error) {
               console.log(error);
@@ -185,12 +194,21 @@ const ProviderJobInfo = ({ route, navigation }) => {
             }
             await sendNotificationToUser(original.requestOwner, messageInfo)
             if(isCancelOffense){
-              let providerOriginal = await DataStore.query(Provider, userInfo.userID)
+              let providerOriginal = await DataStore.query(Provider, userInfo.id)
               let count = providerOriginal.offenses
               count += 1
-              await DataStore.save(Provider.copyOf(providerOriginal, updated => {
-                updated.offenses = count
-              }))
+              if(count >= 2){
+                await DataStore.save(Provider.copyOf(providerOriginal, updated => {
+                  updated.isBan = true;
+                  updated.offenses = count
+                }))
+              }
+              else{
+                await DataStore.save(Provider.copyOf(providerOriginal, updated => {
+                  updated.offenses = count
+                }))
+              }
+              createToast('You have received an offense on your account')
             }
           } catch (error) {
               console.log(error);
@@ -198,10 +216,10 @@ const ProviderJobInfo = ({ route, navigation }) => {
         }
       }
       //If provider was a backup
-      else if(original.backupProviders.includes(userInfo.userID)){
+      else if(original.backupProviders.includes(userInfo.id)){
         try {
           await DataStore.save(Job.copyOf(original, updated => {
-            updated.backupProviders = updated.backupProviders.filter(id => id != userInfo.userID)
+            updated.backupProviders = updated.backupProviders.filter(id => id != userInfo.id)
           }))
         } catch (error) {
             console.log(error);

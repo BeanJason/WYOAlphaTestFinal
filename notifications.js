@@ -288,7 +288,7 @@ export const sendNotificationToUser = async(userID, messageInfo) => {
         token: token,
         title: messageInfo.title,
         message: messageInfo.message,
-        data: messageInfo.data || {}
+        data: messageInfo.data ? JSON.stringify(messageInfo.data) : {}
       }))
     } catch (error) {
       console.log(error);
@@ -305,7 +305,7 @@ export const sendNotificationToProvider = async(userID, messageInfo) => {
         token: token,
         title: messageInfo.title,
         message: messageInfo.message,
-        data: messageInfo.data || {}
+        data: messageInfo.data ? JSON.stringify(messageInfo.data) : {}
       }))
     } catch (error) {
       console.log(error);
@@ -321,7 +321,7 @@ export const sendNotificationToManager = async(token, messageInfo) => {
         token: token,
         title: messageInfo.title,
         message: messageInfo.message,
-        data: messageInfo.data || {}
+        data: messageInfo.data ? JSON.stringify(messageInfo.data) : {}
       }))
     } catch (error) {
       console.log(error);

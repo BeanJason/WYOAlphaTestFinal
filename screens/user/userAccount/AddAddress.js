@@ -37,7 +37,7 @@ const AddAddress = ({ navigation }) => {
         setAddressError('Your address must be in the state of Michigan')
       }
       else{
-        let original = await DataStore.query(User, userInfo.userID);
+        let original = await DataStore.query(User, userInfo.id);
         let newAddr = {
           street: address,
           city: city,
@@ -48,19 +48,11 @@ const AddAddress = ({ navigation }) => {
         let list = Array.from(original.address);
         list.push(JSON.stringify(newAddr));
         try {
-          await DataStore.save(
+          let newInfo = await DataStore.save(
             User.copyOf(original, (updated) => {
               updated.address.push(JSON.stringify(newAddr));
             })
           );
-          let newInfo = {
-            userID: original.id,
-            firstName: original.firstName,
-            lastName: original.lastName,
-            address: list,
-            phoneNumber: original.phoneNumber,
-            contactMethod: original.contactMethod,
-          };
           dispatch(changeUserInfo({ userInfo: newInfo }));
           navigation.reset({ routes: [{ name: "EditAccountUser" }] });
           navigation.navigate("EditAccountUser", { name: "EditAccountUser" });

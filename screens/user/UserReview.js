@@ -28,7 +28,6 @@ const UserReview = ({ navigation, route }) => {
     control,
     handleSubmit,
     formState: { errors },
-    setError,
   } = useForm();
 
   //Submit the user input

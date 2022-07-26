@@ -37,7 +37,7 @@
         },
         "SendNotification": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/SendNotification-5447314569594b5a6849-build.zip"
+          "s3Key": "amplify-builds/SendNotification-45447459646d586e4e6d-build.zip"
         },
         "SendEmail": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",

@@ -21,12 +21,13 @@ exports.handler = async (event) => {
   }
 
   let messages = [];
+  console.log(event.arguments)
   messages.push({
     to: event.arguments.token,
     sound: "default",
     title: event.arguments.title,
     body: event.arguments.message,
-    data: event.arguments.data || {},
+    data: event.arguments.data ? JSON.parse(event.arguments.data) : {},
     "content-available": "1",
   });
   let chunks = expo.chunkPushNotifications(messages);

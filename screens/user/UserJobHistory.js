@@ -18,7 +18,7 @@ import {
 
   
   const UserJobHistory = ({ navigation }) => {
-    const { authUser, userInfo } = useSelector((state) => state.auth);
+    const { userInfo } = useSelector((state) => state.auth);
     const { initialized, jobHistory } = useSelector((state) => state.jobs);
     const dispatch = useDispatch()
     const [jobList, setJobList] = useState([]);
@@ -32,7 +32,7 @@ import {
     useEffect(() => {
       //get old jobs
       if(!initialized){
-        dispatch(initializeJobs(userInfo.userID))
+        dispatch(initializeJobs(userInfo.id))
       }    
 
       setJobList(jobHistory)

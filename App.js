@@ -11,8 +11,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch, Provider } from "react-redux";
 import {Amplify, DataStore, Hub } from "aws-amplify"
 import {Provider as ProviderModel} from "./src/models"
-import { checkCredentials } from "./credentials";
-import { changeUserStatus } from "./redux/authReducer";
+import { checkCredentials, getProviderPicture } from "./credentials";
+import { changeProviderPicture, changeUserStatus } from "./redux/authReducer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from "expo-asset"
@@ -96,13 +96,15 @@ TaskManager.defineTask('BACKGROUND_LOCATION', async ({data, error}) => {
       
         if(state.auth.loggedIn && location){
             console.log('updating location');
-            let original = await DataStore.query(ProviderModel, userInfo.userID)
-            try {
-                await DataStore.save(ProviderModel.copyOf(original, (updated) => {
-                updated.currentLocation = JSON.stringify({latitude: location.coords.latitude, longitude: location.coords.longitude, dateUpdated: new Date()})
-              }))
-            } catch (error) {
-              console.log(error);
+            if(state.auth.userInfo){
+              let original = await DataStore.query(ProviderModel, state.auth.userInfo.id)
+              try {
+                  await DataStore.save(ProviderModel.copyOf(original, (updated) => {
+                  updated.currentLocation = JSON.stringify({latitude: location.coords.latitude, longitude: location.coords.longitude, dateUpdated: new Date()})
+                }))
+              } catch (error) {
+                console.log(error);
+              }
             }
             Store.dispatch(updateLocation(location.coords))
         }
@@ -210,6 +212,12 @@ const RootNavigation = () => {
       else{
         dispatch(resetState())
         dispatch(changeUserStatus({authUser, userInfo}))
+        if(authUser['custom:type'] == 'Provider'){
+          let pic = await getProviderPicture(userInfo.profilePictureURL)
+          if(pic != "" && pic != null){
+            dispatch(changeProviderPicture(pic))
+          }
+        }
       }
     }
     setLoading(false)

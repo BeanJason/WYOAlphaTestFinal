@@ -43,20 +43,14 @@ import {
               })
         }
         else{
-            const original = await DataStore.query(Manager, userInfo.userID);
+            const original = await DataStore.query(Manager, userInfo.id);
               try {
-                let res = await DataStore.save(
+                let newInfo = await DataStore.save(
                   Manager.copyOf(original, (updated) => {
                     updated.phoneNumber = data.phoneNumber
                   })
                 );
-                if(res){
-                    let newInfo = {
-                      userID: original.id,
-                      firstName: original.firstName,
-                      lastName: original.lastName,
-                      phoneNumber: data.phoneNumber,
-                    };
+                if(newInfo){
                     dispatch(changeUserInfo({ userInfo: newInfo }));
                     setphoneNumber(data.phoneNumber);
                     createToast('Phone number has been changed')
@@ -66,7 +60,7 @@ import {
                   type: 'validate',
                   message: 'Please enter a valid phone number'
                 })
-                }
+              }
         }
     };
   

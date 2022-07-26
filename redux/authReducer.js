@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Auth } from "aws-amplify";
 import { DataStore } from "aws-amplify";
-import { checkCredentials } from "../credentials";
+import { checkCredentials, getProviderPicture } from "../credentials";
 import {User, Provider, Manager} from "../src/models"
 
 //Initial values
@@ -13,6 +13,7 @@ const initialState = {
   message: "",
   authUser: null,
   userInfo: null,
+  profilePicture: ""
 };
 
 //ASYNC FUNCTIONS
@@ -116,6 +117,12 @@ export const login = createAsyncThunk("auth/login", async (data, thunkAPI) => {
       return thunkAPI.rejectWithValue(message);
     }
     else if(dataCheck.authUser != null && dataCheck.userInfo != null){
+      if(dataCheck.authUser['custom:type'] == 'Provider'){
+        let pic = await getProviderPicture(dataCheck.userInfo.profilePictureURL)
+        if(pic != ""){
+          changeProviderPicture(pic)
+        }
+      }
       return {authUser: dataCheck.authUser, userInfo: dataCheck.userInfo}
     }
 }
@@ -174,6 +181,9 @@ export const authReducer = createSlice({
     changeUserInfo: (state, action) => {
       state.userInfo = action.payload.userInfo
     },
+    changeProviderPicture: (state, action) => {
+      state.profilePicture = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -227,9 +237,10 @@ export const authReducer = createSlice({
         state.authUser = null;
         state.userInfo = null;
         state.loggedIn = false;
+        state.profilePicture = "";
       });
   },
 });
 
-export const { changeUserStatus, resetState, changeUserInfo } = authReducer.actions;
+export const { changeUserStatus, resetState, changeUserInfo, changeProviderPicture } = authReducer.actions;
 export default authReducer.reducer;

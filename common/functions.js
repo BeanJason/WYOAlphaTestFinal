@@ -85,6 +85,7 @@ export const removeJobsFromProvider = async(employee) => {
                     message: 'The main provider has cancelled your job request'
                     }
                     await sendNotificationToUser(next.requestOwner, messageInfo)
+                    console.log('returned from notifyinng');
                 } catch (error) {
                     console.log(error);
                 }
@@ -239,6 +240,7 @@ export const sendRefundEmail = async (jobInfo, user, email) => {
 
 }
 
+//send provider email after registration
 export const sendProviderEmail = async (email) => {
     let html = 
     `<html>
@@ -252,14 +254,15 @@ export const sendProviderEmail = async (email) => {
                 </p>
                 <p>
                     This email confirms that your application as a WYO Provider has been successfully sent in to be processed.
-                    The final step is to send a picture of your driver's license and complete a background check at the following link:  
+                    The next step is to complete an annual background check by visiting www.michigan.gov/ichat and following the 
+                    instructions. The cost of using this service is $10.00 and will be at the expense of the applicant.
                 </p>
                 <p>
-                    Please upload your background check form and the picture of your driver's license to info@wyoservices.com. Once
-                    accepted, you will then be able to search for jobs as a provider.
+                    Once you have completed this, please upload all your results and a picture of your driver's license to info@wyoservices.com. 
+                    If you are accepted, you will receive another email and then be able to search for jobs as a provider.
                 </p>
                 <p>
-                    Thank you, we will get back with you shortly. We are excited to possibly welcome you to the team of WYO’s!
+                    Thank you, We are excited to possibly welcome you to the team of WYO's!
                 </p>
             </body>
         </head>

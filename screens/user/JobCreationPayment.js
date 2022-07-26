@@ -123,7 +123,7 @@ import { sendPaymentEmail } from "../../common/functions";
           "requestDateTime": data.requestDateTime,
           "backupProviders": [],
           "currentStatus": "REQUESTED",
-          "requestOwner": userInfo.userID,
+          "requestOwner": userInfo.id,
           "price": data.price,
           "tip": data.tip,
           "userNotificationID": [],
@@ -153,7 +153,7 @@ import { sendPaymentEmail } from "../../common/functions";
 
     //happens on page load
     useEffect(() => {
-      fetchPaymentIntent();
+      fetchPaymentIntent()
       let result = data.total / 100
       setTotal(result.toFixed(2))
     },[])
@@ -229,15 +229,13 @@ import { sendPaymentEmail } from "../../common/functions";
           <Text style={styles.headerText}>Make a payment to complete your job request</Text>
 
           <View style={{alignItems: 'center', marginTop: 20, flex: 1}}>
-            <Text style={[styles.generalText, {textAlign: 'center'}]}>Please verify all the information for your job request below</Text>
-            <Text style={styles.generalText}>Note: Refunds are only eligible within 24 hours of creating the job request</Text>
-            <View style={{flexDirection:'row'}}>
-              <Text style={styles.generalText}>By placing this job request, you understand and agree to abide by the user </Text>
+            <Text style={[styles.generalText, {textAlign: 'center', marginBottom: 15}]}>Please verify all the information for your job request below</Text>
+            <Text style={[styles.noteText, {marginBottom: 10}]}>Note: Refunds are only eligible within 24 hours of creating the job request</Text>
+              <Text style={[styles.generalText, {textAlign: 'center'}]}>By placing this job request, you understand and agree to abide by the user policies</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Terms')}>
-                <Text style={[styles.generalText, {color: 'blue'}]}>Terms</Text>
+                <Text style={[styles.generalText, {color: 'blue'}]}>User Policies</Text>
               </TouchableOpacity>
-            </View>
-            <View style={styles.jobContainer}>
+            <View style={[styles.jobContainer, {marginTop: 15}]}>
               <Text style={styles.generalText}>Job Title: {data.jobTitle}</Text>
               <Text style={styles.generalText}>Address: {data.address} {data.city} {data.zipCode}</Text>
               <Text style={styles.generalText}>Job Duration: {data.duration} Hrs.</Text>
@@ -293,9 +291,8 @@ import { sendPaymentEmail } from "../../common/functions";
       textAlign: 'center'
     },
     generalText: {
-      fontFamily: "Montserrat-Regular",
-      fontSize: 18,
-      fontWeight: "800",
+      fontFamily: "Montserrat-Bold",
+      fontSize: 17,
     },
     button: {
       justifyContent: "center",
@@ -320,9 +317,12 @@ import { sendPaymentEmail } from "../../common/functions";
       borderRadius: 10,
       padding: 10,
       width: Dimensions.get("window").width,
-      marginVertical: 10,
       elevation: 10,
     },
+    noteText: {
+    fontFamily: 'Montserrat-Italic',
+    fontSize: 15,
+  }
   });
   
   export default JobCreationPayment;

@@ -18,6 +18,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Blacklist, Provider } from "../../../src/models";
 import { removeJobsFromProvider, sendBanStatusEmail, sendProviderFiredEmail } from "../../../common/functions";
 import { createToast } from "../../../common/components/Toast";
+import { sendNotificationToProvider } from "../../../notifications";
 
 
 
@@ -33,6 +34,8 @@ const EmployeeInfo = ({ navigation, route }) => {
   const [showModal, setShowModal] = useState(false)
   const [chosenModal, setChosenModal] = useState('')
   const [operation, setOperation] = useState(false)
+  const [checkExpired, setCheckExpired] = useState(false)
+  const [checkDate, setCheckDate] = useState()
 
   const getProviderImage = async() => {
     if(employeeInfo.profilePictureURL){
@@ -57,6 +60,14 @@ const EmployeeInfo = ({ navigation, route }) => {
     //set rating
     let overall = employeeInfo.overallRating
     setRoundedOverall(Math.round(overall * 2) / 2)
+    //get background check expiration
+    date = new Date(employeeInfo.backgroundCheckDate)
+    date.setFullYear(date.getFullYear() + 1)
+    setCheckDate(date.toDateString())
+    let today = new Date()
+    if(today >= date){
+      setCheckExpired(true)
+    }
     //profile picture
     getProviderImage()
   },[])
@@ -65,6 +76,29 @@ const EmployeeInfo = ({ navigation, route }) => {
     return (
       <Spinner color={'green'} />
     )
+  }
+
+  //background check
+  const acceptBackgroundCheck = async() => {
+    let original = await DataStore.query(Provider, employeeInfo.id)
+    let today = new Date()
+    try {
+        await DataStore.save(Provider.copyOf(original, (updated) => {
+          updated.backgroundCheckStatus = true
+          updated.backgroundCheckDate = today.toString()
+        }))
+        createToast('Background check for employee has been accepted')
+        setCheckExpired(false)
+        today.setFullYear(today.getFullYear() + 1)
+        setCheckDate(today.toDateString())
+        let messageInfo = {
+          title: 'Background Check',
+          message: 'Your background check has been re-evaluated and accepted'
+        }
+        await sendNotificationToProvider(employeeInfo.id, messageInfo)
+    } catch (error) {
+        console.log(error);
+    }
   }
 
 
@@ -78,8 +112,11 @@ const EmployeeInfo = ({ navigation, route }) => {
       }))
       sendBanStatusEmail(employeeInfo.firstName, employeeInfo.email, 'unban')
       createToast('Provider has been unbanned')
-      setOperation(false)
-      navigation.navigate('EmployeeMain')
+      setTimeout(() => {
+        setOperation(false)
+        navigation.reset({ routes: [{name: 'EmployeeMain'}]})
+        navigation.navigate('EmployeeMain')
+      }, 2000);
     } catch (error) {
       console.log(error);
     }
@@ -99,9 +136,11 @@ const EmployeeInfo = ({ navigation, route }) => {
       }))
       sendBanStatusEmail(employeeInfo.firstName, employeeInfo.email, 'ban')
       createToast('Provider has been banned')
-      setOperation(false)
-      navigation.reset({ routes: [{name: 'EmployeeMain'}]})
-      navigation.navigate('EmployeeMain')
+      setTimeout(() => {
+        setOperation(false)
+        navigation.reset({ routes: [{name: 'EmployeeMain'}]})
+        navigation.navigate('EmployeeMain')
+      }, 2000);
     } catch (error) {
       console.log(error);
     }
@@ -111,15 +150,11 @@ const EmployeeInfo = ({ navigation, route }) => {
   const fireProvider = async() => {
     setOperation(true)
     console.log('fire');
-    let jobsRemoved = await removeJobsFromProvider()
-    if(jobsRemoved){
-      createToast('Provider jobs were removed successfully')
-    }
     sendProviderFiredEmail(employeeInfo.firstName, employeeInfo.email)
     let original = await DataStore.query(Provider, employeeInfo.id)
     await DataStore.save(Provider.copyOf(original, (updated) => {
       updated.isBan = true
-      updated.employeeID = -200
+      updated.employeeID = "-200"
     }))
     //add to blacklist
     await DataStore.save(new Blacklist({
@@ -127,9 +162,16 @@ const EmployeeInfo = ({ navigation, route }) => {
       "email": employeeInfo.email,
       "phoneNumber": employeeInfo.phoneNumber
     }))
-    setOperation(false)
-    navigation.navigate('EmployeeMain')
-    
+    let jobsRemoved = await removeJobsFromProvider(employeeInfo)
+    console.log(jobsRemoved);
+    if(jobsRemoved){
+      createToast('Provider jobs were removed successfully')
+    }
+    setTimeout(() => {
+      setOperation(false)
+      navigation.reset({ routes: [{name: 'EmployeeMain'}]})
+      navigation.navigate('EmployeeMain')
+    }, 2000);
   }
 
   return (
@@ -257,6 +299,10 @@ const EmployeeInfo = ({ navigation, route }) => {
                     </View>
                   </TouchableOpacity>
                 </View>
+                <View>
+                  <Text style={styles.subtitle}>Background Check Expires</Text>
+                  <Text style={styles.generalText}>{checkDate}</Text>
+                </View>
               </View>
             </View>
               <View style={{marginLeft: 10, marginTop: 10}}>
@@ -269,7 +315,16 @@ const EmployeeInfo = ({ navigation, route }) => {
               <Text style={styles.generalText}>{employeeInfo.biography}</Text>
 
               {/* Buttons */}
-              <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 30}}>
+              {checkExpired ? (
+                <View style={{alignItems: 'center', marginTop: 30}}>
+                  <TouchableOpacity onPress={() => acceptBackgroundCheck()}>
+                      <View style={[styles.button, {width: 180, height: 50}]}>
+                        <Text style={[styles.btnText, {textAlign: 'center'}]}>Re-Accept Background Check</Text>
+                      </View>
+                  </TouchableOpacity>
+                </View>
+              ): (
+                <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 30}}>
                 <TouchableOpacity onPress={() => {setChosenModal('ban'); setShowModal(true)}}>
                     <View style={styles.button}>
                       <Text style={styles.btnText}>{employeeInfo.isBan ? "Unban": "Ban"}</Text>
@@ -281,6 +336,8 @@ const EmployeeInfo = ({ navigation, route }) => {
                     </View>
                 </TouchableOpacity>
               </View>
+              )}
+              
           </View>
           
       </SafeAreaView>

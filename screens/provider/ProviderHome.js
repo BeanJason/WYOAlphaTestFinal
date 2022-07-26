@@ -21,6 +21,7 @@ import { API } from "aws-amplify";
 import { logout } from "../../redux/authReducer";
 import { useIsFocused } from "@react-navigation/native";
 import * as queries from "../../src/graphql/queries";
+import * as TaskManager from "expo-task-manager"
 
 
 
@@ -30,7 +31,7 @@ import * as queries from "../../src/graphql/queries";
 
 const ProviderHome = ({ navigation }) => {
   const isFocused = useIsFocused()
-  const { authUser, userInfo } = useSelector((state) => state.auth);
+  const { authUser, userInfo, profilePicture } = useSelector((state) => state.auth);
   const { initialized, activeJobs } = useSelector((state) => state.providerJobs);
   const dispatch = useDispatch()
   const [jobList, setJobList] = useState([]);
@@ -66,13 +67,13 @@ const ProviderHome = ({ navigation }) => {
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-      dispatch(initializeJobs({userID: userInfo.userID}))
+      dispatch(initializeJobs({userID: userInfo.id}))
       setRefreshing(false);
   }, [refreshing]);
 
 
   const checkIfDisabled = async() => {
-    if(userInfo.employeeID == -200){
+    if(userInfo.employeeID == "-200"){
       dispatch(logout())
       setLoading(false)
     } 
@@ -95,18 +96,16 @@ const ProviderHome = ({ navigation }) => {
     checkIfDisabled()
     //Get provider's current jobs
     if(!initialized){
-      dispatch(initializeJobs({userID: userInfo.userID}))
+      dispatch(initializeJobs({userID: userInfo.id}))
     }
-    //TESTING
-    // setJobList(getManyJobs())
   }, [isFocused]);
 
   useEffect(() => {
     if(checkedBtn == 'activeJobs'){
-      setJobList(activeJobs.filter(job => job.mainProvider == userInfo.userID))
+      setJobList(activeJobs.filter(job => job.mainProvider == userInfo.id))
     }
     else if(checkedBtn == 'backupJobs'){
-      setJobList(activeJobs.filter(job => job.backupProviders.includes(userInfo.userID)))
+      setJobList(activeJobs.filter(job => job.backupProviders.includes(userInfo.id)))
     }
     else{
       setJobList(activeJobs)
@@ -121,7 +120,7 @@ const ProviderHome = ({ navigation }) => {
     >
       <SafeAreaView style={commonStyles.safeContainer}>
           <View style={[styles.head, {flexDirection: 'row', alignItems:'center'}]}>
-            <ProfilePicture imageUrl={userInfo.profilePicture} name={`${userInfo.firstName} ${userInfo.lastName}`} size={50}/>
+            <ProfilePicture imageUrl={profilePicture} name={`${userInfo.firstName} ${userInfo.lastName}`} size={50}/>
             <Text style={styles.name}>Welcome Provider {userInfo.firstName}</Text>
           </View>
           <TouchableOpacity onPress={() => testNotifications()}>
@@ -166,7 +165,7 @@ const ProviderHome = ({ navigation }) => {
               keyExtractor={(item) => item.id}
               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
               data={jobList}
-              renderItem={({ item }) => <JobCard jobInfo={item} type={userInfo.userID == item.mainProvider ? 'service' : null}/>}
+              renderItem={({ item }) => <JobCard jobInfo={item} type={userInfo.id == item.mainProvider ? 'service' : null}/>}
             />
           </View>
         )}

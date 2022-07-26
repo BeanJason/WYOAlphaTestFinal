@@ -14,20 +14,22 @@ import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
-import { changeUserInfo } from "../../../redux/authReducer";
+import { changeProviderPicture, changeUserInfo } from "../../../redux/authReducer";
 import { Provider } from "../../../src/models";
 import { createToast } from "../../../common/components/Toast";
 import { DataStore, Storage } from "aws-amplify";
 import * as ImagePicker from "expo-image-picker"
 import ProfilePicture from "../../../common/components/ProfilePicture";
 import { PhoneNumberUtil } from "google-libphonenumber";
+import { useEffect } from "react";
 
 
 
 const EditAccountProvider = ({ navigation }) => {
     const dispatch = useDispatch();
-    const { userInfo } = useSelector((state) => state.auth);
+    const { userInfo, profilePicture } = useSelector((state) => state.auth);
     const [imageUploading, setImageUploading] = useState(false)
+    const [checkExpires, setCheckExpires] = useState()
     const phoneUtil = PhoneNumberUtil.getInstance()
 
     const {
@@ -45,6 +47,12 @@ const EditAccountProvider = ({ navigation }) => {
       reset: reset2
     } = useForm()
 
+    useEffect(() => {
+      let date = new Date(userInfo.backgroundCheckDate)
+      date.setFullYear(date.getFullYear() + 1)
+      setCheckExpires(date.toDateString())
+    },[])
+
 
     const getAddress = () => {
       let arr = JSON.parse(userInfo.address)
@@ -60,29 +68,16 @@ const EditAccountProvider = ({ navigation }) => {
           })
       }
       else{
-        let original = await DataStore.query(Provider, userInfo.userID);
+        let original = await DataStore.query(Provider, userInfo.id);
         try {
-            await DataStore.save(Provider.copyOf(original, updated => {
+            let newInfo = await DataStore.save(Provider.copyOf(original, updated => {
                 updated.phoneNumber = data.phoneNumber
             }))
             reset({
               data: 'phoneNumber'
             })
-            let newInfo = {
-              userID: original.id,
-              firstName: original.firstName,
-              lastName: original.lastName,
-              address: original.address,
-              phoneNumber: data.phoneNumber,
-              biography: original.biography,
-              backgroundCheck: original.backgroundCheckStatus,
-              backgroundCheckDate: original.backgroundCheckDate,
-              profilePicture: original.profilePictureURL,
-              isBan: original.isBan,
-              employeeID: original.employeeID
-          }
-          dispatch(changeUserInfo({userInfo: newInfo}))
-          createToast('Your phone number has been changed!')
+            dispatch(changeUserInfo({userInfo: newInfo}))
+            createToast('Your phone number has been changed!')
         } catch (error) {
             console.log(error);
             setError("phoneNumber", {
@@ -94,27 +89,14 @@ const EditAccountProvider = ({ navigation }) => {
     }
 
     const submitBio = async(data) => {
-      let original = await DataStore.query(Provider, userInfo.userID);
+      let original = await DataStore.query(Provider, userInfo.id);
       try {
-          await DataStore.save(Provider.copyOf(original, updated => {
+          let newInfo = await DataStore.save(Provider.copyOf(original, updated => {
               updated.biography = data.biography
           }))
           reset2({
             data: 'biography'
           })
-          let newInfo = {
-            userID: original.id,
-            firstName: original.firstName,
-            lastName: original.lastName,
-            address: original.address,
-            phoneNumber: original.phoneNumber,
-            biography: data.biography,
-            backgroundCheck: original.backgroundCheckStatus,
-            backgroundCheckDate: original.backgroundCheckDate,
-            profilePicture: original.profilePictureURL,
-            isBan: original.isBan,
-            employeeID: original.employeeID
-        }
         dispatch(changeUserInfo({userInfo: newInfo}))
         createToast('Your biography has been changed!')
       } catch (error) {
@@ -176,26 +158,14 @@ const EditAccountProvider = ({ navigation }) => {
       }
       
       if(pictureUrl){
-        let original = await DataStore.query(Provider, userInfo.userID);
+        let original = await DataStore.query(Provider, userInfo.id);
         try {
-          await DataStore.save(Provider.copyOf(original, updated => {
+          let newInfo = await DataStore.save(Provider.copyOf(original, updated => {
             updated.profilePictureURL = pictureUrl.key
         }))
-        let newPicture = await Storage.get(pictureUrl.key)
-        let newInfo = {
-          userID: original.id,
-          firstName: original.firstName,
-          lastName: original.lastName,
-          address: original.address,
-          phoneNumber: original.phoneNumber,
-          biography: original.biography,
-          backgroundCheck: original.backgroundCheckStatus,
-          backgroundCheckDate: original.backgroundCheckDate,
-          profilePicture: newPicture,
-          isBan: original.isBan,
-          employeeID: original.employeeID
-          }
+          let newPicture = await Storage.get(pictureUrl.key)
           dispatch(changeUserInfo({userInfo: newInfo}))
+          dispatch(changeProviderPicture(newPicture))
           setImageUploading(false)
           createToast('Your profile picture has been changed')
         } catch (error) {
@@ -214,7 +184,7 @@ const EditAccountProvider = ({ navigation }) => {
           return;
         } else {
           const img = await fetchImageFromUri(pickerResult.uri);
-          await uploadImage(userInfo.userID, img);
+          await uploadImage(userInfo.id, img);
         }
       } catch (e) {
         console.log(e);
@@ -235,16 +205,17 @@ const EditAccountProvider = ({ navigation }) => {
           <View style={[{flexDirection: 'row', marginBottom: 20, justifyContent: 'center'}]}>
           
             <TouchableOpacity onPress={pickImage} disabled={imageUploading}>
-              <ProfilePicture imageUrl={userInfo.profilePicture} loading={imageUploading} name={`${userInfo.firstName} ${userInfo.lastName}`} size={150}/>
+              <ProfilePicture imageUrl={profilePicture} loading={imageUploading} name={`${userInfo.firstName} ${userInfo.lastName}`} size={150}/>
             </TouchableOpacity>
 
             <View style={{justifyContent: 'center', padding: 10}}>
               <Text style={{fontSize: 26, fontFamily: 'Montserrat-Bold'}}>{userInfo.firstName} {userInfo.lastName}</Text>
               <View style={{flexDirection: 'row', marginTop: 15}}>
                 <Text style={[styles.generalText, {marginRight: 5}]}>Background Check:</Text>
-                {userInfo.backgroundCheck ? <FontAwesome style={{color: 'green'}} name={'check-circle'} size={25} /> 
+                {userInfo.backgroundCheckStatus ? <FontAwesome style={{color: 'green'}} name={'check-circle'} size={25} /> 
                 : <FontAwesome style={{color: 'red'}} name={'times-circle'} size={25} />}
               </View>
+              <Text style={styles.generalText}>Expires: {checkExpires}</Text>
               <TouchableOpacity onPress={() => navigation.navigate("ChangePassword", {name: "ChangePassword"})} style={styles.passwordBtn}>
                 <Text style={styles.editText}>Change Password</Text>
               </TouchableOpacity>

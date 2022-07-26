@@ -15,7 +15,7 @@ const ProfilePicture = ({imageUrl, name, size, loading = false}) => {
   
   return (
    <View>
-      {imageUrl ? (
+      {imageUrl != "" ? (
         <View style={{justifyContent: 'center', width: size, height: size}}>
           <ImageBackground
             style={{width: size, height: size}} 
