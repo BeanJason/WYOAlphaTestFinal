@@ -81,7 +81,7 @@ const getProviderData = async (attributes) => {
         let date = new Date(userInfo.backgroundCheckDate)
         date.setFullYear(date.getFullYear() + 1)
         let today = new Date()
-        if(userInfo.backgroundCheckStatus == true && (today.toDateString() >= date.toDateString())){
+        if(userInfo.backgroundCheckStatus == true && (today >= date)){
             userInfo = await DataStore.save(Provider.copyOf(userData[0], (updated) => {
                 updated.backgroundCheckStatus = false
             }))

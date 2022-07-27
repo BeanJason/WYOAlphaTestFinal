@@ -113,7 +113,20 @@ const JobSearch = ({ navigation }) => {
           }
           const response = await API.graphql({query: queries.listJobs, variables: {filter: filter}})
           let all = response.data.listJobs.items
+          //filter jobs that are to be removed
           all = all.filter(job => !job.markedToRemove)
+          //filter jobs that are less than 5 hours away
+          let date
+          let today = new Date()
+          all = all.filter(job => {
+            date = new Date(job.requestDateTime)
+            if(today.toDateString() == date.toDateString()){
+              if(Math.abs(date.getHours() - today.getHours()) <= 5){
+                return false;
+              }
+            }
+            return true;
+          })
           all = getDistanceToJob(all)
           all.sort((a, b) => a.distance - b.distance)
           setFilteredJobList(all)

@@ -201,7 +201,7 @@ const ServiceView = ({ route, navigation }) => {
       }
       for(let next of managers){
         if(next.expoToken){
-          sendNotificationToManager(next.expoToken, messageInfo)
+          await sendNotificationToManager(next.expoToken, messageInfo)
         }
       }
       setAllowCheckIn(false)

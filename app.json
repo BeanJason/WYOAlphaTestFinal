@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "WYOAlpha",
-    "slug": "WYOAlpha",
+    "name": "WYO App",
+    "slug": "WYOApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/Logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -18,7 +18,7 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.wyo.WYOAlpha",
+      "bundleIdentifier": "com.wyo.WYOApp",
       "buildNumber": "1.0.0",
       "supportsTablet": true,
       "config": {
@@ -37,7 +37,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.kmb_umich.WYOAlpha",
+      "package": "com.wyo.WYOApp",
       "versionCode": 1,
       "permissions": [
         "ACCESS_BACKGROUND_LOCATION",
