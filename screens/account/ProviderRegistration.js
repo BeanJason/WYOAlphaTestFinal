@@ -209,7 +209,7 @@ const ProviderRegistration = ({ navigation }) => {
             {/* first name */}
             <View style={styles.field}>
               <UserInput
-                style={styles.input}
+                style={commonStyles.inputBox}
                 icon="user-circle"
                 location="FontAwesome"
                 name="firstName"
@@ -219,7 +219,7 @@ const ProviderRegistration = ({ navigation }) => {
               />
               {/* last name */}
               <UserInput
-                style={styles.input}
+                style={commonStyles.inputBox}
                 icon="user-circle"
                 location="FontAwesome"
                 name="lastName"
@@ -232,7 +232,7 @@ const ProviderRegistration = ({ navigation }) => {
             {/* email */}
             <View style={styles.field}>
               <UserInput
-                style={styles.input}
+                style={commonStyles.inputBox}
                 icon="email"
                 location="MaterialIcons"
                 name="email"
@@ -260,7 +260,7 @@ const ProviderRegistration = ({ navigation }) => {
                     ]}
                   >
                     <FontAwesome name="calendar" size={20} style={commonStyles.icon}/>
-                    <TextInput style={[styles.input, { color: "black" }]} editable={false}
+                    <TextInput style={[commonStyles.inputBox, { color: "black" }]} editable={false}
                     value={ birthdaySelected ? "Date of Birth: " + date.toLocaleDateString() : "Date of Birth" }
                     ></TextInput>
                   </TouchableOpacity>
@@ -278,7 +278,7 @@ const ProviderRegistration = ({ navigation }) => {
 
               {/* phone number */}
               <UserInput
-                style={styles.input}
+                style={commonStyles.inputBox}
                 name="phoneNumber"
                 icon="phone"
                 location="FontAwesome"
@@ -311,7 +311,7 @@ const ProviderRegistration = ({ navigation }) => {
             {/* password */}
             <View style={styles.field}>
               <UserInput
-                style={styles.input}
+                style={commonStyles.inputBox}
                 name="password"
                 icon="lock"
                 location="MaterialIcons"
@@ -335,7 +335,7 @@ const ProviderRegistration = ({ navigation }) => {
                 secureTextEntry
               />
               <UserInput
-                style={styles.input}
+                style={commonStyles.inputBox}
                 name="confirmPassword"
                 icon="lock"
                 location="MaterialIcons"
@@ -353,7 +353,7 @@ const ProviderRegistration = ({ navigation }) => {
             <Text style={{fontFamily: "Montserrat-Bold"}}>Please give us a short biography (maximum 250 words) of how you are active in your community and how long you lived in it</Text>
               {/* Biography */}
               <UserInput
-                style={[styles.input, {height: 100, textAlignVertical: 'top'}]}
+                style={[commonStyles.inputBox, {height: 100, textAlignVertical: 'top'}]}
                 name="biography"
                 multiline
                 rules={{ 
@@ -406,11 +406,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     flexDirection: "row",
-  },
-  input: {
-    width: 300,
-    height: 32,
-    fontSize: 16,
   },
   inputContainer: {
     alignItems: "center",

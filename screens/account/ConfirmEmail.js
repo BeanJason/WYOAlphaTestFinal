@@ -102,14 +102,14 @@ const ConfirmEmail = ({ navigation, route }) => {
       >
         <SafeAreaView style={commonStyles.safeContainer}>
           <Text style={styles.header1}>Email Confirmation</Text>
-          <View style={styles.outerContainer}>
+          <View style={[commonStyles.outerContainer, {marginVertical: 50}]}>
             <Text style={styles.header2}>
               We have sent a verification email to your email address.
               Please verify that you've received the confirmation code below.
             </Text>
 
             <UserInput
-              style={styles.input}
+              style={commonStyles.inputBox}
               name="email"
               icon='email'
               location='MaterialIcons'
@@ -121,7 +121,7 @@ const ConfirmEmail = ({ navigation, route }) => {
             />
 
             <UserInput
-              style={[styles.input, {width: 360}]}
+              style={[commonStyles.inputBox, {width: 360}]}
               name="confirmationCode"
               rules={{
                 required: "Confirmation code is Required",
@@ -133,33 +133,33 @@ const ConfirmEmail = ({ navigation, route }) => {
             {/* Buttons */}
             <View>
               {/* Confirm button */}
-              <View style={styles.innerContainer}>
+              <View style={{alignItems: 'center'}}>
                 <TouchableOpacity onPress={handleSubmit(submitForm)}>
-                  <View style={styles.confirmBtn}>
-                    <Text style={styles.btnText}>Confirm</Text>
+                  <View style={[styles.resendBtn, {width: 150, height: 50, marginTop: 10}]}>
+                    <Text style={commonStyles.btnText}>Confirm</Text>
                   </View>
                 </TouchableOpacity>
               </View>
 
               {/* Resend Button */}
-              <View style={[styles.innerContainer, { marginVertical: 30 }]}>
+              <View style={{alignItems: 'center', marginVertical: 30 }}>
                 <Text style={styles.header2}>Didnt receive a code?</Text>
                 <TouchableOpacity onPress={resendCode}>
                   <View style={styles.resendBtn}>
-                    <Text style={styles.btnText}>Re-send Confirmation</Text>
+                    <Text style={commonStyles.btnText}>Re-send Confirmation</Text>
                   </View>
                 </TouchableOpacity>
               </View>
 
               {/* Return button */}
-              <View style={[styles.innerContainer, { marginVertical: -10 }]}>
+              <View style={{ marginVertical: -10, alignItems: 'center' }}>
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('LoginScreen', {name: 'LoginScreen'})
                   }}
                 >
-                  <View style={[styles.confirmBtn, { width: 250 }]}>
-                    <Text style={styles.btnText}>Back to Sign In</Text>
+                  <View style={[styles.resendBtn, { width: 250, height: 50, marginTop: 10 }]}>
+                    <Text style={commonStyles.btnText}>Back to Sign In</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -185,9 +185,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 15,
   },
-  logoContainer: {
-    alignItems: "center",
-  },
   resendBtn: {
     justifyContent: "center",
     alignItems: "center",
@@ -196,44 +193,9 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     borderRadius: 10,
   },
-  confirmBtn: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 150,
-    height: 50,
-    backgroundColor: "black",
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  btnText: {
-    color: "white",
-    fontFamily: "Montserrat-Bold",
-    fontSize: 25,
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
-  },
   infoBtn: {
     position: "absolute",
     right: 50,
-  },
-  outerContainer: {
-    alignItems: "center",
-    marginVertical: 50,
-    borderColor: "rgba(0,221,255,0.7)",
-    borderWidth: 1,
-    backgroundColor: "rgba(0,221,255,0.7)",
-    borderRadius: 10,
-    padding: 30,
-  },
-  innerContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  input: {
-    width: 320,
-    height: 40,
-    fontSize: 20,
   },
 });
 

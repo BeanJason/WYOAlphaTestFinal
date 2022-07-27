@@ -31,16 +31,38 @@ export const commonStyles = StyleSheet.create({
     fontFamily: 'Montserrat-Regular',
     fontSize: 16,
   },
-  colors:{
-    primary: '#f54',
-  },
   icon:{
     borderRightWidth: 2,
     padding: 5,
     marginRight: 5,
     alignSelf: 'center'  
-  }
-
+  },
+  btnText: {
+    color: "white",
+    fontFamily: "Montserrat-Bold",
+    fontSize: 25,
+    textAlign: "center",
+  },
+  outerContainer: {
+    alignItems: "center",
+    borderColor: "rgba(0,221,255,0.7)",
+    borderWidth: 1,
+    backgroundColor: "rgba(0,221,255,0.7)",
+    borderRadius: 10,
+    padding: 30,
+  },
+  inputBox: {
+    width: 300,
+    height: 40,
+    fontSize: 20,
+  },
+  buttonStyle: {
+    justifyContent: "center",
+    width: 150,
+    height: 50,
+    backgroundColor: "black",
+    borderRadius: 10,
+  },
 });
 
 export const config = {

@@ -85,9 +85,9 @@ const LoginScreen = ({ navigation }) => {
             />
           </View>
           {isLoading ? <Spinner color='green'/> : (
-            <View style={styles.loginContainer}>
+            <View style={[commonStyles.outerContainer, {marginTop: 20}]}>
               <UserInput
-                style={styles.input}
+                style={commonStyles.inputBox}
                 icon="email"
                 location="MaterialIcons"
                 name="email"
@@ -96,7 +96,7 @@ const LoginScreen = ({ navigation }) => {
                 control={control}
               />
               <UserInput
-                style={styles.input}
+                style={commonStyles.inputBox}
                 icon="lock"
                 location="MaterialIcons"
                 name="password"
@@ -113,8 +113,8 @@ const LoginScreen = ({ navigation }) => {
                 }}
               >
                 <TouchableOpacity onPress={handleSubmit(submitForm)}>
-                  <View style={styles.loginButton}>
-                    <Text style={styles.btnText}>Login</Text>
+                  <View style={[commonStyles.buttonStyle, {marginVertical: 10}]}>
+                    <Text style={commonStyles.btnText}>Login</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -206,42 +206,14 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  loginContainer: {
-    alignItems: "center",
-    borderColor: "rgba(0,221,255,0.7)",
-    borderWidth: 1,
-    backgroundColor: "rgba(0,221,255,0.7)",
-    borderRadius: 10,
-    padding: 30,
-    marginTop: 20,
-  },
   header1: {
     fontFamily: "Montserrat-Bold",
     fontSize: 50,
     textAlign: "center",
     marginTop: 25,
   },
-  input: {
-    width: 320,
-    height: 40,
-    fontSize: 20,
-  },
   logoContainer: {
     alignItems: "center",
-  },
-  loginButton: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 150,
-    height: 50,
-    backgroundColor: "black",
-    borderRadius: 10,
-    marginVertical: 10,
-  },
-  btnText: {
-    color: "white",
-    fontFamily: "Montserrat-Bold",
-    fontSize: 25,
   },
   regularText: {
     fontFamily: "Montserrat-Regular",
