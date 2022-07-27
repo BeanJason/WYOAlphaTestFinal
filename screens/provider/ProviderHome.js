@@ -40,20 +40,19 @@ const ProviderHome = ({ navigation }) => {
   const [checkedBtn, setCheckedBtn] = useState('allJobs')
   const [refreshing, setRefreshing] = useState(false);
   
+//TESTING
+  // const getNotifications = async() => {
+  //   let n = await Notifications.getAllScheduledNotificationsAsync()
+  //   console.log(n);
+  // }
 
-  const getNotifications = async() => {
-   
-    let n = await Notifications.getAllScheduledNotificationsAsync()
-    console.log(n);
-  }
+  // const cancelNotifications = async ()=> {
+  //   await Notifications.cancelAllScheduledNotificationsAsync()
+  // }
 
-  const cancelNotifications = async ()=> {
-    await Notifications.cancelAllScheduledNotificationsAsync()
-  }
-
-  const testNotifications = async () => {
-    await createBackgroundCheckReminders(userInfo.backgroundCheckDate)
-  }
+  // const testNotifications = async () => {
+  //   await createBackgroundCheckReminders(userInfo.backgroundCheckDate)
+  // }
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
@@ -113,12 +112,12 @@ const ProviderHome = ({ navigation }) => {
             <ProfilePicture imageUrl={profilePicture} name={`${userInfo.firstName} ${userInfo.lastName}`} size={50}/>
             <Text style={styles.name}>Welcome Provider {userInfo.firstName}</Text>
           </View>
-          <TouchableOpacity onPress={() => getNotifications()}>
+          {/* <TouchableOpacity onPress={() => getNotifications()}>
           <Text>Get Notifications</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => cancelNotifications()}>
           <Text>cancel Notifications</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <View>
           <Text style={[styles.headerText, {textAlign: 'center'}]}>Active jobs</Text>
         </View>

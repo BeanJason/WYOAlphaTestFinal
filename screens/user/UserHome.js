@@ -24,15 +24,15 @@ const UserHome = ({ navigation }) => {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false);
 
-  
-  const getNotifications = async() => {
-    let n = await Notifications.getAllScheduledNotificationsAsync()
-    console.log(n);
-  }
+  //TESTING
+  // const getNotifications = async() => {
+  //   let n = await Notifications.getAllScheduledNotificationsAsync()
+  //   console.log(n);
+  // }
 
-  const cancelNotifications = async ()=> {
-    await Notifications.cancelAllScheduledNotificationsAsync()
-  }
+  // const cancelNotifications = async ()=> {
+  //   await Notifications.cancelAllScheduledNotificationsAsync()
+  // }
   
 
   const onRefresh = React.useCallback(async () => {
@@ -51,8 +51,6 @@ const UserHome = ({ navigation }) => {
     if(!initialized){
       dispatch(initializeJobs({userID: userInfo.id}))
     }
-    //TESTING
-    // setJobList(getManyJobs())
     setLoading(false)
   }, []);
 
@@ -70,12 +68,12 @@ const UserHome = ({ navigation }) => {
           <Text style={styles.name}>Welcome {userInfo.firstName}</Text>
         </View>
         <View>
-        <TouchableOpacity onPress={() => getNotifications()}>
+        {/* <TouchableOpacity onPress={() => getNotifications()}>
           <Text>Get Notifications</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => cancelNotifications()}>
           <Text>cancel Notifications</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
           <Text style={[styles.headerText, {textAlign: 'center'}]}>Active Jobs</Text>
         </View>
         {loading ? <Spinner color={'blue'}/> : (
