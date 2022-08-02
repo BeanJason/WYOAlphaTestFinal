@@ -1,6 +1,6 @@
 import { API, DataStore, graphqlOperation } from "aws-amplify";
 import * as Notifications from "expo-notifications";
-import { sendNotification } from "./src/graphql/mutations";
+import { sendJobUpdates, sendNotification } from "./src/graphql/mutations";
 import { User, Provider, Job, Manager } from "./src/models";
 import * as Device from "expo-device"
 
@@ -331,6 +331,40 @@ export const sendNotificationToUser = async(userID, messageInfo) => {
     } catch (error) {
       console.log(error);
     }
+  }
+}
+
+//send job update notification to providers in an area
+export const sendJobUpdateNotifications = async(zipCode, messageInfo) => {
+  let zip = parseInt(zipCode)
+  //get all providers at the zipCode
+  let providers = await DataStore.query(Provider, provider => 
+      provider.or( provider =>
+          provider.address("contains", `"zipCode":"${zip}"`)
+          .address("contains", `"zipCode":"${zip + 1}"`)
+          .address("contains", `"zipCode":"${zip - 1}"`)
+      ) 
+  )
+  //get all tokens
+  let allTokens = []
+  for(let next of providers){
+      if(next.expoToken && next.isNotificationsOn){
+          allTokens.push(next.expoToken)
+      }
+  }
+
+  //send notifications to server
+  if(allTokens.length != 0){
+      try {
+        await API.graphql(graphqlOperation(sendJobUpdates, {
+          tokens: allTokens,
+          title: messageInfo.title,
+          message: messageInfo.message,
+          data: messageInfo.data ? JSON.stringify(messageInfo.data) : {}
+        }))
+      } catch (error) {
+        console.log(error);
+      }
   }
 }
 

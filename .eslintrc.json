@@ -23,6 +23,9 @@
     ],
     "rules": {
         "no-unused-vars": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/prop-types": "off",
+        "amd": true,
         "unused-imports/no-unused-imports": "error",
         "unused-imports/no-unused-vars": [
             "warn",

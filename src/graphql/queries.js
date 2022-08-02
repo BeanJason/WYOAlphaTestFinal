@@ -147,6 +147,7 @@ export const getProvider = /* GraphQL */ `
       overallRating
       isBan
       currentLocation
+      isNotificationsOn
       jobs {
         nextToken
         startedAt
@@ -196,6 +197,7 @@ export const listProviders = /* GraphQL */ `
         overallRating
         isBan
         currentLocation
+        isNotificationsOn
         createdAt
         updatedAt
         _version
@@ -241,6 +243,7 @@ export const syncProviders = /* GraphQL */ `
         overallRating
         isBan
         currentLocation
+        isNotificationsOn
         createdAt
         updatedAt
         _version
@@ -553,6 +556,7 @@ export const getBlacklist = /* GraphQL */ `
       subID
       email
       phoneNumber
+      type
       createdAt
       updatedAt
       _version
@@ -573,6 +577,7 @@ export const listBlacklists = /* GraphQL */ `
         subID
         email
         phoneNumber
+        type
         createdAt
         updatedAt
         _version
@@ -602,6 +607,7 @@ export const syncBlacklists = /* GraphQL */ `
         subID
         email
         phoneNumber
+        type
         createdAt
         updatedAt
         _version

@@ -122,7 +122,7 @@ const JobSignUp = ({ route, navigation }) => {
         dispatch(addOrRemoveJob({ type: "ADD_ACTIVE_JOB", jobInfo }));
         setTimeout(() => {
           createToast(
-            "You have successfully signed up as a main provider for the job. If you wish to cancel please do so at least 3 days before the job date"
+            "You have successfully signed up as a main provider for the job. If you wish to cancel please do so at least 72 hours before the job date"
           );
           setStartSignUp(false);
           dispatch(reinitialize());

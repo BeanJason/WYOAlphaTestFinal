@@ -111,7 +111,8 @@ const ApplicantsInfo = ({ navigation, route }) => {
     await DataStore.save(new Blacklist({
       "subID": employeeInfo.subID,
       "email": employeeInfo.email,
-      "phoneNumber": employeeInfo.phoneNumber
+      "phoneNumber": employeeInfo.phoneNumber,
+      "type": "rejected"
     }))
     await sendProviderRejectEmail(employeeInfo.firstName, employeeInfo.email)
     setTimeout(() => {

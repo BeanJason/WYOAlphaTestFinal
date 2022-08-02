@@ -9,6 +9,7 @@ type Mutation {
   sendNotification(token: String!, title: String!, message: String!, data: String): Boolean! @function(name: "SendNotification-${env}")
   sendEmail(userEmail: String!, subject: String!, message: String! ): String! @function(name: "SendEmail-${env}")
   contactUsFunction(name: String!, email: String!, message: String! ): String! @function(name: "ContactUsFunction-${env}")
+  sendJobUpdates(tokens: [String!], title: String!, message: String!, data: String): Boolean @function(name: "SendJobUpdates-${env}")
 }
 
 enum JOBSTATUS {
@@ -64,6 +65,7 @@ type Provider @model @auth(rules: [{allow: public}]) {
   overallRating: Float!
   isBan: Boolean!
   currentLocation: String
+  isNotificationsOn: Boolean!
   jobs: [Job] @hasMany(indexName: "byProvider", fields: ["id"])
   review: Review @hasOne
 }
@@ -109,5 +111,6 @@ type Blacklist @model @auth(rules: [{allow: public}]) {
   subID: String!
   email: AWSEmail!
   phoneNumber: AWSPhone!,
+  type: String!
 }
- 
+   

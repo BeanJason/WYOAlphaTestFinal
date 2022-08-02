@@ -8,7 +8,7 @@ import * as Notifications from "expo-notifications"
 export const getEmailRegex = () => {
     return new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
 }
-
+//check if employee is banned
 export const checkIfBanned = async (id) => {
     let response = await API.graphql(graphqlOperation(queries.getProvider, {id: id}))
     return response.data.getProvider.isBan
@@ -457,7 +457,7 @@ export const sendProviderJobSignupEmail = async (jobInfo, user, email, owner) =>
                     in on the WYO App as soon as you arrive at the job location.
                 </p>
                 <p>
-                    If you wish to cancel your services for this job, please do so at least 3 days before the job date. Failure to 
+                    If you wish to cancel your services for this job, please do so at least 72 hours before the job date. Failure to 
                     do so will result in an offense added to your account.
                 </p>
                 <p>

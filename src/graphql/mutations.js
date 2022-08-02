@@ -51,6 +51,21 @@ export const contactUsFunction = /* GraphQL */ `
     contactUsFunction(name: $name, email: $email, message: $message)
   }
 `;
+export const sendJobUpdates = /* GraphQL */ `
+  mutation SendJobUpdates(
+    $tokens: [String!]
+    $title: String!
+    $message: String!
+    $data: String
+  ) {
+    sendJobUpdates(
+      tokens: $tokens
+      title: $title
+      message: $message
+      data: $data
+    )
+  }
+`;
 export const createJob = /* GraphQL */ `
   mutation CreateJob(
     $input: CreateJobInput!
@@ -187,6 +202,7 @@ export const createProvider = /* GraphQL */ `
       overallRating
       isBan
       currentLocation
+      isNotificationsOn
       jobs {
         nextToken
         startedAt
@@ -234,6 +250,7 @@ export const updateProvider = /* GraphQL */ `
       overallRating
       isBan
       currentLocation
+      isNotificationsOn
       jobs {
         nextToken
         startedAt
@@ -281,6 +298,7 @@ export const deleteProvider = /* GraphQL */ `
       overallRating
       isBan
       currentLocation
+      isNotificationsOn
       jobs {
         nextToken
         startedAt
@@ -562,6 +580,7 @@ export const createBlacklist = /* GraphQL */ `
       subID
       email
       phoneNumber
+      type
       createdAt
       updatedAt
       _version
@@ -580,6 +599,7 @@ export const updateBlacklist = /* GraphQL */ `
       subID
       email
       phoneNumber
+      type
       createdAt
       updatedAt
       _version
@@ -598,6 +618,7 @@ export const deleteBlacklist = /* GraphQL */ `
       subID
       email
       phoneNumber
+      type
       createdAt
       updatedAt
       _version

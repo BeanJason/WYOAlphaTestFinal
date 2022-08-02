@@ -2,8 +2,8 @@
 // this is an auto generated file. This will be overwritten
 
 export const onCreateJob = /* GraphQL */ `
-  subscription OnCreateJob {
-    onCreateJob {
+  subscription OnCreateJob($filter: ModelSubscriptionJobFilterInput) {
+    onCreateJob(filter: $filter) {
       id
       jobTitle
       jobDescription
@@ -36,8 +36,8 @@ export const onCreateJob = /* GraphQL */ `
   }
 `;
 export const onUpdateJob = /* GraphQL */ `
-  subscription OnUpdateJob {
-    onUpdateJob {
+  subscription OnUpdateJob($filter: ModelSubscriptionJobFilterInput) {
+    onUpdateJob(filter: $filter) {
       id
       jobTitle
       jobDescription
@@ -70,8 +70,8 @@ export const onUpdateJob = /* GraphQL */ `
   }
 `;
 export const onDeleteJob = /* GraphQL */ `
-  subscription OnDeleteJob {
-    onDeleteJob {
+  subscription OnDeleteJob($filter: ModelSubscriptionJobFilterInput) {
+    onDeleteJob(filter: $filter) {
       id
       jobTitle
       jobDescription
@@ -104,8 +104,8 @@ export const onDeleteJob = /* GraphQL */ `
   }
 `;
 export const onCreateProvider = /* GraphQL */ `
-  subscription OnCreateProvider {
-    onCreateProvider {
+  subscription OnCreateProvider($filter: ModelSubscriptionProviderFilterInput) {
+    onCreateProvider(filter: $filter) {
       id
       subID
       expoToken
@@ -125,6 +125,7 @@ export const onCreateProvider = /* GraphQL */ `
       overallRating
       isBan
       currentLocation
+      isNotificationsOn
       jobs {
         nextToken
         startedAt
@@ -148,8 +149,8 @@ export const onCreateProvider = /* GraphQL */ `
   }
 `;
 export const onUpdateProvider = /* GraphQL */ `
-  subscription OnUpdateProvider {
-    onUpdateProvider {
+  subscription OnUpdateProvider($filter: ModelSubscriptionProviderFilterInput) {
+    onUpdateProvider(filter: $filter) {
       id
       subID
       expoToken
@@ -169,6 +170,7 @@ export const onUpdateProvider = /* GraphQL */ `
       overallRating
       isBan
       currentLocation
+      isNotificationsOn
       jobs {
         nextToken
         startedAt
@@ -192,8 +194,8 @@ export const onUpdateProvider = /* GraphQL */ `
   }
 `;
 export const onDeleteProvider = /* GraphQL */ `
-  subscription OnDeleteProvider {
-    onDeleteProvider {
+  subscription OnDeleteProvider($filter: ModelSubscriptionProviderFilterInput) {
+    onDeleteProvider(filter: $filter) {
       id
       subID
       expoToken
@@ -213,6 +215,7 @@ export const onDeleteProvider = /* GraphQL */ `
       overallRating
       isBan
       currentLocation
+      isNotificationsOn
       jobs {
         nextToken
         startedAt
@@ -236,8 +239,8 @@ export const onDeleteProvider = /* GraphQL */ `
   }
 `;
 export const onCreateReview = /* GraphQL */ `
-  subscription OnCreateReview {
-    onCreateReview {
+  subscription OnCreateReview($filter: ModelSubscriptionReviewFilterInput) {
+    onCreateReview(filter: $filter) {
       id
       reviews
       createdAt
@@ -249,8 +252,8 @@ export const onCreateReview = /* GraphQL */ `
   }
 `;
 export const onUpdateReview = /* GraphQL */ `
-  subscription OnUpdateReview {
-    onUpdateReview {
+  subscription OnUpdateReview($filter: ModelSubscriptionReviewFilterInput) {
+    onUpdateReview(filter: $filter) {
       id
       reviews
       createdAt
@@ -262,8 +265,8 @@ export const onUpdateReview = /* GraphQL */ `
   }
 `;
 export const onDeleteReview = /* GraphQL */ `
-  subscription OnDeleteReview {
-    onDeleteReview {
+  subscription OnDeleteReview($filter: ModelSubscriptionReviewFilterInput) {
+    onDeleteReview(filter: $filter) {
       id
       reviews
       createdAt
@@ -275,8 +278,8 @@ export const onDeleteReview = /* GraphQL */ `
   }
 `;
 export const onCreateUser = /* GraphQL */ `
-  subscription OnCreateUser {
-    onCreateUser {
+  subscription OnCreateUser($filter: ModelSubscriptionUserFilterInput) {
+    onCreateUser(filter: $filter) {
       id
       subID
       expoToken
@@ -300,8 +303,8 @@ export const onCreateUser = /* GraphQL */ `
   }
 `;
 export const onUpdateUser = /* GraphQL */ `
-  subscription OnUpdateUser {
-    onUpdateUser {
+  subscription OnUpdateUser($filter: ModelSubscriptionUserFilterInput) {
+    onUpdateUser(filter: $filter) {
       id
       subID
       expoToken
@@ -325,8 +328,8 @@ export const onUpdateUser = /* GraphQL */ `
   }
 `;
 export const onDeleteUser = /* GraphQL */ `
-  subscription OnDeleteUser {
-    onDeleteUser {
+  subscription OnDeleteUser($filter: ModelSubscriptionUserFilterInput) {
+    onDeleteUser(filter: $filter) {
       id
       subID
       expoToken
@@ -350,8 +353,8 @@ export const onDeleteUser = /* GraphQL */ `
   }
 `;
 export const onCreateCode = /* GraphQL */ `
-  subscription OnCreateCode {
-    onCreateCode {
+  subscription OnCreateCode($filter: ModelSubscriptionCodeFilterInput) {
+    onCreateCode(filter: $filter) {
       id
       zipCode
       city
@@ -365,8 +368,8 @@ export const onCreateCode = /* GraphQL */ `
   }
 `;
 export const onUpdateCode = /* GraphQL */ `
-  subscription OnUpdateCode {
-    onUpdateCode {
+  subscription OnUpdateCode($filter: ModelSubscriptionCodeFilterInput) {
+    onUpdateCode(filter: $filter) {
       id
       zipCode
       city
@@ -380,8 +383,8 @@ export const onUpdateCode = /* GraphQL */ `
   }
 `;
 export const onDeleteCode = /* GraphQL */ `
-  subscription OnDeleteCode {
-    onDeleteCode {
+  subscription OnDeleteCode($filter: ModelSubscriptionCodeFilterInput) {
+    onDeleteCode(filter: $filter) {
       id
       zipCode
       city
@@ -395,8 +398,8 @@ export const onDeleteCode = /* GraphQL */ `
   }
 `;
 export const onCreateManager = /* GraphQL */ `
-  subscription OnCreateManager {
-    onCreateManager {
+  subscription OnCreateManager($filter: ModelSubscriptionManagerFilterInput) {
+    onCreateManager(filter: $filter) {
       id
       subID
       expoToken
@@ -413,8 +416,8 @@ export const onCreateManager = /* GraphQL */ `
   }
 `;
 export const onUpdateManager = /* GraphQL */ `
-  subscription OnUpdateManager {
-    onUpdateManager {
+  subscription OnUpdateManager($filter: ModelSubscriptionManagerFilterInput) {
+    onUpdateManager(filter: $filter) {
       id
       subID
       expoToken
@@ -431,8 +434,8 @@ export const onUpdateManager = /* GraphQL */ `
   }
 `;
 export const onDeleteManager = /* GraphQL */ `
-  subscription OnDeleteManager {
-    onDeleteManager {
+  subscription OnDeleteManager($filter: ModelSubscriptionManagerFilterInput) {
+    onDeleteManager(filter: $filter) {
       id
       subID
       expoToken
@@ -449,12 +452,15 @@ export const onDeleteManager = /* GraphQL */ `
   }
 `;
 export const onCreateBlacklist = /* GraphQL */ `
-  subscription OnCreateBlacklist {
-    onCreateBlacklist {
+  subscription OnCreateBlacklist(
+    $filter: ModelSubscriptionBlacklistFilterInput
+  ) {
+    onCreateBlacklist(filter: $filter) {
       id
       subID
       email
       phoneNumber
+      type
       createdAt
       updatedAt
       _version
@@ -464,12 +470,15 @@ export const onCreateBlacklist = /* GraphQL */ `
   }
 `;
 export const onUpdateBlacklist = /* GraphQL */ `
-  subscription OnUpdateBlacklist {
-    onUpdateBlacklist {
+  subscription OnUpdateBlacklist(
+    $filter: ModelSubscriptionBlacklistFilterInput
+  ) {
+    onUpdateBlacklist(filter: $filter) {
       id
       subID
       email
       phoneNumber
+      type
       createdAt
       updatedAt
       _version
@@ -479,12 +488,15 @@ export const onUpdateBlacklist = /* GraphQL */ `
   }
 `;
 export const onDeleteBlacklist = /* GraphQL */ `
-  subscription OnDeleteBlacklist {
-    onDeleteBlacklist {
+  subscription OnDeleteBlacklist(
+    $filter: ModelSubscriptionBlacklistFilterInput
+  ) {
+    onDeleteBlacklist(filter: $filter) {
       id
       subID
       email
       phoneNumber
+      type
       createdAt
       updatedAt
       _version

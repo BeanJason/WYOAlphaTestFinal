@@ -21,7 +21,7 @@ const initialState = {
 //Register
 export const register = createAsyncThunk("auth/register", async (data, thunkAPI) => {
     const {email, password} = data
-    let authUser, userData, userInfo
+    let authUser, userData
     let message = ''    
     //Try to make a user session
     try {
@@ -67,7 +67,8 @@ export const register = createAsyncThunk("auth/register", async (data, thunkAPI)
                   "offenses": 0,
                   "overallRating": 0.0,
                   "ratingCount": 0,
-                  "isBan": false
+                  "isBan": false,
+                  "isNotificationsOn": true
               })
             )
           }

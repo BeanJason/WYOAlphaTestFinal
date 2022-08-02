@@ -91,6 +91,7 @@ export declare class Provider {
   readonly overallRating: number;
   readonly isBan: boolean;
   readonly currentLocation?: string | null;
+  readonly isNotificationsOn: boolean;
   readonly jobs?: (Job | null)[] | null;
   readonly review?: Review | null;
   readonly createdAt?: string | null;
@@ -157,6 +158,7 @@ export declare class Blacklist {
   readonly subID: string;
   readonly email: string;
   readonly phoneNumber: string;
+  readonly type: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Blacklist, BlacklistMetaData>);

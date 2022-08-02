@@ -19,8 +19,8 @@ import {
   import { createPaymentIntent } from "../../src/graphql/mutations";
   import { addOrRemoveJob, storeNewJobID } from "../../redux/jobsReducer";
   import * as queries from "../../src/graphql/queries"
-  import { createUserReminder } from "../../notifications";
-import { sendPaymentEmail } from "../../common/functions";
+  import { createUserReminder, sendJobUpdateNotifications } from "../../notifications";
+  import { sendPaymentEmail } from "../../common/functions";
   
   //Login screen
   const JobCreationPayment = ({route, navigation }) => {
@@ -55,7 +55,7 @@ import { sendPaymentEmail } from "../../common/functions";
       console.log('observing');
       counter++;
       if(counter >= 4){
-        setPaymentStatus("Payment verification failed!")
+        setPaymentStatus("Payment verification failed, please contact us for help")
         dispatch(storeNewJobID({jobID: ""}))
         clearInterval(timer)
       }
@@ -76,6 +76,13 @@ import { sendPaymentEmail } from "../../common/functions";
             dispatch(addOrRemoveJob({type: 'ADD_ACTIVE_JOB', jobInfo: paidJob.data.getJob}))
             dispatch(storeNewJobID({jobID: ""}))
             setPaymentStatus('Payment was successful! You have 24 hours if you wish to cancel the job for a refund.')
+            //send notifications to nearby providers
+            let messageInfo = {
+              title: 'New Job',
+              message: `A new job titled ${paidJob.data.getJob.jobTitle} was just requested at area code ${paidJob.data.getJob.zipCode}`,
+              data: {jobID: paidJob.data.getJob.id}
+            }
+            await sendJobUpdateNotifications(paidJob.data.getJob.zipCode, messageInfo)
             setTimeout(() => {
               route.params.jobInfo = paidJob.data.getJob
               sendPaymentEmail(paidJob.data.getJob, userInfo.firstName, authUser.email)

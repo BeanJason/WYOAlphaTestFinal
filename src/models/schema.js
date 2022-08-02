@@ -366,6 +366,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "isNotificationsOn": {
+                    "name": "isNotificationsOn",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "jobs": {
                     "name": "jobs",
                     "isArray": true,
@@ -831,6 +838,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "type": {
+                    "name": "type",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -906,5 +920,5 @@ export const schema = {
             }
         }
     },
-    "version": "bfffaac085a91046d9f07154218ddd21"
+    "version": "b6fd9023e19996fb2d59c7334f7706dc"
 };

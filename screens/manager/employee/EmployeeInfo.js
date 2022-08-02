@@ -160,7 +160,8 @@ const EmployeeInfo = ({ navigation, route }) => {
     await DataStore.save(new Blacklist({
       "subID": employeeInfo.subID,
       "email": employeeInfo.email,
-      "phoneNumber": employeeInfo.phoneNumber
+      "phoneNumber": employeeInfo.phoneNumber,
+      "type": "terminated"
     }))
     let jobsRemoved = await removeJobsFromProvider(employeeInfo)
     console.log(jobsRemoved);

@@ -5,6 +5,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Platform,
+  Switch
 } from "react-native";
 import { TouchableOpacity } from "react-native";
 import UserInput from "../../../common/components/UserInput";
@@ -31,6 +32,7 @@ const EditAccountProvider = ({ navigation }) => {
     const [imageUploading, setImageUploading] = useState(false)
     const [checkExpires, setCheckExpires] = useState()
     const phoneUtil = PhoneNumberUtil.getInstance()
+    const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(userInfo.isNotificationsOn);
 
     const {
       control,
@@ -193,10 +195,33 @@ const EditAccountProvider = ({ navigation }) => {
       }
     }
 
+
+    //change notifications
+    const toggleSwitch = async() => {
+      let value = !isNotificationsEnabled
+      let original = await DataStore.query(Provider, userInfo.id)
+      try {
+        let newInfo = await DataStore.save(Provider.copyOf(original, (updated) => {
+          updated.isNotificationsOn = value
+        }))
+        dispatch(changeUserInfo({userInfo: newInfo}))
+      } catch (error) {
+        console.log(error);
+        createToast('There was an error updating your request')
+      }
+      if(value){
+        createToast('Notifications have been turned on')
+      }
+      else{
+        createToast('Notifications have been turned off')
+      }
+      setIsNotificationsEnabled(value)
+    }
+
   return (
     <KeyboardAwareScrollView>
       <ImageBackground
-        style={[commonStyles.background, {height: 1000}]}
+        style={[commonStyles.background, {height: 1050}]}
         source={require("../../../assets/wyo_background.png")}
       >
         <SafeAreaView style={commonStyles.safeContainer}>
@@ -224,6 +249,15 @@ const EditAccountProvider = ({ navigation }) => {
 
           {/* Information */}
           <View style = {styles.inputContainer}>
+            <View style={{flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start'}}>
+              <Text style={styles.generalText}>New Job Notifications</Text>
+              <Switch
+                style={{marginLeft: 1}}
+                trackColor={{ false: "#767577", true: "green" }}
+                value={isNotificationsEnabled}
+                onValueChange={toggleSwitch}
+              />
+            </View>
             <Text style={styles.generalText}>Edit your phone number</Text>
             <View style={styles.field}>
               {/* Phone number */}

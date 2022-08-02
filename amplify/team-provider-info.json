@@ -58,6 +58,10 @@
         "StripeWebhookAPI": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
           "s3Key": "amplify-builds/StripeWebhookAPI-4f4d6a4141685342484a-build.zip"
+        },
+        "SendJobUpdates": {
+          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
+          "s3Key": "amplify-builds/SendJobUpdates-4e497a4c37315a4c5961-build.zip"
         }
       }
     }

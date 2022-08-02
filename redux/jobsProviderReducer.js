@@ -54,7 +54,8 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
             }
             return {allJobs: validJobs, userID: userID}
         } catch (error) {
-            return thunkAPI.rejectWithValue('Error getting job list ' + error.message)
+            let message = 'Error getting job list ' + error.message
+            return thunkAPI.rejectWithValue(message)
         }
     }
 })
@@ -102,7 +103,7 @@ export const jobsProviderReducer = createSlice({
                 state.activeJobs = action.payload.allJobs.filter(j => j.currentStatus != 'COMPLETED')
                 state.jobHistory = action.payload.allJobs.filter(j => j.currentStatus == 'COMPLETED')
             })
-            .addCase(initializeJobs.rejected, (state) => {
+            .addCase(initializeJobs.rejected, (state, action) => {
                 state.message = action.payload;
                 state.activeJobs = [];
                 state.jobHistory = [];
