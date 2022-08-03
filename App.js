@@ -69,6 +69,7 @@ import NewApplicants from "./screens/manager/applicants/NewApplicants";
 import ApplicantsInfo from "./screens/manager/applicants/ApplicantsInfo";
 import EditAccountManager from "./screens/manager/EditAccountManager";
 import EmployeeReviews from "./screens/manager/employee/EmployeeReviews";
+import CreateManager from "./screens/manager/CreateManager";
 
 
 //Common screens
@@ -244,7 +245,6 @@ const RootNavigation = () => {
 const GuestNavigation = () => {
   return (
     <Stack.Navigator screenOptions={{transitionSpec:{open: config, close: config}}}>
-      {/* <Stack.Screen options={{ headerShown: false }} name="CreateManager" component={CreateManager}/> */}
       <Stack.Screen options={{ headerShown: false }} name="LoginScreen" component={LoginScreen}/>
       <Stack.Screen options={{ headerShown: false }} name="ForgotPassword1" component={ForgotPassword1}/>
       <Stack.Screen options={{ headerShown: false }} name="ForgotPassword2" component={ForgotPassword2}/>
@@ -540,6 +540,7 @@ const ManagerAccountTab = () => {
       <Stack.Screen options={{ headerShown: false }} name="MyAccount" component={MyAccount}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="VerifyAccount" component={VerifyAccount}/>
       <Stack.Screen options={{ title: 'Change Password' }} name="ChangePassword" component={ChangePassword}/>
+      <Stack.Screen options={{ title: 'Create Manager' }} name="CreateManager" component={CreateManager}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountManager" component={EditAccountManager}/>
       <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
       <Stack.Screen options={{title: 'About Users'}} name="AboutUsers" component={AboutUsers} />

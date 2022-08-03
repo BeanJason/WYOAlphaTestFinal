@@ -76,6 +76,9 @@ import {
               <TouchableOpacity onPress={() => navigation.navigate("ChangePassword", {name: "ChangePassword"})} style={[styles.passwordBtn, {marginTop: 20}]}>
                   <Text style={styles.editText}>Change Password</Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("CreateManager", {name: "CreateManager"})} style={[styles.passwordBtn, {marginTop: 20}]}>
+                  <Text style={styles.editText}>Create Manager</Text>
+              </TouchableOpacity>
           </View>
   
           <View style={[styles.inputContainer, {marginTop: 10}]}>
