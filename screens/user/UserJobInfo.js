@@ -18,7 +18,7 @@ import { Job, Provider } from "../../src/models";
 import { createToast } from "../../common/components/Toast";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrRemoveJob } from "../../redux/jobsReducer";
-import { sendRefundEmail } from "../../common/functions";
+import { formatTime, sendRefundEmail } from "../../common/functions";
 import ProfilePicture from "../../common/components/ProfilePicture";
 import { cancelNotificationByID, sendNotificationToProvider } from "../../notifications";
 
@@ -114,7 +114,7 @@ const UserJobInfo = ({ route, navigation }) => {
             let date = new Date(jobInfo.requestDateTime)
             let messageInfo = {
               title: 'Job Cancelled',
-              message: `The job titled ${jobInfo.jobTitle} that was scheduled on ${date.toLocaleDateString()} at ${date.toLocaleTimeString()} has been cancelled`,
+              message: `The job titled ${jobInfo.jobTitle} that was scheduled on ${date.toLocaleDateString()} at ${formatTime(date)} has been cancelled`,
               data: {jobID: jobInfo.id}
             }
             await sendNotificationToProvider(jobInfo.mainProvider, messageInfo)

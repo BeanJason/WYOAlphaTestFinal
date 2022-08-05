@@ -19,7 +19,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import { createToast } from "../../common/components/Toast";
 import * as queries from "../../src/graphql/queries"
-
+import { formatTime } from "../../common/functions";
 
 //Login screen
 const ManagerJobInfo = ({ route, navigation }) => {
@@ -76,7 +76,7 @@ const ManagerJobInfo = ({ route, navigation }) => {
         setLat(location.latitude)
         setLng(location.longitude)
         let date = new Date(location.dateUpdated)
-        setPrevDate(`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`)
+        setPrevDate(`${date.toLocaleDateString()} ${formatTime(date)}`)
       }
     }
     //set backup providers if available
@@ -112,7 +112,7 @@ const ManagerJobInfo = ({ route, navigation }) => {
         setLat(location.latitude)
         setLng(location.longitude)
         let date = new Date(location.dateUpdated)
-        setPrevDate(`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`)
+        setPrevDate(`${date.toLocaleDateString()} ${formatTime(date)}`)
       }
       else{
         createToast('Location currently not available')
@@ -125,14 +125,14 @@ const ManagerJobInfo = ({ route, navigation }) => {
       setOngoing(true)
       if(jobInfo.checkInTime){
         let date = new Date(jobInfo.checkInTime)
-        setCheckInTime(date.toLocaleTimeString())
+        setCheckInTime(formatTime(date))
       }
     }
     else if(jobInfo.currentStatus == 'COMPLETED'){
       let date = new Date(jobInfo.checkInTime)
-      setCheckInTime(date.toLocaleTimeString())
+      setCheckInTime(formatTime(date))
       date = new Date(jobInfo.checkOutTime)
-      setCheckOutTime(date.toLocaleTimeString())
+      setCheckOutTime(formatTime(date))
     }
     getDateFormat()
     getProviders()

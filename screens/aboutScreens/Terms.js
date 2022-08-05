@@ -28,6 +28,7 @@ const Terms = ({ navigation }) => {
         <Text style={styles.header3}>- If services cannot be provided, you will be refunded 100% including $2.50 service fee.</Text>
         <Text style={[styles.header2, {marginTop: 30}]}>Restrictions</Text>
         <Text style={styles.header3}>No one under the age of 18 is permitted in the home while the WYO provider is on duty. If someone under the age of 18 is in the home, then the WYO provider will not enter and your refund will be void. Including service fee.</Text>
+        <Text style={styles.header3}>If you have a pet then the animal must be put in a separate closed quarters while the WYO provider is at your establishment.</Text>
       </SafeAreaView>
     </ImageBackground>
     </KeyboardAwareScrollView>

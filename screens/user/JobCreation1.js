@@ -249,7 +249,7 @@ const JobCreation1 = ({ navigation }) => {
       data.total = total
       //Send info to the server
       //Send info to payment screen
-      navigation.navigate("JobCreationPayment", { name: "JobCreationPayment" , data: data, userInfo: userInfo});
+      navigation.navigate("JobCreationPayment", { name: "JobCreationPayment" , data: data});
   }
     
   };

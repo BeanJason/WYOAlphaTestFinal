@@ -14,6 +14,17 @@ export const checkIfBanned = async (id) => {
     return response.data.getProvider.isBan
 }
 
+//format hours
+export const formatTime = (formatDate) => {
+    let hours = formatDate.getHours() % 12 || 12;
+    let min = (formatDate.getMinutes() < 10 ? "0" : "") + formatDate.getMinutes();
+    let amOrPm = "AM";
+    if (formatDate.getHours() >= 12) {
+        amOrPm = "PM";
+    }
+    return `${hours}:${min}${amOrPm}`
+}
+
 //fire employee
 export const removeJobsFromProvider = async(employee) => {
     if(!employee){
@@ -179,7 +190,7 @@ export const sendPaymentEmail = async (jobInfo, user, email) => {
                 </p>
                 <p>
                     This email confirms your payment of $${total} for your job request ${jobInfo.jobTitle} 
-                    that is scheduled for ${date.toLocaleDateString()} at ${date.toLocaleTimeString()}. 
+                    that is scheduled for ${date.toLocaleDateString()} at ${formatTime(date)}. 
                     You have 24 hours to cancel this job for a refund. 
                     Note that the $2.50 service fee will not be refunded if the job is cancelled.
                 </p>
@@ -218,7 +229,7 @@ export const sendRefundEmail = async (jobInfo, user, email) => {
                 </p>
                 <p>
                     This email confirms your refund of $${total} for your job request ${jobInfo.jobTitle} 
-                    that was scheduled for ${date.toLocaleDateString()} at ${date.toLocaleTimeString()}.
+                    that was scheduled for ${date.toLocaleDateString()} at ${formatTime(date)}.
                     The refund will be sent to your original payment method.
                     Note that the $2.50 service fee will not be refunded.
                 </p>
@@ -375,7 +386,7 @@ export const sendBanStatusEmail = async (user, email, status) => {
                 <p>
                     You have just been banned from your services as a WYO Provider. During this time you will not be able
                     to search for or accept job requests. Please review the terms and conditions in the meantime. You will 
-                    receive an email once the ban has been lifted.
+                    receive an email if the ban has been lifted.
                 </p>
             </body>
         </head>
@@ -453,7 +464,7 @@ export const sendProviderJobSignupEmail = async (jobInfo, user, email, owner) =>
                 </p>
                 <p>
                     This email confirms you have signed up for the job titled ${jobInfo.jobTitle} that was requested by ${owner}. 
-                    This job is scheduled on ${date.toLocaleDateString()} at ${date.toLocaleTimeString()}. Please remember to check 
+                    This job is scheduled on ${date.toLocaleDateString()} at ${formatTime(date)}. Please remember to check 
                     in on the WYO App as soon as you arrive at the job location.
                 </p>
                 <p>
@@ -473,4 +484,52 @@ export const sendProviderJobSignupEmail = async (jobInfo, user, email, owner) =>
         message: html
     }))
 
+}
+
+export const sendProviderOffenseEmail = async (user, email, isBan) => {
+    let html
+    if(isBan){
+        html = `<html>
+        <head>
+            <h1>
+                WYO Provider Ban
+            </h1>
+            <body>
+                <p>
+                    Hello ${user},
+                </p>
+                <p>
+                    You have received 2 offenses on your account and therefore have been banned from your services as a WYO Provider
+                    During this time you will not be able to search for or accept job requests. Please review the terms and conditions
+                    for WYO Providers. If you think there was an error or would like to provide documentation for good cause of the 
+                    offense, contact us.
+                </p>
+            </body>
+        </head>
+    </html>`
+    }
+    else{
+        html = `<html>
+        <head>
+            <h1>
+                WYO Provider Offense
+            </h1>
+            <body>
+                <p>
+                    Hello ${user},
+                </p>
+                <p>
+                    You have received an offense on your account as a WYO Provider. This is due to your cancellation of a job
+                    less than 72 hours away. Please review the terms and conditions of a WYO Provider. A second offense could 
+                    result in a termination of your account.
+                </p>
+            </body>
+        </head>
+    </html>`
+    }
+    await API.graphql(graphqlOperation(sendEmail, {
+        userEmail: email,
+        subject: 'Offense',
+        message: html
+    }))
 }

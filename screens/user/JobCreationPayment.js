@@ -30,9 +30,9 @@ import {
       event.preventDefault();
     })
 
-    const {data, userInfo} = route.params
+    const {data} = route.params
     const dispatch = useDispatch()
-    const { authUser } = useSelector((state) => state.auth);
+    const { authUser, userInfo } = useSelector((state) => state.auth);
     const { newJobID } = useSelector((state) => state.jobs);
     const [total, setTotal] = useState()
     const [clientSecret, setclientSecret] = useState('')

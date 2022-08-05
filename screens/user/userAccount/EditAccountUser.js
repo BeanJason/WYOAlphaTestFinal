@@ -159,29 +159,25 @@ const EditAccountUser = ({ navigation }) => {
     list = list.filter(
       (removeAddress) => removeAddress.street !== addressToDelete
     );
-    await DataStore.save(
-      User.copyOf(original, (updated) => {
-        updated.address = updated.address.filter((removeAddress) => {
-          removeAddress = JSON.parse(removeAddress);
-          return removeAddress.street !== addressToDelete;
-        });
-      })
-    );
-
-    let newList = [];
-    for (let next of list) {
-      newList.push(JSON.stringify(next));
+    try {
+      let newInfo = await DataStore.save(
+        User.copyOf(original, (updated) => {
+          updated.address = updated.address.filter((removeAddress) => {
+            removeAddress = JSON.parse(removeAddress);
+            return removeAddress.street !== addressToDelete;
+          });
+        })
+      );
+      let newList = [];
+      for (let next of list) {
+        newList.push(JSON.stringify(next));
+      }
+      dispatch(changeUserInfo({ userInfo: newInfo }));
+    } catch (error) {
+      console.log(error);
+      createToast('error updating address')
     }
 
-    let newInfo = {
-      userID: original.id,
-      firstName: original.firstName,
-      lastName: original.lastName,
-      address: newList,
-      phoneNumber: original.phoneNumber,
-    };
-
-    dispatch(changeUserInfo({ userInfo: newInfo }));
     setAddressToDelete("");
     setStartDelete(false);
     setShowModal(false);

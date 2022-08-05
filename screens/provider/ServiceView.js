@@ -25,7 +25,7 @@ import * as TaskManager from "expo-task-manager"
 import * as Location from "expo-location"
 import isPointWithinRadius from 'geolib/es/isPointWithinRadius';
 import { Ionicons } from '@expo/vector-icons';
-import { decrementZipCodeCount } from "../../common/functions";
+import { decrementZipCodeCount, formatTime, sendProviderOffenseEmail } from "../../common/functions";
 
 //Login screen
 const ServiceView = ({ route, navigation }) => {
@@ -72,8 +72,6 @@ const ServiceView = ({ route, navigation }) => {
 
     //check in btn?
     let today = new Date()
-    console.log('today: ' + today.toDateString());
-    console.log('request: ' + formatDate.toDateString());
     if(today.getDate() == formatDate.getDate() && today.getMonth() == formatDate.getMonth() && today.getFullYear() == formatDate.getFullYear()){
       setIsServiceDay(true)
     } 
@@ -248,15 +246,9 @@ const ServiceView = ({ route, navigation }) => {
             }))
             //send notification to new main provider
             let request = new Date(original.requestDateTime);
-            let hour = request.getHours() % 12 || 12;
-            let min = (request.getMinutes() < 10 ? "0" : "") + request.getMinutes();
-            let amOrPm = "AM";
-            if (request.getHours() >= 12) {
-              amOrPm = "PM";
-            }
             let messageInfo = {
               title: 'New Provider',
-              message: `You have been appointed to be the new main provider of the ${original.jobTitle} job on ${request.toLocaleDateString()} at ${hour}:${min}${amOrPm}`,
+              message: `You have been appointed to be the new main provider of the ${original.jobTitle} job on ${request.toLocaleDateString()} at ${formatTime(request)}`,
               data: {jobID: original.id}
             }
             await sendNotificationToProvider(newMain, messageInfo)
@@ -275,11 +267,13 @@ const ServiceView = ({ route, navigation }) => {
                   updated.isBan = true;
                   updated.offenses = count
                 }))
+                sendProviderOffenseEmail(userInfo.firstName, userInfo.email, true)
               }
               else{
                 await DataStore.save(Provider.copyOf(providerOriginal, updated => {
                   updated.offenses = count
                 }))
+                sendProviderOffenseEmail(userInfo.firstName, userInfo.email, false)
               }
               createToast('You have received an offense on your account')
             }
@@ -501,8 +495,17 @@ const ServiceView = ({ route, navigation }) => {
                 <Text style={styles.modalText}>Are you sure you want to cancel service for this job?
                 </Text>
                 {isCancelOffense ? 
-                  <Text style={[styles.noteText, {textAlign: 'center'}]}>Note: This job request is Scheduled for less than 3 days from now. Cancellation of this job will result in an offense on your account</Text> : (
-                  <Text style={[styles.noteText, {textAlign: 'center'}]}>Note: Cancellation of this job will not result in an offense on your account because it is scheduled for more than 3 days from today</Text>
+                    <Text style={{textAlign: 'center'}}>
+                      <Text style={[styles.noteText, ]}>Note: This job request is Scheduled for less than 3 days from now. Cancellation of this job </Text>
+                      <Text style={[styles.noteText, {fontFamily: 'Montserrat-Bold'}]}>will</Text>
+                      <Text style={[styles.noteText, ]}> result in an offense on your account</Text>
+                    </Text>
+                     : (
+                    <Text style={{textAlign: 'center'}}>
+                      <Text style={[styles.noteText, ]}>Note: Cancellation of this job will </Text>
+                      <Text style={[styles.noteText, {fontFamily: 'Montserrat-Bold'}]}>not</Text>
+                      <Text style={[styles.noteText, ]}> result in an offense on your account because it is scheduled for more than 3 days from today </Text>
+                    </Text>
                 )}
                 {startCancel ?  <Spinner color={'black'}/> : (
                   //Buttons

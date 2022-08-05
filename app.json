@@ -2,6 +2,7 @@
   "expo": {
     "name": "WYO App",
     "slug": "WYOApp",
+    "owner": "wyoservices",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -12,7 +13,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#01a1ff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -37,7 +38,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.wyo.WYOApp",

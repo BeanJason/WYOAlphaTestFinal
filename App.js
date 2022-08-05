@@ -174,7 +174,9 @@ export default function App() {
   }
 
   useEffect(() => { 
+    //ignore warning
     LogBox.ignoreLogs(['new NativeEventEmitter'])
+    LogBox.ignoreAllLogs()
     loadAllResources();
   }, [])
 
