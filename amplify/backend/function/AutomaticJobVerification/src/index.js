@@ -219,15 +219,21 @@ exports.handler = async (event) => {
         for(let job of Items){
             res = {}
             requestDate = new Date(job.requestDateTime)
-            if(today > requestDate){
-                await updateJobStatus()
+            if(today.toDateString() == requestDate.toDateString() && today.getHours() > requestDate.getHours()){
+              console.log('updating job status')
+                await updateJobStatus(job.id)
                 //update zip
                 zipCode = await getZipCode(job.zipCode)
-                count = zipCode.Item.count
+                zipCode =  zipCode.Items.filter(item => item._deleted != true)
+                count = zipCode[0].count
                 count -= 1
-                await updateZipCode(zipCode.Item.id, count)
+                if(count < 0){
+                  count = 0
+                }
+                await updateZipCode(zipCode[0].id, count)
                 //update provider
                 providerData = await getProvider(job.mainProvider)
+                console.log('updating provider: ' + providerData)
                 count = providerData.Item.offenses
                 count += 1
                 await updateProviderOffenses(job.mainProvider, count)
@@ -236,15 +242,21 @@ exports.handler = async (event) => {
                 }
                 await sendEmail(job, providerData)
             }
-            else if(today.toDateString() == requestDate.toDateString() && today.getHours() > requestDate.getHours()){
-                await updateJobStatus()
+            else if(today > requestDate){
+              console.log('updating job status')
+                await updateJobStatus(job.id)
                 //update zip
                 zipCode = await getZipCode(job.zipCode)
-                count = zipCode.Item.count
+                zipCode =  zipCode.Items.filter(item => item._deleted != true)
+                count = zipCode[0].count
                 count -= 1
-                await updateZipCode(zipCode.Item.id, count)
+                if(count < 0){
+                  count = 0
+                }
+                await updateZipCode(zipCode[0].id, count)
                 //update provider
                 providerData = await getProvider(job.mainProvider)
+                console.log('updating provider: ' + providerData)
                 count = providerData.Item.offenses
                 count += 1
                 await updateProviderOffenses(job.mainProvider, count)
