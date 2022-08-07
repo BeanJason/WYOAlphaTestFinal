@@ -62,6 +62,10 @@
         "SendJobUpdates": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
           "s3Key": "amplify-builds/SendJobUpdates-4e497a4c37315a4c5961-build.zip"
+        },
+        "AutomaticJobVerification": {
+          "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
+          "s3Key": "amplify-builds/AutomaticJobVerification-76677076786d4f677041-build.zip"
         }
       }
     }

@@ -64,7 +64,7 @@ const EmployeeJobs = ({ navigation, route }) => {
       setFilteredJobList(jobList.filter(job => job.currentStatus == 'IN_SERVICE'))
     }
     else if(checkedBtn == 'activeJobs'){
-      setFilteredJobList(jobList.filter(job => job.currentStatus != 'COMPLETED'))
+      setFilteredJobList(jobList.filter(job => job.currentStatus != 'COMPLETED' && job.currentStatus != 'FAILED'))
     }
     else {
       setFilteredJobList(jobList.filter(job => job.currentStatus == 'COMPLETED'))

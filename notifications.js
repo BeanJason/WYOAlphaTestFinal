@@ -3,6 +3,7 @@ import * as Notifications from "expo-notifications";
 import { sendJobUpdates, sendNotification } from "./src/graphql/mutations";
 import { User, Provider, Job, Manager } from "./src/models";
 import * as Device from "expo-device"
+import { formatTime } from "./common/functions";
 
 
 
@@ -162,13 +163,9 @@ export const getNotificationToken = async () => {
 
 //create notifications
 export const createUserReminder = async (job) => {
+  let original = new Date(job.requestDateTime)
   let dayBeforeTime = new Date(job.requestDateTime);
-  let hour = dayBeforeTime.getHours() % 12 || 12;
-  let min = (dayBeforeTime.getMinutes() < 10 ? "0" : "") + dayBeforeTime.getMinutes();
-  let amOrPm = "AM";
-  if (dayBeforeTime.getHours() >= 12) {
-    amOrPm = "PM";
-  }
+  let timeString = formatTime(original)
 
   let threeHrsTime = new Date(job.requestDateTime);
   let completeTime = new Date(job.requestDateTime);
@@ -183,7 +180,7 @@ export const createUserReminder = async (job) => {
   let dayBeforeReminder = await Notifications.scheduleNotificationAsync({
     content: {
       title: "Job Reminder",
-      body: `Reminder: Your job request is scheduled for ${dayBeforeTime.toLocaleDateString()} at ${hour}:${min}${amOrPm}`,
+      body: `Reminder: Your job request titled ${job.jobTitle} is scheduled for ${original.toLocaleDateString()} at ${timeString}`,
       data: {
         jobID: job.id,
         owner: job.requestOwner
@@ -198,7 +195,7 @@ export const createUserReminder = async (job) => {
   let threeHourReminder = await Notifications.scheduleNotificationAsync({
     content: {
       title: "Job Reminder",
-      body: `Reminder: Your job request is scheduled for today at ${hour}:${min}${amOrPm}`,
+      body: `Reminder: Your job request titled ${job.jobTitle} is scheduled for today at ${timeString}`,
       data: {
         jobID: job.id,
         owner: job.requestOwner
@@ -232,13 +229,9 @@ export const createUserReminder = async (job) => {
 };
 
 export const createProviderReminder = async (jobInfo) => {
+  let original = new Date(jobInfo.requestDateTime)
   let dayBefore = new Date(jobInfo.requestDateTime);
-  let hour = dayBefore.getHours() % 12 || 12;
-  let min = (dayBefore.getMinutes() < 10 ? "0" : "") + dayBefore.getMinutes();
-  let amOrPm = "AM";
-  if (dayBefore.getHours() >= 12) {
-    amOrPm = "PM";
-  }
+  let timeString = formatTime(original)
   let threeHrsTime = new Date(jobInfo.requestDateTime);
   dayBefore.setHours(dayBefore.getHours() - 24)
   threeHrsTime.setHours(threeHrsTime.getHours() - 3)
@@ -247,7 +240,7 @@ export const createProviderReminder = async (jobInfo) => {
   let dayBeforeReminder = await Notifications.scheduleNotificationAsync({
     content: {
       title: "Job Reminder: " + jobInfo.jobTitle,
-      body: `Reminder: You have a job scheduled for ${dayBefore.toLocaleDateString()} at ${hour}:${min}${amOrPm}`,
+      body: `Reminder: You have a job titled ${jobInfo.jobTitle} scheduled for ${original.toLocaleDateString()} at ${timeString}`,
       data: {
         jobID: jobInfo.id,
         owner: jobInfo.requestOwner
@@ -262,7 +255,7 @@ export const createProviderReminder = async (jobInfo) => {
   let threeHourReminder = await Notifications.scheduleNotificationAsync({
     content: {
       title: "Job Reminder: " + jobInfo.jobTitle,
-      body: `Reminder: You have a job scheduled for today at ${hour}:${min}${amOrPm}`,
+      body: `Reminder: You have a job titled ${jobInfo.jobTitle} scheduled for today at ${timeString}`,
       data: {
         jobID: jobInfo.id,
         owner: jobInfo.requestOwner

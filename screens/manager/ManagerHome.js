@@ -49,6 +49,7 @@ const ManagerHome = ({ navigation }) => {
       const response = await API.graphql({query: queries.listJobs, variables: {filter: filter}})
       let all = response.data.listJobs.items
       all = all.filter(job => !job.markedToRemove)
+      all = all.filter(job => job.currentStatus != 'FAILED')
       setJobList(all)
       setLoading(false)
   }

@@ -84,7 +84,7 @@ export const jobsReducer = createSlice({
         builder
             .addCase(initializeJobs.fulfilled, (state, action) => {
                 state.initialized = true;
-                state.activeJobs = action.payload.allJobs.filter(j => j.currentStatus != 'COMPLETED')
+                state.activeJobs = action.payload.allJobs.filter(j => j.currentStatus != 'COMPLETED' && j.currentStatus != 'FAILED')
                 state.jobHistory = action.payload.allJobs.filter(j => j.currentStatus == 'COMPLETED')
             })
             .addCase(initializeJobs.rejected, (state, action) => {

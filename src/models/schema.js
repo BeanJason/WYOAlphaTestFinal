@@ -895,7 +895,8 @@ export const schema = {
                 "REQUESTED",
                 "ACCEPTED",
                 "IN_SERVICE",
-                "COMPLETED"
+                "COMPLETED",
+                "FAILED"
             ]
         }
     },

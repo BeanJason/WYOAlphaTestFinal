@@ -6,7 +6,8 @@ const Jobstatus = {
   "REQUESTED": "REQUESTED",
   "ACCEPTED": "ACCEPTED",
   "IN_SERVICE": "IN_SERVICE",
-  "COMPLETED": "COMPLETED"
+  "COMPLETED": "COMPLETED",
+  "FAILED": "FAILED"
 };
 
 const { Job, Provider, Review, User, Code, Manager, Blacklist, PaymentIntent } = initSchema(schema);

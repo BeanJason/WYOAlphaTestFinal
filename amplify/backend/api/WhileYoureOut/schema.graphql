@@ -17,6 +17,7 @@ enum JOBSTATUS {
   ACCEPTED
   IN_SERVICE
   COMPLETED
+  FAILED
 }
 
 type Job @model @auth(rules: [{allow: public}]) {
@@ -113,4 +114,4 @@ type Blacklist @model @auth(rules: [{allow: public}]) {
   phoneNumber: AWSPhone!,
   type: String!
 }
-   
+     

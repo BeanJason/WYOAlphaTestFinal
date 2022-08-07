@@ -46,7 +46,7 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
             }
             let validJobs = response.filter(job => !job.markedToRemove)
             //check if all active jobs for provider contain reminders
-            let active = validJobs.filter(job => job.currentStatus != "COMPLETED")
+            let active = validJobs.filter(job => job.currentStatus != "COMPLETED" && j.currentStatus != 'FAILED')
             for(let next of active){
                 if(!next.providerNotificationID || next.providerNotificationID.length == 0){
                     await createProviderReminder(next)
@@ -100,7 +100,7 @@ export const jobsProviderReducer = createSlice({
         builder
             .addCase(initializeJobs.fulfilled, (state, action) => {
                 state.initialized = true;
-                state.activeJobs = action.payload.allJobs.filter(j => j.currentStatus != 'COMPLETED')
+                state.activeJobs = action.payload.allJobs.filter(j => j.currentStatus != 'COMPLETED' && j.currentStatus != 'FAILED')
                 state.jobHistory = action.payload.allJobs.filter(j => j.currentStatus == 'COMPLETED')
             })
             .addCase(initializeJobs.rejected, (state, action) => {

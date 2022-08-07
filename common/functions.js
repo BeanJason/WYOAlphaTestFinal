@@ -191,8 +191,8 @@ export const sendPaymentEmail = async (jobInfo, user, email) => {
                 <p>
                     This email confirms your payment of $${total} for your job request ${jobInfo.jobTitle} 
                     that is scheduled for ${date.toLocaleDateString()} at ${formatTime(date)}. 
-                    You have 24 hours to cancel this job for a refund. 
-                    Note that the $2.50 service fee will not be refunded if the job is cancelled.
+                    You have 24 hours to cancel this job for a refund. Note that the $2.50 service fee will not be refunded 
+                    if the job is cancelled. Please contact us if you have any problems.
                 </p>
                 <p>
                     Your Payment ID: ${jobInfo.paymentID}

@@ -4,7 +4,8 @@ export enum Jobstatus {
   REQUESTED = "REQUESTED",
   ACCEPTED = "ACCEPTED",
   IN_SERVICE = "IN_SERVICE",
-  COMPLETED = "COMPLETED"
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED"
 }
 
 export declare class PaymentIntent {

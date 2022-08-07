@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "function": {
+      "SendEmail": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    },
+    "storage": {
+      "Job:@model(appsync)": [
+        "read",
+        "update"
+      ],
+      "Provider:@model(appsync)": [
+        "read",
+        "update"
+      ],
+      "Code:@model(appsync)": [
+        "read",
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
