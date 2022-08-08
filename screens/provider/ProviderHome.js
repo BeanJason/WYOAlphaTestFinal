@@ -22,7 +22,6 @@ import { logout } from "../../redux/authReducer";
 import { useIsFocused } from "@react-navigation/native";
 import * as queries from "../../src/graphql/queries";
 import * as TaskManager from "expo-task-manager"
-import { createBackgroundCheckReminders } from "../../notifications";
 
 
 

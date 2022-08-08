@@ -302,7 +302,7 @@ export const createBackgroundCheckReminders = async (expirationDate) => {
       body: `Reminder, your background check will expire 2 weeks from today on ${original.toDateString()}`,
     },
     trigger: {
-      date: oneMonth,
+      date: twoWeeks,
     },
   });
 

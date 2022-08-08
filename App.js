@@ -545,6 +545,7 @@ const ManagerAccountTab = () => {
       <Stack.Screen options={{ title: 'Create Manager' }} name="CreateManager" component={CreateManager}/>
       <Stack.Screen options={{ title: 'Edit Account Info' }} name="EditAccountManager" component={EditAccountManager}/>
       <Stack.Screen options={{title: 'About Us'}} name="AboutUs" component={AboutUs} />
+      <Stack.Screen options={{title: 'Terms'}} name="Terms" component={Terms} />
       <Stack.Screen options={{title: 'About Users'}} name="AboutUsers" component={AboutUsers} />
       <Stack.Screen options={{title: 'About Providers'}} name="AboutProviders" component={AboutProviders} />
       <Stack.Screen options={{title: 'Contact Us'}} name="ContactUs" component={ContactUs} />

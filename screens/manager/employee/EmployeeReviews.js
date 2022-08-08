@@ -24,9 +24,9 @@ const EmployeeReviews = ({ navigation, route }) => {
 
   const setList = async() => {
     let list = [];
-    let reviews = await DataStore.query(Review, employeeInfo.providerReviewID)
-    if(reviews[0]){
-      for (let next of reviews[0].reviews) {
+    let reviews = await DataStore.query(Review, employeeInfo.providerReviewId)
+    if(reviews){
+      for (let next of reviews.reviews) {
         list.push(JSON.parse(next));
       }
     }

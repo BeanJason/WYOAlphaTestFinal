@@ -49,7 +49,15 @@ const UserReview = ({ navigation, route }) => {
     } else{
       let res = await DataStore.query(Review, revID)
       originalRev = res
-      count = originalRev.reviews.length
+      if(originalRev){
+        count = originalRev.reviews.length
+      } else{
+        originalRev = await DataStore.save(new Review({
+          "reviews": []
+        }))
+        revID = originalRev.id
+        count = 0
+      }
     }
 
     let review
