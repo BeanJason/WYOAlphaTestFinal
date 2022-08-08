@@ -14,7 +14,23 @@
                 "ConflictHandler": "AUTOMERGE",
                 "ConflictDetection": "VERSION"
             },
+            "Review": {
+                "ConflictHandler": "AUTOMERGE",
+                "ConflictDetection": "VERSION"
+            },
             "User": {
+                "ConflictHandler": "AUTOMERGE",
+                "ConflictDetection": "VERSION"
+            },
+            "Code": {
+                "ConflictHandler": "AUTOMERGE",
+                "ConflictDetection": "VERSION"
+            },
+            "Manager": {
+                "ConflictHandler": "AUTOMERGE",
+                "ConflictDetection": "VERSION"
+            },
+            "Blacklist": {
                 "ConflictHandler": "AUTOMERGE",
                 "ConflictDetection": "VERSION"
             }

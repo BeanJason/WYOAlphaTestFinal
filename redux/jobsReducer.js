@@ -38,7 +38,7 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
                 }
             }
         }
-        let validJobs = response.filter(job => !job.markedToRemove)
+        let validJobs = response.filter(job => !job.markedToRemove && job.currentStatus != 'FAILED')
         return {allJobs: validJobs}
     } catch (error) {
         return thunkAPI.rejectWithValue('Error getting job list ' + error.message)

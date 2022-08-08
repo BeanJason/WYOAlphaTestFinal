@@ -114,4 +114,4 @@ type Blacklist @model @auth(rules: [{allow: public}]) {
   phoneNumber: AWSPhone!,
   type: String!
 }
-     
+      

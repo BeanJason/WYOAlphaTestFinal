@@ -44,9 +44,9 @@ export const initializeJobs = createAsyncThunk("jobs/initialize", async (data, t
                     await DataStore.delete(Job, next.id)
                 }
             }
-            let validJobs = response.filter(job => !job.markedToRemove)
+            let validJobs = response.filter(job => !job.markedToRemove && job.currentStatus != 'FAILED')
             //check if all active jobs for provider contain reminders
-            let active = validJobs.filter(job => job.currentStatus != "COMPLETED" && j.currentStatus != 'FAILED')
+            let active = validJobs.filter(job => job.currentStatus != "COMPLETED")
             for(let next of active){
                 if(!next.providerNotificationID || next.providerNotificationID.length == 0){
                     await createProviderReminder(next)

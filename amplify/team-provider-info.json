@@ -65,7 +65,7 @@
         },
         "AutomaticJobVerification": {
           "deploymentBucketName": "amplify-whileyoureout-staging-25126-deployment",
-          "s3Key": "amplify-builds/AutomaticJobVerification-76677076786d4f677041-build.zip"
+          "s3Key": "amplify-builds/AutomaticJobVerification-43476767657574445a50-build.zip"
         }
       }
     }

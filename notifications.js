@@ -4,6 +4,8 @@ import { sendJobUpdates, sendNotification } from "./src/graphql/mutations";
 import { User, Provider, Job, Manager } from "./src/models";
 import * as Device from "expo-device"
 import { formatTime } from "./common/functions";
+import * as queries from "./src/graphql/queries"
+
 
 
 
@@ -331,21 +333,31 @@ export const sendNotificationToUser = async(userID, messageInfo) => {
 export const sendJobUpdateNotifications = async(zipCode, messageInfo) => {
   let zip = parseInt(zipCode)
   //get all providers at the zipCode
-  let providers = await DataStore.query(Provider, provider => 
-      provider.or( provider =>
-          provider.address("contains", `"zipCode":"${zip}"`)
-          .address("contains", `"zipCode":"${zip + 1}"`)
-          .address("contains", `"zipCode":"${zip - 1}"`)
-      ) 
-  )
+  let filter = {
+    and: [
+      { _deleted: {ne: true} },
+      {
+        or:[
+          {address: {contains: `"zipCode":"${zip}"`}},
+          {address: {contains: `"zipCode":"${zip + 1}"`}},
+          {address: {contains: `"zipCode":"${zip - 1}"`}},
+        ]
+      }
+      
+    ]
+  }
+  const response = await API.graphql({query: queries.listProviders, variables: {filter: filter}})
+  let providers = response.data.listProviders.items
+  providers = providers.filter(prov => prov._deleted != true)
   //get all tokens
   let allTokens = []
   for(let next of providers){
-      if(next.expoToken && next.isNotificationsOn){
+    console.log(next.firstName);
+      if(next.expoToken && next.isNotificationsOn == true){
           allTokens.push(next.expoToken)
       }
   }
-
+  console.log(allTokens);
   //send notifications to server
   if(allTokens.length != 0){
       try {

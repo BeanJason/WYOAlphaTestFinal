@@ -31,7 +31,9 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "location",
-          "fetch"
+          "fetch",
+          "NSPhotoLibraryUsageDescription",
+          "NSCameraUsageDescription"
         ]
       }
     },
@@ -46,7 +48,9 @@
       "permissions": [
         "ACCESS_BACKGROUND_LOCATION",
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE"
       ],
       "config": {
         "googleMaps": {

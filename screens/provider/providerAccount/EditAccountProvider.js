@@ -115,6 +115,7 @@ const EditAccountProvider = ({ navigation }) => {
     //get camera permissions
     const getPermissions = async() => {
       if(Platform.OS == 'ios' || Platform.OS == 'android'){
+        
         const libraryResponse = await ImagePicker.requestMediaLibraryPermissionsAsync();
         const photoResponse = await ImagePicker.requestCameraPermissionsAsync();
 
