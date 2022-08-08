@@ -118,11 +118,10 @@ const EditAccountProvider = ({ navigation }) => {
         
         const libraryResponse = await ImagePicker.requestMediaLibraryPermissionsAsync();
         const photoResponse = await ImagePicker.requestCameraPermissionsAsync();
-
-        if(libraryResponse.status !== 'granted' || photoResponse.status !== 'granted'){
-          return false
+        if(libraryResponse.status == 'granted' || photoResponse.status == 'granted'){
+          return true
         }
-        return true
+        return false
       }
     }
     //allow user to pick an image from gallery
